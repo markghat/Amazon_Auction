@@ -18,7 +18,7 @@
     {% for product in avail_products%}
     <tr>
       <th scope="row">{{product.id}}</th>
-      <td>{{product.name}}</td>
+      <td>{{avail_products[product.id].name}}</td>
       <td>{{product.price}}</td>
       <td>
         <form action="{{ url_for('purchased.purchased_add', product_id=product.id) }}" method="POST">
