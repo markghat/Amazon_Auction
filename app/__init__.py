@@ -5,7 +5,7 @@ from .db import DB
 
 
 login = LoginManager()
-login.login_view = 'users.login'
+login.login_view = 'users.login' 
 
 
 def create_app():
@@ -18,9 +18,11 @@ def create_app():
     from .index import bp as index_bp
     app.register_blueprint(index_bp)
 
-    from .users import bp as user_bp
+    from .users import bp as user_bp 
     app.register_blueprint(user_bp)
     
+    from .purchased import bp as purchased_bp #copy and paste these two lines and change to purchased
+    app.register_blueprint(purchased_bp)
     from .products import bp as product_bp
     app.register_blueprint(product_bp)
 
@@ -29,3 +31,6 @@ def create_app():
 
 
     return app
+#copy and paste index.py and change
+#copy and paste index.html and change 
+#copy and paste models/
