@@ -23,6 +23,12 @@ def create_app():
     
     from .purchased import bp as purchased_bp #copy and paste these two lines and change to purchased
     app.register_blueprint(purchased_bp)
+    from .products import bp as product_bp
+    app.register_blueprint(product_bp)
+
+    from .reviews import bp as reviews_bp
+    app.register_blueprint(reviews_bp)
+
 
     return app
 #copy and paste index.py and change
