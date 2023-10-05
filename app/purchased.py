@@ -26,5 +26,6 @@ def purchased():
                            purchase_history=purchases)
 
 @bp.route('/purchased/add/<int:product_id>', methods=['POST'])
-def wishlist_add(product_id):
+def purchased_add(product_id):
+    #Do I need to call a function to add a product to purchased? CHECK CODE IN USERS.PY
     return redirect(url_for('purchased.purchased'))
