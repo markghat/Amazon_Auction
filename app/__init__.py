@@ -18,9 +18,13 @@ def create_app():
     from .index import bp as index_bp
     app.register_blueprint(index_bp)
 
-    from .users import bp as user_bp #copy and paste these two lines and change to purchased
+    from .users import bp as user_bp 
     app.register_blueprint(user_bp)
+    
+    from .purchased import bp as purchased_bp #copy and paste these two lines and change to purchased
+    app.register_blueprint(purchased_bp)
 
     return app
 #copy and paste index.py and change
-#copy and index.html and change 
+#copy and paste index.html and change 
+#copy and paste models/

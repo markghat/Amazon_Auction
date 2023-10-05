@@ -2,12 +2,12 @@ from flask import current_app as app
 
 
 class Purchase:
-    def __init__(self, id, uid, pid, time_purchased): #add a name parameter and field so when you use join command and sql query you can add name to table
-        self.id = id
+    def __init__(self, id, uid, pid, time_purchased): 
+        #self.name = name #add a name attribute?
         self.uid = uid
         self.pid = pid
         self.time_purchased = time_purchased
-
+    #should I create a getName function that just joins with product?
     @staticmethod
     def get(id):
         rows = app.db.execute('''
