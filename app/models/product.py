@@ -1,4 +1,5 @@
 from flask import current_app as app
+from flask import jsonify
 
 
 class Product:
@@ -27,3 +28,10 @@ WHERE available = :available
 ''',
                               available=available)
         return [Product(*row) for row in rows]
+
+    def get_most_expensive(k):
+        rows = app.db.execute('''
+SELECT * FROM Products
+ORDER BY price DESC
+    ''')
+        return [Product(*row) for row in rows[:k]]
