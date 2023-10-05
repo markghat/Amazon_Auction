@@ -21,11 +21,12 @@ def purchased():
     else:
         purchases = None
     # render the page by adding information to the index.html file
-    return render_template('index.html', #change to purchased.html and add humanize
+    return render_template('purchased.html', #change to purchased.html and add humanize
                            avail_products=products,
-                           purchase_history=purchases)
+                           purchase_history=purchases
+                            )
 
 @bp.route('/purchased/add/<int:product_id>', methods=['POST'])
 def purchased_add(product_id):
-    #Do I need to call a function to add a product to purchased? CHECK CODE IN USERS.PY
+    Purchase.add_purchase(current_user.id, product_id, datetime.datetime(2023, 9, 14, 0, 0, 0)) #how to get the current time
     return redirect(url_for('purchased.purchased'))

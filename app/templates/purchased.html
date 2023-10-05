@@ -32,7 +32,7 @@
         <tr>
             <th scope="col">Purchase ID</th>
             <th scope="col">Product Name</th>
-            <th scope="col">Time of Purchase</th>
+            <th scope="col">Date of Purchase</th>
         </tr>
     </thead>
     <tbody>
@@ -40,7 +40,7 @@
         <tr>
             <th scope="row">{{purchase.id}}</th>
             <td>{{purchase.pid}}</td>
-            <td>{{humanize_time(purchase.time_purchased)}}</td>
+            <td>{{purchase.time_purchased}}</td>
         </tr>
         {% endfor %}
     </tbody>
