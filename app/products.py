@@ -11,20 +11,11 @@ from .models.product import Product
 from flask import Blueprint
 bp = Blueprint('products', __name__)
 
-# @bp.route('/products')
-# def products():
-#         items = Product
-#         return render_template('wishlist.html',
-#                                items=items,
-#                                humanize_time=humanize_time)
-#     else:
-#         return jsonify({}), 404
-
-
 
 @bp.route('/product/expensive/<int:k>', methods=['GET'])
 def products_get_most_expensive(k):
     items = Product.get_most_expensive(k)
-    return jsonify([item.__dict__ for item in items])
-
+    return render_template('product_expensive.html',
+                           avail_products=items,
+                           mynum=k)
 
