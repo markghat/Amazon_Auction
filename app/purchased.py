@@ -28,5 +28,5 @@ def purchased():
 
 @bp.route('/purchased/add/<int:product_id>', methods=['POST'])
 def purchased_add(product_id):
-    Purchase.add_purchase(current_user.id, product_id, datetime.datetime(2023, 9, 14, 0, 0, 0)) #how to get the current time
+    Purchase.add_purchase(current_user.id, product_id, datetime.datetime.now()) #how to get the current time
     return redirect(url_for('purchased.purchased'))
