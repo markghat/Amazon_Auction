@@ -6,7 +6,7 @@ from .models.product import Product
 from .models.purchase import Purchase
 
 from flask import Blueprint
-bp = Blueprint('index', __name__)
+bp = Blueprint('index', __name__) #changed to purchased
 
 
 @bp.route('/')
