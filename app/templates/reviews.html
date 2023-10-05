@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.user_id.label }}<br />
+        {{ form.user_id(size=32) }}<br />
+        {% for error in form.user_id.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+
+    <p>{{ form.submit() }}</p>
+</form>
+
+{% if current_user.is_authenticated %}
+<h2>Your reviews:</h2>
+<br>
+<table class='table table-hover table-bordered container'>
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Product ID</th>
+            <th scope="col">User ID</th>
+            <th scope="col">Rating</th>
+            <th scope="col">Review</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for review in my_reviews%}
+        <tr>
+            <th scope="row">{{review.pid}}</th>
+            <td>{{review.uid}}</td>
+            <td>{{review.rating}}</td>
+            <td>{{review.feedback}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<h2>All reviews</h2>
+<table class='table table-hover table-bordered container'>
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Product ID</th>
+            <th scope="col">User ID</th>
+            <th scope="col">Rating</th>
+            <th scope="col">Review</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for review in all_reviews%}
+        <tr>
+            <th scope="row">{{review.pid}}</th>
+            <td>{{review.uid}}</td>
+            <td>{{review.rating}}</td>
+            <td>{{review.feedback}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock %}

@@ -24,4 +24,8 @@ def create_app():
     from .products import bp as product_bp
     app.register_blueprint(product_bp)
 
+    from .reviews import bp as reviews_bp
+    app.register_blueprint(reviews_bp)
+
+
     return app
