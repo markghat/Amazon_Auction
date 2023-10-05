@@ -10,6 +10,15 @@ class ProductReview:
         self.date_posted = date_posted
         self.feedback = feedback
 
+    #gets all reviews
+    @staticmethod
+    def get_all():
+        rows = app.db.execute('''
+                                SELECT id, uid, pid, rating, date_posted, feedback
+                                FROM Reviews
+                                ''')
+        return [ProductReview(*row) for row in rows]
+    
     #gets a review
     @staticmethod
     def get(id):
