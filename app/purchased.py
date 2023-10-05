@@ -21,7 +21,7 @@ def purchased():
     else:
         purchases = None
     # render the page by adding information to the index.html file
-    return render_template('index.html',
+    return render_template('index.html', #change to purchased.html and add humanize
                            avail_products=products,
                            purchase_history=purchases)
 
