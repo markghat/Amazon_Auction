@@ -14,8 +14,8 @@ CREATE TABLE Products (
     name VARCHAR(255) UNIQUE NOT NULL,
     price DECIMAL(12,2) NOT NULL,
     available BOOLEAN DEFAULT TRUE,
-    catergory VARCHAR(255),
-    expiration timestamp without time zone NOT NULL,
+    --catergory VARCHAR(255),
+    --expiration timestamp without time zone NOT NULL,
     --avg_rating
     --image
 
