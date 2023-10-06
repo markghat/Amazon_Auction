@@ -11,18 +11,36 @@
       <th scope="col">Product ID</th>
       <th scope="col">Product Name</th>
       <th scope="col">Price</th>
+      <th scope="col">Actions</th>
     </tr>
   </thead>
   <tbody>
     {% for product in avail_products%}
-      <tr>
-        <th scope="row">{{product.id}}</th>
-        <td>{{product.name}}</td>
-        <td>{{product.price}}</td>
-      </tr>
+    <tr>
+      <th scope="row">{{product.id}}</th>
+      <td>{{product.name}}</td>
+      <td>{{product.price}}</td>
+      <td>
+        <form action="{{ url_for('purchased.purchased_add', product_id=product.id) }}" method="POST">
+          <input type="submit" value="Purchase" />
+        </form>
+      </td>
+
+
+    </tr>
     {% endfor %}
   </tbody>
 </table>
+
+<form action="{{ url_for('products.products_get_most_expensive')}}" method="GET">
+  <input type="number" name="k">
+  <input type="submit" value="Enter the number of most expensive items to display">
+</form>
+
+<form action="{{ url_for('index.sells')}}" method="GET">
+  <input type="number" name="charityId">
+  <input type="submit" value="Enter charity ID">
+</form>
 
 <br><br>
 {% if current_user.is_authenticated %}
@@ -37,11 +55,11 @@
   </thead>
   <tbody>
     {% for purchase in purchase_history%}
-      <tr>
-        <th scope="row">{{purchase.id}}</th>
-        <td>{{purchase.pid}}</td>
-        <td>{{purchase.time_purchased}}</td>
-      </tr>
+    <tr>
+      <td>{{purchase.pid}}</td>
+      <th scope="row">{{avail_products[purchase.pid-1].name}}</th> <!--Temporary name of product-->
+      <td>{{purchase.time_purchased}}</td>
+    </tr>
     {% endfor %}
   </tbody>
 </table>

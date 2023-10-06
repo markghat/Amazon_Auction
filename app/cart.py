@@ -12,7 +12,7 @@ bp = Blueprint('cart', __name__)
 
 
 @bp.route('/cart')
-def index():
+def cart():
     
     # find the products current user has bought:
     if not current_user.is_authenticated:

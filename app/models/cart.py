@@ -7,28 +7,15 @@ class Cart:
         self.quantity = quantity
         self.status = status
 
-#     @staticmethod
-#     def get(cart_item_id):
-#         rows = app.db.execute('''
-# SELECT cart_item_id, user_id, quantity, status
-# FROM Cart
-# WHERE cart_item_id = :cart_item_id
-# ''',
-#                               cart_item_id=cart_item_id)
-#         return Cart(*(rows[0])) if rows else None
-
-#     @staticmethod
-#     def add(user_id, quantity, status):
-#         rows = app.db.execute("""
-# INSERT INTO Cart(user_id, quantity, status)
-# VALUES(:user_id, :quantity, :status)
-# RETURNING cart_item_id
-# """,
-#                               user_id=user_id,
-#                               quantity=quantity,
-#                               status=status)
-#         cart_item_id = rows[0][0]
-#         return Cart.get(cart_item_id)
+    @staticmethod
+    def get(cart_item_id):
+        rows = app.db.execute('''
+SELECT cart_item_id, user_id, quantity, status
+FROM Cart
+WHERE cart_item_id = :cart_item_id
+''',
+                              cart_item_id=cart_item_id)
+        return Cart(*(rows[0])) if rows else None
 
     @staticmethod
     def get_all_by_user_id(user_id):
