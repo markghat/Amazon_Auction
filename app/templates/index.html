@@ -32,6 +32,11 @@
   </tbody>
 </table>
 
+<form action="{{ url_for('products.products_get_most_expensive')}}" method="GET">
+  <input type="number" name="k">
+  <input type="submit" value="Enter the number of most expensive items to display">
+</form>
+
 <br><br>
 {% if current_user.is_authenticated %}
 <h2>Your recent purchases:</h2>
