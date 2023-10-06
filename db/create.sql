@@ -29,7 +29,7 @@ CREATE TABLE Products (
 CREATE TABLE Sells (
     charityId INT NOT NULL REFERENCES Charities(id),
     productId INT NOT NULL REFERENCES Products(id),
-    PRIMARY KEY(charity_id, product_id)
+    PRIMARY KEY(charityId, productId)
 );
 
 CREATE TABLE Purchases (
