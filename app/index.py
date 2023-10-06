@@ -9,13 +9,15 @@ from .models.purchase import Purchase
 from .models.sells import SoldItem
 
 from flask import Blueprint
-bp = Blueprint('index', __name__)
+bp = Blueprint('index', __name__) #changed to purchased
 
 
 @bp.route('/')
 def index():
+    
     # get all available products for sale:
     products = Product.get_all(True)
+
     # find the products current user has bought:
     if current_user.is_authenticated:
         purchases = Purchase.get_all_by_uid_since(
