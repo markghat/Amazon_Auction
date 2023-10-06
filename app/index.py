@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, request
 from flask_login import current_user
 import datetime
 
@@ -37,15 +37,15 @@ def index():
 
 
 
-@bp.route('/sells/<int:charityId>', methods = ['GET', 'POST'])
-def sells(charityId):
-
+@bp.route('/sells/', methods = ['GET'])
+def sells():
+    charityId = request.args.get('charityId', default=5, type=int)
     print("in function")
     
     items = SoldItem.get_charity_items(int(charityId)) # array of 
 
-    print(type(items[0]))
-    print("items is " + str(items[0]))
+    # print(type(items[0]))
+    # print("items is " + str(items[0]))
 
     #items = [row[0] for row in items] # list of strings
 
@@ -54,6 +54,7 @@ def sells(charityId):
 
     # need to convert items to type list
 
-    return render_template('index.html', 
-    avail_products = items)
+    return render_template('seller_products.html', 
+    avail_products = items,
+    mynum= charityId)
 

@@ -9,10 +9,10 @@ from .models.purchase import Purchase
 from flask import Blueprint
 bp = Blueprint('purchased', __name__) #changed to purchased
 
-from humanize import naturaltime
+# from humanize import naturaltime
 
-def humanize_time(dt):
-    return naturaltime(datetime.datetime.now() - dt)
+# def humanize_time(dt):
+#     return naturaltime(datetime.datetime.now() - dt)
 
 
 @bp.route('/purchased')
