@@ -27,14 +27,3 @@ ORDER BY cart_item_id DESC
 ''',
                               user_id=user_id)
         return [Cart(*row) for row in rows]
-
-    @staticmethod
-    def get_all_by_status(status):
-        rows = app.db.execute('''
-SELECT cart_item_id, user_id, quantity, status
-FROM Cart
-WHERE status = :status
-ORDER BY cart_item_id DESC
-''',
-                              status=status)
-        return [Cart(*row) for row in rows]
