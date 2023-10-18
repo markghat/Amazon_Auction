@@ -77,7 +77,11 @@ def register():
             return redirect(url_for('users.login'))
     return render_template('register.html', title='Register', form=form)
 
-
+@bp.route('/account', methods=['GET', 'POST'])
+def account():
+    if current_user.is_authenticated:
+        #return redirect(url_for('users.users')) 
+        return render_template('account.html')
 @bp.route('/logout')
 def logout():
     logout_user()
