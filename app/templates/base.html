@@ -48,20 +48,22 @@
 <body>
   <div class="sidenav">
     {% block msg %}
-    <h1 style="color:aliceblue">Buddies' Charity Auctions</h1>
+    <a href="{{ url_for('index.index') }}"
+      style="text-decoration: none; text-align: center; color: aliceblue; display: block; background-color: #007bff; padding: 10px 40px; border-radius: 5px;">Buddies'
+      Charity Auctions</a>
+
     <div style="color: aliceblue; text-align: right; margin-bottom: 25px">
-      <form action="{{ url_for('index.index')}}" method="GET">
-        <input type="submit" value="HOME">
-      </form>
       {% if current_user.is_authenticated %}
       Hello {{current_user.firstname}}! <a href="{{ url_for('users.logout') }}" type="button" class="btn btn-light">Log
         out</a>
-      <form action="{{ url_for('cart.cart')}}" method="GET">
-        <input type="submit" value="VIEW CART">
-      </form>
-      <form action="{{ url_for('reviews.index')}}" method="GET">
-        <input type="submit" value="VIEW Reviews">
-      </form>
+      <div style="text-align: left;">
+        <form action="{{ url_for('cart.cart')}}" method="GET">
+          <input type="submit" value="VIEW CART">
+        </form>
+        <form action="{{ url_for('reviews.index')}}" method="GET">
+          <input type="submit" value="VIEW Reviews">
+        </form>
+      </div>
       {% else %}
       <a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a>
       {% endif %}
