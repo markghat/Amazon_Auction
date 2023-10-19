@@ -4,10 +4,32 @@
 
 
 {% if current_user.is_authenticated %}
-<h2>Hello {{current_user.firstname}}!</h2>
+<h2>User ID: {{current_user.id}} </h2>
+<h2>Account Name: {{current_user.firstname}} {{current_user.lastname}}</h2>
+<h2>Email: {{current_user.email}}</h2>
+
+<h2>Password: {{current_user.password}}</h2>
+<h2>Balance: {{current_user.balance}}</h2>
+
+<form action="{{ url_for('users.deposit', id=id) }}" method="PUT">
+    <!--update this button, PUT?, do I need a python function?-->
+    <input type="submit" value="Deposit">
+    <input type="number" name="balance" placeholder="Enter new balance">
+</form>
+<form action="{{ url_for('index.sells')}}" method="GET"> <!---update this button, PUT?, do I need a python function?-->
+    <input type="submit" value="Withdraw">
+    <input type="number" name="balance" placeholder="Enter new balance">
+</form>
+<a href="{{ url_for('index.index') }}" type="button" class="btn btn-light">Account Settings</a>
+
+
 {% else %}
 <p><a href="{{ url_for('users.login') }}">Log in</a> to see your account information!</p>
 
 {% endif %}
 
 {% endblock %}
+
+<!-- <form action="{{ url_for('user.purchased_add', product_id=product.id) }}" method="POST">
+    <input type="submit" value="Update" />
+</form> -->

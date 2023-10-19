@@ -6,20 +6,25 @@ from .. import login
 
 
 class User(UserMixin):
-    def __init__(self, id, email, firstname, lastname):
+    def __init__(self, id, email, firstname, lastname, balance):
         self.id = id
         self.email = email
         self.firstname = firstname
         self.lastname = lastname
+        self.balance = balance
+        
 
     @staticmethod
     def get_by_auth(email, password):
+        print(email)
+        print(password)
         rows = app.db.execute("""
-SELECT password, id, email, firstname, lastname
+SELECT password, id, email, firstname, lastname, balance
 FROM Users
 WHERE email = :email
 """,
                               email=email)
+        print(rows)
         if not rows:  # email not found
             return None
         elif not check_password_hash(rows[0][0], password):
@@ -42,8 +47,8 @@ WHERE email = :email
     def register(email, password, firstname, lastname):
         try:
             rows = app.db.execute("""
-INSERT INTO Users(email, password, firstname, lastname)
-VALUES(:email, :password, :firstname, :lastname)
+INSERT INTO Users(email, password, firstname, lastname, balance)
+VALUES(:email, :password, :firstname, :lastname, 0)
 RETURNING id
 """,
                                   email=email,
@@ -61,7 +66,7 @@ RETURNING id
     @login.user_loader
     def get(id):
         rows = app.db.execute("""
-SELECT id, email, firstname, lastname
+SELECT id, email, firstname, lastname, balance
 FROM Users
 WHERE id = :id
 """,

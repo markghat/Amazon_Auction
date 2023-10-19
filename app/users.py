@@ -79,9 +79,18 @@ def register():
 
 @bp.route('/account', methods=['GET', 'POST'])
 def account():
-    if current_user.is_authenticated:
-        #return redirect(url_for('users.users')) 
+    if current_user.is_authenticated: 
         return render_template('account.html')
+    
+@bp.route('/account', methods=['GET', 'PUT'])    #DEPOSIT METHOD
+def deposit(amount):
+    User.balance+=amount
+    return redirect(url_for('users.account'))
+
+@bp.route('/account', methods=['GET', 'POST'])    
+def withdraw(amount):
+    User.balance-=amount
+    return redirect(url_for('users.account'))
 @bp.route('/logout')
 def logout():
     logout_user()
