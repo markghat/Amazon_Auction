@@ -18,8 +18,9 @@ class LoginForm(FlaskForm):
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
 class BalanceForm(FlaskForm):
-    amount = IntegerField('Deposit Amount', validators=[DataRequired()])
-    submit = SubmitField('Submit')
+    amount = IntegerField('Amount', validators=[DataRequired()])
+    deposit = SubmitField('Deposit')
+    withdraw = SubmitField('Withdraw')
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -91,9 +92,11 @@ def updateBalance():
     form =BalanceForm()
     if form.validate_on_submit:
         amount = form.amount.data
-        if amount:
-            new_balance = User.get_balance(id) + amount
-            print(new_balance)
+        if amount: 
+            if form.deposit.data:
+                new_balance = User.get_balance(id) + amount
+            elif form.withdraw.data:
+                new_balance = User.get_balance(id) - amount
             User.update_balance(id, new_balance)  
             return redirect(url_for('users.updateBalance'))  #refreshes page 
     else:
