@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% from 'bootstrap5/form.html' import render_form %}
 {% block content %}
 
 
@@ -11,15 +11,9 @@
 <h2>Password: {{current_user.password}}</h2>
 <h2>Balance: {{current_user.balance}}</h2>
 
-<form action="{{ url_for('users.deposit', id=id) }}" method="PUT">
-    <!--update this button, PUT?, do I need a python function?-->
-    <input type="submit" value="Deposit">
-    <input type="number" name="balance" placeholder="Enter new balance">
-</form>
-<form action="{{ url_for('index.sells')}}" method="GET"> <!---update this button, PUT?, do I need a python function?-->
-    <input type="submit" value="Withdraw">
-    <input type="number" name="balance" placeholder="Enter new balance">
-</form>
+
+{{ render_form(form) }}
+
 <a href="{{ url_for('index.index') }}" type="button" class="btn btn-light">Account Settings</a>
 
 
