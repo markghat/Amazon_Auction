@@ -80,6 +80,18 @@ def register():
             return redirect(url_for('users.login'))
     return render_template('register.html', title='Register', form=form)
 
+@bp.route('/Update', methods=['GET', 'POST'])
+def update():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        if User.register(form.email.data,
+                         form.password.data,
+                         form.firstname.data,
+                         form.lastname.data):
+            flash('Congratulations, you are now a registered user!')
+            return redirect(url_for('users.login'))
+    return render_template('update.html', title='Register', form=form)
+
 # @bp.route('/account', methods=['GET', 'POST'])
 # def account():
 #     form = BalanceForm()
@@ -96,7 +108,7 @@ def updateBalance():
             if form.deposit.data:
                 new_balance = User.get_balance(id) + amount
             elif form.withdraw.data:
-                new_balance = User.get_balance(id) - amount
+                new_balance = max(User.get_balance(id) - amount,0)
             User.update_balance(id, new_balance)  
             return redirect(url_for('users.updateBalance'))  #refreshes page 
     else:
