@@ -64,6 +64,19 @@ class RegistrationForm(FlaskForm):
     def validate_email(self, email):
         if User.email_exists(email.data):
             raise ValidationError('Already a user with this email.')
+class UpdateForm(FlaskForm):
+    firstname = StringField('First Name', validators=[DataRequired()])
+    lastname = StringField('Last Name', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    password2 = PasswordField(
+        'Repeat Password', validators=[DataRequired(),
+                                       EqualTo('password')])
+    submit = SubmitField('Update')
+
+    def validate_email(self, email):
+        if User.email_exists(email.data):
+            raise ValidationError('Already a user with this email.')
 
 
 @bp.route('/register', methods=['GET', 'POST'])
@@ -82,7 +95,7 @@ def register():
 
 @bp.route('/Update', methods=['GET', 'POST'])
 def update():
-    form = RegistrationForm()
+    form = UpdateForm()
     if form.validate_on_submit():
         if User.update(current_user.id,
                          form.email.data,
@@ -91,8 +104,8 @@ def update():
                          form.lastname.data,
                          current_user.balance):
             flash('Congratulations, you have updated your information!')
-            return redirect(url_for('users.account'))
-    return render_template('account.html', form=form)
+        return redirect(url_for('users.updateBalance'))
+    return render_template('account.html', title = 'Update', form=form)
 
 # @bp.route('/account', methods=['GET', 'POST'])
 # def account():
