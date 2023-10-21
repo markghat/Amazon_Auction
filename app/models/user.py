@@ -62,16 +62,16 @@ RETURNING id
             print(str(e))
             return None
     @staticmethod
-    def update(id, email, password, firstname, lastname):
+    def update(id, email, password, firstname, lastname, balance):
             rows = app.db.execute("""
 UPDATE Users 
-SET email = :email, password = :password, firstname = :firstname, lastname = :lastname
+SET email = :email, password = :password, firstname = :firstname, lastname = :lastname, balance = :balance
 WHERE id = :id      
 """,
                                   id=id,
                                   email=email,
                                   password=generate_password_hash(password),
-                                  firstname=firstname, lastname=lastname)
+                                  firstname=firstname, lastname=lastname, balance = balance)
             return None
 
     @staticmethod
