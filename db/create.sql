@@ -14,11 +14,12 @@ CREATE TABLE Products (
     name VARCHAR(255) UNIQUE NOT NULL,
     price DECIMAL(12,2) NOT NULL,
     available BOOLEAN DEFAULT TRUE,
-    --catergory VARCHAR(255),
-    --expiration timestamp without time zone NOT NULL,
+    catergory VARCHAR(255),
+    expiration timestamp without time zone NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC'),
+    ImageID INT,
+    ImageData VARBINARY(MAX)
     --avg_rating
     --image
-
 );
 
 CREATE TABLE Purchases ( 
