@@ -84,13 +84,14 @@ def register():
 def update():
     form = RegistrationForm()
     if form.validate_on_submit():
-        if User.register(form.email.data,
+        if User.update(current_user.id,
+                         form.email.data,
                          form.password.data,
                          form.firstname.data,
                          form.lastname.data):
-            flash('Congratulations, you are now a registered user!')
-            return redirect(url_for('users.login'))
-    return render_template('update.html', title='Register', form=form)
+            flash('Congratulations, you have updated your information!')
+            return redirect(url_for('users.account'))
+    return render_template('account.html', form=form)
 
 # @bp.route('/account', methods=['GET', 'POST'])
 # def account():

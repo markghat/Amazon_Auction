@@ -61,6 +61,18 @@ RETURNING id
             # the following simply prints the error to the console:
             print(str(e))
             return None
+    @staticmethod
+    def update(id, email, password, firstname, lastname):
+            rows = app.db.execute("""
+UPDATE Users 
+SET email = :email, password = :password, firstname = :firstname, lastname = :lastname
+WHERE id = :id      
+""",
+                                  id=id,
+                                  email=email,
+                                  password=generate_password_hash(password),
+                                  firstname=firstname, lastname=lastname)
+            return None
 
     @staticmethod
     @login.user_loader
