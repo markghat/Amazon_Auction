@@ -1,7 +1,7 @@
 from werkzeug.security import generate_password_hash
 import csv
 from faker import Faker
-import scrapeproducts
+#import scrapeproducts
 
 num_users = 100
 num_products = 2000

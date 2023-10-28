@@ -2,6 +2,7 @@ import json
 from bs4 import BeautifulSoup
 import requests
 import json
+import csv
 
 
 def get_product_name(soup):
@@ -15,15 +16,20 @@ def get_product_name(soup):
 		# Title as a string value
         title_string = title_value.strip()
 
+
+		# Title as a string value
+        t=title_string.split()[:3]
+        t = ' '.join(t)
+
 		# # Printing types of values for efficient understanding
 		# print(type(title))
 		# print(type(title_value))
 		# print(type(title_string))
 		# print()
     except AttributeError:
-        title_string = ""	
+        t = ""	
     
-    return title_string
+    return t
 
 def get_image(soup):
     img_div = soup.find(id="imgTagWrapperId")
@@ -44,10 +50,10 @@ def get_price(soup):
 
 	try:
 		#price = soup.find("span", attrs={'class':'a-price-whole'}).string.strip()
-		price=soup.find("span",{"class":"a-price"}).find("span").text
+		price=soup.find("span",{"class":"a-price"}).find("span").text[1:]
 
 	except AttributeError:
-		price = "woahhh"	
+		price = ""	
 
 	return price
 
@@ -97,20 +103,10 @@ def get_catergory(soup):
 
 	return catergory
 
-
-
-
+def scrape(num):
+	results = []
 
 # if __name__ == '__main__':
-# 	HEADERS = ({'User-Agent':
-#             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36',
-#             'Accept-Language': 'en-US, en;q=0.5'})
-# 	URL = "https://www.amazon.com/Sony-PlayStation-Pro-1TB-Console-4/dp/B07K14XKZH/"
-# 	webpage = requests.get(URL, headers=HEADERS)
-# 	soup = BeautifulSoup(webpage.content, "lxml")
-# 	print("Product Title =", get_product_name(soup))
-
-if __name__ == '__main__':
 
 	# Headers for request
 	HEADERS = ({'User-Agent':
@@ -133,26 +129,50 @@ if __name__ == '__main__':
 	# Store the links
 	links_list = []
 
+	count = num
 	# Loop for extracting links from Tag Objects
 	for link in links:
 		links_list.append(link.get('href'))
+		if count == 0:
+			break
+		count -= 1
 		#print(link.get('href'))
+	
+	csv_file = 'scraped_data.csv'
 
-
-	# Loop for extracting product details from each link 
-	for link in links_list:
-
-		new_webpage = requests.get("https://www.amazon.com" + link, headers=HEADERS)
-
-		new_soup = BeautifulSoup(new_webpage.content, "lxml")
+	with open(csv_file, 'w', newline='') as file:
+		writer = csv.writer(file)
+		# Loop for extracting product details from each link 
 		
+		for link in links_list:
+
+			new_webpage = requests.get("https://www.amazon.com" + link, headers=HEADERS)
+
+			new_soup = BeautifulSoup(new_webpage.content, "lxml")
+
+			productname = get_product_name(new_soup)
+			price = get_price(new_soup)
+			avg_rating = get_rating(new_soup)
+			image = get_image(new_soup)
+			res = [productname, price, avg_rating, image]
+			results.append(res)
+			writer.writerow(res)
+
+	return results
+
+scrape(10)
+print('hi')
+
+		#writer.writerow([productname, price])
+			
 		# Function calls to display all necessary product information
-		print(link)
-		print("Product Title =", get_product_name(new_soup))
-		print("Product Price =", get_price(new_soup))
-		print("Product Rating =", get_rating(new_soup))
-		print("Number of Product Reviews =", get_review_count(new_soup))
-		print("Availability =", get_availability(new_soup))
-		print("Image = ", get_image(new_soup))
-		print()
-		print()
+		# print(link)
+		# print("Product Title =", get_product_name(new_soup))
+		# print("Product Price =", get_price(new_soup))
+		# print("Product Rating =", get_rating(new_soup))
+		# print("Number of Product Reviews =", get_review_count(new_soup))
+		# print("Availability =", get_availability(new_soup))
+		# print("Image = ", get_image(new_soup))
+		# print()
+		# print()
+			
