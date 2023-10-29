@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, request
 from flask_login import current_user
 import datetime
 
@@ -14,6 +14,8 @@ def index():
     
     # get all available products for sale:
     products = Product.get_all(True)
+    page = int(request.args.get('page', default=1))
+    
 
     # find the products current user has bought:
     if current_user.is_authenticated:
@@ -24,4 +26,5 @@ def index():
     # render the page by adding information to the index.html file
     return render_template('index.html',
                            avail_products=products,
-                           purchase_history=purchases)
+                           purchase_history=purchases,
+                           page=page)

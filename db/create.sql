@@ -16,8 +16,8 @@ CREATE TABLE Products (
     available BOOLEAN DEFAULT TRUE,
     catergory VARCHAR(255),
     expiration timestamp without time zone NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC'),
-    image VARCHAR(255) NOT NULL
-    --avg_rating
+    image VARCHAR NOT NULL,
+    rating DECIMAL(12,2) NOT NULL
 );
 
 CREATE TABLE Purchases ( 
