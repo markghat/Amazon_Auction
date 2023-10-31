@@ -8,23 +8,25 @@
 <h2> {{ mynum }} Most expensive products for sale:</h2>
 
 
-<table class='table table-hover table-bordered container'>
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">Product ID</th>
-      <th scope="col">Product Name</th>
-      <th scope="col">Price</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for product in avail_products%}
-      <tr>
-        <th scope="row">{{product.id}}</th>
-        <td>{{product.name}}</td>
-        <td>{{product.price}}</td>
-      </tr>
+<div class="container">
+  <div class="row">
+    {% for i in range(0, mynum) %}
+      {% set product = avail_products[i] %}
+      <div class="col-md-4">
+        <div class="card mb-4 shadow-sm">
+          <img class="card-img-top" src="{{ product.image }}" alt="{{ product.name }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="card-text">Product ID: {{ product.id }}</p>
+            <p class="card-text">Price: {{ product.price }}</p>
+            <form action="{{ url_for('purchased.purchased_add', product_id=product.id) }}" method="POST">
+              <input type="submit" class="btn btn-primary" value="Purchase" />
+            </form>
+          </div>
+        </div>
+      </div>
     {% endfor %}
-  </tbody>
-</table>
+  </div>
+</div>
 
 {% endblock %}

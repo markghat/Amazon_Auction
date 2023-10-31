@@ -25,3 +25,19 @@ def products_get_most_expensive():
                            avail_products=items,
                            mynum=k)
 
+@bp.route('/sort/', methods=['GET'])
+def products_filter():
+    page = int(request.args.get('page', default=1))
+    attribute = request.args.get('attribute', default='Most Expensive', type=str)
+    if attribute == "Most Expensive":
+        items = Product.get_most_expensive()
+    elif attribute == "Least Expensive":
+        items = Product.get_least_expensive()
+    elif attribute == "Highest rating":
+        items = Product.get_highest_rating()
+    else:
+        items = Product.get_expiration()
+    return render_template('index.html',
+                           avail_products=items,
+                           page = page)
+
