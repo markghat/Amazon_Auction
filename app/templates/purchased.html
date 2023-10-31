@@ -20,7 +20,7 @@
         <tr>
 
             <td>{{purchase.pid}}</td>
-            <th scope="row">{{avail_products[purchase.pid-1].name}}</th> <!--Temporary name of product-->
+            <th scope="row">{{purchase.name}}</th><!--prints name of product with id +1, caps at 7 items-->
             <td>{{humanize_time(purchase.time_purchased)}}</td>
         </tr>
         {% endfor %}
