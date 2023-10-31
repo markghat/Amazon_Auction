@@ -8,6 +8,9 @@ from .models.purchase import Purchase
 
 from .models.sells import SoldItem
 
+from .models.user import User
+
+
 from flask import Blueprint
 bp = Blueprint('index', __name__) #changed to purchased
 
@@ -57,4 +60,40 @@ def sells():
     return render_template('seller_products.html', 
     avail_products = items,
     mynum= charityId)
+
+@bp.route('/sells/inventory', methods = ['GET'])
+def seller_inventory():
+    #charityId = request.args.get('charityId', default=5, type=int)
+    #print("in function")
+    
+    #items = SoldItem.get_charity_items(int(charityId))
+
+    if current_user.is_authenticated and User.isCharity(current_user.id):
+        # WishlistItem.add(current_user.id, product_id, datetime.datetime.now())
+        # return redirect(url_for('wishlist.wishlist'))
+
+        charityId = User.getCharityId(currrent_user.id) # TO DO: Need to make sure that this can be cast as an int
+
+        
+        items = SoldItem.get_charity_items(int(charityId))
+
+        return render_template('seller_inventory.html', 
+        avail_products = items,
+        mynum= charityId)
+    else:
+        return redirect(url_for('index.sells'))
+
+
+    # return render_template('seller_inventory.html', 
+    # avail_products = items,
+    # mynum= charityId)
+
+
+@bp.route('/sells/inventory/remove/<int:product_id>', methods=['POST'])
+def sells_remove(product_id):
+    #Purchase.add_purchase(current_user.id, product_id, datetime.datetime.now()) #how to get the current time
+    SoldItem.remove_charity_item(product_id)
+    return redirect(url_for('index.sells'))
+
+
 

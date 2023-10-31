@@ -67,3 +67,45 @@ WHERE id = :id
 """,
                               id=id)
         return User(*(rows[0])) if rows else None
+
+
+
+    @staticmethod
+    def isCharity(uid):
+        try:
+            rows = app.db.execute("""
+SELECT id
+FROM Charities
+WHERE id = :uid
+""",
+                                  uid=uid)
+
+        #return User(*(rows[0])) if rows else None
+            return True if rows else None
+        except Exception as e:
+            # likely email already in use; better error checking and reporting needed;
+            # the following simply prints the error to the console:
+            print(str(e))
+            return None
+
+    @staticmethod
+    def getCharityId(uid):
+        try:
+            rows = app.db.execute("""
+SELECT orgId
+FROM Charities
+WHERE id = :uid
+""",
+                                  uid=uid).fetchone()
+
+            return User(*(rows[0])) if rows else None
+        except Exception as e:
+            # likely email already in use; better error checking and reporting needed;
+            # the following simply prints the error to the console:
+            print(str(e))
+            return None
+
+
+
+
+

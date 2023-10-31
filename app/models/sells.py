@@ -26,23 +26,24 @@ SELECT P.id, P.name, P.price, P.available FROM Sells AS S JOIN Products AS P ON 
 
         return [Product(*row) for row in rows]
 
-"""
-SELECT DISTINCT Products.name
-FROM Sells, Products
-WHERE Sells.charityId = :charityId AND Sells.charityid = Products.id
-"""
 
-"""
     @staticmethod
-    def get_all_by_uid_since(uid, since):
-        rows = app.db.execute('''
-SELECT id, uid, pid, time_added
-FROM Wishes
-WHERE uid = :uid
-AND time_added >= :since
-ORDER BY time_added DESC
-''',
-                              uid=uid,
-                              since=since)
-        return [WishlistItem(*row) for row in rows]
-"""
+    def remove_charity_item(pid):
+        try:
+
+            app.db.execute("""
+DELETE FROM Products WHERE id = :pid;
+            """,
+                                    pid = pid)
+
+            app.db.execute("""
+DELETE FROM Sells WHERE id = :pid;
+            """,
+                                    pid = pid)
+            #id = rows[0][0]
+            #return Purchase.get(id)
+        except Exception as e:
+            # likely email already in use; better error checking and reporting needed;
+            # the following simply prints the error to the console:
+            print(str(e))
+            return None
