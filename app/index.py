@@ -20,6 +20,8 @@ def index():
     
     # get all available products for sale:
     products = Product.get_all(True)
+    page = int(request.args.get('page', default=1))
+    
 
     # find the products current user has bought:
     if current_user.is_authenticated:
@@ -37,9 +39,8 @@ def index():
     return render_template('index.html', #change to purchased.html and add humanize
                            avail_products=products,
                            purchase_history=purchases,
-                           humanize_time=humanize_time
-                            )
-
+                           humanize_time=humanize_time,
+                           page=page)
 
 
 @bp.route('/sells/', methods = ['GET'])
