@@ -33,7 +33,7 @@ def index():
 
     #print("At homepage, this is the type of the products" + str(type(products)))
     #print("At homepage, this is the type of the purchases" + str(type(purchases)))
-    print("At homepage, this is the type of a purchase item" + str(type(products[0])))
+    #print("At homepage, this is the type of a purchase item" + str(type(products[0])))
 
 
     return render_template('index.html', #change to purchased.html and add humanize
