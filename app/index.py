@@ -10,7 +10,10 @@ from .models.sells import SoldItem
 
 from flask import Blueprint
 bp = Blueprint('index', __name__) #changed to purchased
+from humanize import naturaltime
 
+def humanize_time(dt):
+    return naturaltime(datetime.datetime.now() - dt)
 
 @bp.route('/')
 def index():
@@ -29,9 +32,10 @@ def index():
     # render the page by adding information to the index.html file
 
 
-    return render_template('index.html',
+    return render_template('index.html', #change to purchased.html and add humanize
                            avail_products=products,
                            purchase_history=purchases,
+                           humanize_time=humanize_time,
                            page=page)
 
 
