@@ -5,25 +5,13 @@ SELECT pg_catalog.setval('public.users_id_seq',
                          (SELECT MAX(id)+1 FROM Users),
                          false);
 
-\COPY Charities FROM 'Charities.csv' WITH DELIMITER ',' NULL '' CSV
-SELECT pg_catalog.setval('public.Charities_id_seq',
-                         (SELECT MAX(id)+1 FROM Charities),
-                         false);
-
 \COPY Products FROM 'Products.csv' WITH DELIMITER ',' NULL '' CSV
 SELECT pg_catalog.setval('public.products_id_seq',
                          (SELECT MAX(id)+1 FROM Products),
                          false);
 
-\COPY Sells FROM 'Sells.csv' WITH DELIMITER ',' NULL '' CSV;
-
 \COPY Purchases FROM 'Purchases.csv' WITH DELIMITER ',' NULL '' CSV
 SELECT pg_catalog.setval('public.purchases_id_seq',
-                         (SELECT MAX(id)+1 FROM Purchases),
-                         false);
-
-\COPY Cart FROM 'Cart.csv' WITH DELIMITER ',' NULL '' CSV
-SELECT pg_catalog.setval('public.cart_id_seq',
                          (SELECT MAX(id)+1 FROM Purchases),
                          false);
 

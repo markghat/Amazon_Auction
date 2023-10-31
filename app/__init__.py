@@ -30,9 +30,6 @@ def create_app():
     app.register_blueprint(reviews_bp)
 
 
-    from .cart import bp as cart_bp
-    app.register_blueprint(cart_bp)
-
     return app
 #copy and paste index.py and change
 #copy and paste index.html and change 

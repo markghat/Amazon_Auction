@@ -21,24 +21,14 @@ class LoginForm(FlaskForm):
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
-    print("login called")
     if current_user.is_authenticated:
         return redirect(url_for('index.index'))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.get_by_auth(form.email.data, form.password.data)
         if user is None:
-
-            # new code
-            #user_from_Users = user
-            ##user = Charities.get_by_auth(form.email.data, form.password.data)
-            #if user is None:
-               # flash('Invalid email or password')
-               # return redirect(url_for('users.login'))
-                
-            # end of new code
-            flash('Invalid email or password') # I COMMENTED THIS OUT 
-            return redirect(url_for('users.login')) # I COMMENTED THIS OUT
+            flash('Invalid email or password')
+            return redirect(url_for('users.login'))
         login_user(user)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':

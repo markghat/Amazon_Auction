@@ -11,33 +11,11 @@ from .models.product import Product
 from flask import Blueprint
 bp = Blueprint('products', __name__)
 
-# class getcount(FlaskForm):
-#     user_id = IntegerField('k', validators=[InputRequired('Please enter a number!')])
-#     submit = SubmitField('Insert number of most expensive items')
 
-
-
-@bp.route('/product/expensive/', methods=['GET'])
-def products_get_most_expensive():
-    k = request.args.get('k', default=5, type=int)
+@bp.route('/product/expensive/<int:k>', methods=['GET'])
+def products_get_most_expensive(k):
     items = Product.get_most_expensive(k)
     return render_template('product_expensive.html',
                            avail_products=items,
                            mynum=k)
-
-@bp.route('/sort/', methods=['GET'])
-def products_filter():
-    page = int(request.args.get('page', default=1))
-    attribute = request.args.get('attribute', default='Most Expensive', type=str)
-    if attribute == "Most Expensive":
-        items = Product.get_most_expensive()
-    elif attribute == "Least Expensive":
-        items = Product.get_least_expensive()
-    elif attribute == "Highest rating":
-        items = Product.get_highest_rating()
-    else:
-        items = Product.get_expiration()
-    return render_template('index.html',
-                           avail_products=items,
-                           page = page)
 
