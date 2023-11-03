@@ -2,6 +2,7 @@
 
 {% block content %}
 
+{% if current_user.is_authenticated %}
 <h1>Update</h1>
 
 <form action="" method="post">
@@ -43,5 +44,7 @@
     </p>
     <p>{{form.submit() }}</p> <!--Change to "save changes" instead of "register"-->
 </form>
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to proceed!</p>
 
 {% endblock %}

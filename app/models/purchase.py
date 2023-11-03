@@ -19,7 +19,7 @@ WHERE id = :id
         return Purchase(*(rows[0])) if rows else None
 
     @staticmethod
-    def get_all_by_uid_since(uid, since): #!!! ADDED THE JOIN STATEMENT HERE
+    def get_all_by_uid_since(uid, since): 
         rows = app.db.execute('''
 SELECT Purchases.id, uid, pid, time_purchased, Products.name
 FROM Purchases, Products
@@ -32,7 +32,7 @@ ORDER BY time_purchased DESC
         return [Purchase(*row) for row in rows]
     
     @staticmethod
-    def add_purchase(uid, pid, time_purchased):
+    def add_purchase(uid, pid, time_purchased): #!!!subtract balance by cost of prduct (come back)
         try:
             rows = app.db.execute("""
 INSERT INTO PURCHASES(uid, pid, time_purchased)
@@ -42,7 +42,7 @@ RETURNING id
                                   uid=uid,
                                   pid=pid,
                                   time_purchased=time_purchased)
-            id = rows[0][0]
+            current_user.updateBalance(uid, Product.getPrice(pid))
             return Purchase.get(id)
         except Exception as e:
             # likely email already in use; better error checking and reporting needed;
