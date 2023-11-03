@@ -31,10 +31,6 @@ def index():
         purchases = None
     # render the page by adding information to the index.html file
 
-    #print("At homepage, this is the type of the products" + str(type(products)))
-    #print("At homepage, this is the type of the purchases" + str(type(purchases)))
-    #print("At homepage, this is the type of a purchase item" + str(type(products[0])))
-
 
     return render_template('index.html', #change to purchased.html and add humanize
                            avail_products=products,
