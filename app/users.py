@@ -78,7 +78,7 @@ class UpdateForm(FlaskForm):
         if User.email_exists(email.data):
             raise ValidationError('Already a user with this email.')
 
-
+#comment
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
