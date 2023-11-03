@@ -42,7 +42,10 @@ RETURNING id
                                   uid=uid,
                                   pid=pid,
                                   time_purchased=time_purchased)
-            current_user.updateBalance(uid, Product.getPrice(pid))
+            rows = app.db.execute("""UPDATE Users
+SET balance = :amount
+WHERE id = :id""",
+                id=id, amount=amount)
             return Purchase.get(id)
         except Exception as e:
             # likely email already in use; better error checking and reporting needed;
