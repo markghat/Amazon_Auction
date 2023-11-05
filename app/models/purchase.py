@@ -1,6 +1,7 @@
 from flask import current_app as app
 from flask_login import current_user
 
+
 class Purchase:
     def __init__(self, id, uid, pid, time_purchased, name): #!!!Added Name
         self.name = name #!!!Added
@@ -42,10 +43,6 @@ RETURNING id
                                   uid=uid,
                                   pid=pid,
                                   time_purchased=time_purchased)
-            rows = app.db.execute("""UPDATE Users
-SET balance = :amount
-WHERE id = :id""",
-                id=id, amount=amount)
             return Purchase.get(id)
         except Exception as e:
             # likely email already in use; better error checking and reporting needed;
