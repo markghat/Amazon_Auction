@@ -22,6 +22,7 @@
         <tr>
             <th scope="col">Purchase ID</th>
             <th scope="col">Product Name</th>
+            <th scope="col">Price</th>
             <th scope="col">Date of Purchase</th>
         </tr>
     </thead>
@@ -30,7 +31,8 @@
         <tr>
 
             <td>{{purchase.pid}}</td>
-            <th scope="row">{{purchase.name}}</th><!--prints name of product with id +1, caps at 7 items-->
+            <th scope="row">{{purchase.name}}</th>
+            <th scope="row">{{purchase.price}}</th><!--prints name of product with id +1, caps at 7 items-->
             <td>{{humanize_time(purchase.time_purchased)}}</td>
         </tr>
         {% endfor %}
