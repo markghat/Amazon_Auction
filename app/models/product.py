@@ -34,6 +34,15 @@ WHERE available = :available
                               available=available)
         return [Product(*row) for row in rows]
 
+    @staticmethod
+    def get_seller(id):
+        row = app.db.execute('''
+        SELECT charityId
+        FROM Sells
+        WHERE productId = :id
+    ''', id=id).fetchone()
+        return Product(*(row)) if row is not None else None
+
     def get_most_expensive():
         rows = app.db.execute('''
 SELECT * FROM Products
