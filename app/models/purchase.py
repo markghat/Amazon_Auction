@@ -3,8 +3,9 @@ from flask_login import current_user
 
 
 class Purchase:
-    def __init__(self, id, uid, pid, time_purchased, name): #!!!Added Name
+    def __init__(self, id, uid, pid, time_purchased, name, price): #!!!Added Name
         self.name = name #!!!Added
+        self.price = price #!!!Added
         self.uid = uid
         self.pid = pid
         self.time_purchased = time_purchased
@@ -22,7 +23,7 @@ WHERE id = :id
     @staticmethod
     def get_all_by_uid_since(uid, since): 
         rows = app.db.execute('''
-SELECT Purchases.id, uid, pid, time_purchased, Products.name
+SELECT Purchases.id, uid, pid, time_purchased, Products.name, Products.price
 FROM Purchases, Products
 WHERE uid = :uid and Purchases.pid = Products.id
 AND time_purchased >= :since

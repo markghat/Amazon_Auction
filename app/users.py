@@ -7,8 +7,13 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Integ
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 
 from .models.user import User
+from .models.product import Product
+from .models.purchase import Purchase
 
-
+from humanize import naturaltime
+import datetime
+def humanize_time(dt):
+    return naturaltime(datetime.datetime.now() - dt)
 from flask import Blueprint
 bp = Blueprint('users', __name__)
 
@@ -105,7 +110,16 @@ def update():
                          current_user.balance):
             flash('Congratulations, you have updated your information!')
         return redirect(url_for('users.updateBalance'))
-    return render_template('account.html', title = 'Update', form=form)
+    products = Product.get_all(True)
+    # find the products current user has bought:
+    if current_user.is_authenticated:
+        purchases = Purchase.get_all_by_uid_since(
+            current_user.id, datetime.datetime(1980, 9, 14, 0, 0, 0))
+    else:
+        purchases = None
+    return render_template('account.html', title = 'Update', form=form, avail_products=products,
+                           purchase_history=purchases,
+                           humanize_time=humanize_time)
 
 # @bp.route('/account', methods=['GET', 'POST'])
 # def account():
@@ -130,7 +144,16 @@ def updateBalance():
             return redirect(url_for('users.updateBalance'))  #refreshes page 
     else:
         print("no balance entered")
-    return render_template('account.html', form=form)
+    products = Product.get_all(True)
+    # find the products current user has bought:
+    if current_user.is_authenticated:
+        purchases = Purchase.get_all_by_uid_since(
+            current_user.id, datetime.datetime(1980, 9, 14, 0, 0, 0))
+    else:
+        purchases = None
+    return render_template('account.html', form=form, avail_products=products,
+                           purchase_history=purchases,
+                           humanize_time=humanize_time)
 
 @bp.route('/logout')
 def logout():

@@ -16,6 +16,26 @@
 
 <a href="{{ url_for('users.update') }}" type="button" class="btn btn-light">Account Settings</a>
 
+<h2>Recent Purchases:</h2>
+<table class='table table-hover table-bordered container'>
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Purchase ID</th>
+            <th scope="col">Product Name</th>
+            <th scope="col">Date of Purchase</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for purchase in purchase_history%}
+        <tr>
+
+            <td>{{purchase.pid}}</td>
+            <th scope="row">{{purchase.name}}</th><!--prints name of product with id +1, caps at 7 items-->
+            <td>{{humanize_time(purchase.time_purchased)}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 {% else %}
 <p><a href="{{ url_for('users.login') }}">Log in</a> to proceed!</p>
