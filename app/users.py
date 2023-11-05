@@ -115,6 +115,8 @@ def update():
     
 @bp.route('/account', methods=['GET', 'POST'])    #DEPOSIT METHOD
 def updateBalance():
+    if not current_user.is_authenticated:
+        return redirect(url_for('users.update'))
     id = current_user.id
     form =BalanceForm()
     if form.validate_on_submit:

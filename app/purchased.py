@@ -34,8 +34,8 @@ def purchased():
 
 @bp.route('/purchased/add/<int:product_id>', methods=['POST'])
 def purchased_add(product_id):
-    if current_user.is_authenticated:
+    if current_user.is_authenticated and current_user.balance > Product.getPrice(product_id):
         Purchase.add_purchase(current_user.id, product_id, datetime.datetime.now()) #how to get the current time
         return redirect(url_for('purchased.purchased'))
     else:
-        return redirect(url_for('users.login'))
+        return redirect(url_for('users.updateBalance'))

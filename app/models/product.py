@@ -33,6 +33,15 @@ WHERE available = :available
 ''',
                               available=available)
         return [Product(*row) for row in rows]
+    @staticmethod
+    def getPrice(id):
+        rows = app.db.execute('''
+SELECT price
+FROM Products
+WHERE id = :id
+''',
+                              id=id)
+        return int(*(rows[0])) if rows else None
 
     @staticmethod
     def get_seller(id):
@@ -49,6 +58,7 @@ SELECT * FROM Products
 ORDER BY price DESC
     ''')
         return [Product(*row) for row in rows]
+    
     
     def get_least_expensive():
         rows = app.db.execute('''
