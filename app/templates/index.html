@@ -42,6 +42,12 @@
   <input type="submit" value="Enter charity ID">
 </form>
 
+{% if current_user.is_authenticated and current_user.isCharity(current_user.id) %}
+<a href="{{ url_for('index.seller_inventory') }}">
+  <button>See Inventory</button>
+</a>
+{% endif %}
+
 <br><br>
 {% if current_user.is_authenticated %}
 <h2>Your recent purchases:</h2>

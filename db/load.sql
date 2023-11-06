@@ -6,7 +6,7 @@ SELECT pg_catalog.setval('public.users_id_seq',
                          false);
 
 \COPY Charities FROM 'Charities.csv' WITH DELIMITER ',' NULL '' CSV
-SELECT pg_catalog.setval('public.Charities_id_seq',
+SELECT pg_catalog.setval('public.charities_id_seq',
                          (SELECT MAX(id)+1 FROM Charities),
                          false);
 

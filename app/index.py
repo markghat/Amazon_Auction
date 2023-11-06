@@ -1,6 +1,8 @@
-from flask import render_template, request
-from flask_login import current_user
+from flask import render_template, request, url_for
+from flask_login import login_user, logout_user, current_user
 import datetime
+from flask import redirect
+
 
 from .models.product import Product
 from .models.purchase import Purchase
@@ -31,7 +33,7 @@ def index():
 
     #print("At homepage, this is the type of the products" + str(type(products)))
     #print("At homepage, this is the type of the purchases" + str(type(purchases)))
-    print("At homepage, this is the type of a purchase item" + str(type(products[0])))
+    #print("At homepage, this is the type of a purchase item" + str(type(products[0])))
 
 
     return render_template('index.html',
@@ -68,20 +70,26 @@ def seller_inventory():
     
     #items = SoldItem.get_charity_items(int(charityId))
 
+    #if current_user.is_authenticated: #and User.isCharity(current_user.id):
     if current_user.is_authenticated and User.isCharity(current_user.id):
         # WishlistItem.add(current_user.id, product_id, datetime.datetime.now())
         # return redirect(url_for('wishlist.wishlist'))
 
-        charityId = User.getCharityId(currrent_user.id) # TO DO: Need to make sure that this can be cast as an int
+        print(current_user.id)
 
+        charityId = User.getCharityId(current_user.id) # TO DO: Need to make sure that this can be cast as an int
+
+
+        name = User.getCharityName(current_user.id)
         
         items = SoldItem.get_charity_items(int(charityId))
 
         return render_template('seller_inventory.html', 
         avail_products = items,
-        mynum= charityId)
+        mynum= charityId,
+        charityName = name)
     else:
-        return redirect(url_for('index.sells'))
+        return redirect(url_for('index.index'))
 
 
     # return render_template('seller_inventory.html', 
@@ -93,7 +101,21 @@ def seller_inventory():
 def sells_remove(product_id):
     #Purchase.add_purchase(current_user.id, product_id, datetime.datetime.now()) #how to get the current time
     SoldItem.remove_charity_item(product_id)
-    return redirect(url_for('index.sells'))
+    return redirect(url_for('index.seller_inventory'))
+
+@bp.route('/sells/inventory/add/', methods=['POST'])
+def sells_add():
+
+    price = request.form.get('price', default=0.0, type=float)
+    name = request.form.get('name', default='', type=str)
+
+    charityId = User.getCharityId(current_user.id) # TO DO: Need to make sure that this can be cast as an int
+
+    SoldItem.add_charity_item(int(charityId), int(price), str(name))
+    #SoldItem.add_charity_item(0, 5.50,"broski??????")
+    
+
+    return redirect(url_for('index.seller_inventory'))
 
 
 

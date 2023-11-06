@@ -56,6 +56,11 @@ class RegistrationForm(FlaskForm):
     password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(),
                                        EqualTo('password')])
+
+    is_charity = BooleanField('Register as Charity?') # NEW FIELD: helps in adding new user to Charity table if checked!
+    charity_name = StringField('Charity Name', validators=[DataRequired()])  #NEW FIELD: IF user wants to be a Charity
+
+
     submit = SubmitField('Register')
 
     def validate_email(self, email):
@@ -68,13 +73,33 @@ def register():
     if current_user.is_authenticated:
         return redirect(url_for('index.index'))
     form = RegistrationForm()
+    print("before validate_on_submit")
     if form.validate_on_submit():
-        if User.register(form.email.data,
+        print("validate_on_submit is True")
+        #if form.is_charity.data:
+        if form.is_charity:
+            # Register as Charity
+            print("form.is_charity")
+            if User.register_as_charity(form.email.data,
+                                         form.password.data,
+                                         form.firstname.data,
+                                         form.lastname.data,
+                                         form.charity_name.data):
+                print("register_as_charity condition passed")
+                flash('Congratulations, you are now a registered charity!')
+                return redirect(url_for('users.login'))
+        else:
+            # Register as regular user
+            if User.register(form.email.data,
                          form.password.data,
                          form.firstname.data,
                          form.lastname.data):
-            flash('Congratulations, you are now a registered user!')
-            return redirect(url_for('users.login'))
+                flash('Congratulations, you are now a registered user!')
+                return redirect(url_for('users.login'))
+    print("validate_on_submit was false :((((")
+
+    form.errors.clear()
+    print(form.errors)
     return render_template('register.html', title='Register', form=form)
 
 
