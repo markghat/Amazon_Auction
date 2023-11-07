@@ -1,29 +1,73 @@
 from flask import current_app as app
+import datetime
+from .. import login
+from .product import Product
 
 class Cart:
-    def __init__(self, cart_item_id, user_id, quantity, status):
-        self.cart_item_id = cart_item_id
-        self.user_id = user_id
-        self.quantity = quantity
-        self.status = status
+    def __init__(self, product_id, product_name, buyer_id):
+        self.product_id = product_id
+        self.product_name = product_name
+        self.buyer_id = buyer_id
+        # self.seller_name = seller_name
+        # self.product_price = product_price
+
+
+    # @staticmethod
+    # def get_cart_for_user(buyer_id):
+    # # Ensure the SELECT statement fetches all fields required for Cart initialization
+    #     rows = app.db.execute('''
+    #     SELECT 
+    #         Cart.product_id, 
+    #         Products.name, 
+    #         Cart.buyer_id, 
+    #         Charities.name AS seller_name, 
+    #         Products.price AS product_price 
+    #     FROM 
+    #         Cart
+    #     JOIN Products ON Cart.product_id = Products.id
+    #     JOIN Sells ON Products.id = Sells.productId
+    #     JOIN Charities ON Sells.charityId = Charities.id
+    #     WHERE 
+    #         Cart.buyer_id = :buyer_id
+    #     ''', buyer_id=buyer_id)
+    #     return [Cart(*row) for row in rows]
 
     @staticmethod
-    def get(cart_item_id):
+    def get_cart_for_user(buyer_id):
+    # Ensure the SELECT statement fetches all fields required for Cart initialization
         rows = app.db.execute('''
-SELECT cart_item_id, user_id, quantity, status
-FROM Cart
-WHERE cart_item_id = :cart_item_id
-''',
-                              cart_item_id=cart_item_id)
-        return Cart(*(rows[0])) if rows else None
-
-    @staticmethod
-    def get_all_by_user_id(user_id):
-        rows = app.db.execute('''
-SELECT cart_item_id, user_id, quantity, status
-FROM Cart
-WHERE user_id = :user_id
-ORDER BY cart_item_id DESC
-''',
-                              user_id=user_id)
+        SELECT Cart.product_id, Products.name, Cart.buyer_id
+        FROM Cart, Products
+        WHERE 
+            Cart.buyer_id = :buyer_id and Cart.product_id = Products.id
+        ''', buyer_id=buyer_id)
         return [Cart(*row) for row in rows]
+    
+    @staticmethod
+    def add_to_cart(buy_id, product_id):
+        print(f"Attempting to add product {product_id} to cart for user {buy_id}")
+    # Check if the product is already in the cart
+        rows = app.db.execute('''
+        SELECT * FROM Cart WHERE buyer_id=:buy_id AND product_id=:product_id;
+        ''', buy_id=buy_id, product_id=product_id)
+        print(f"Product already in cart check returned: {rows}")
+    # If not in the cart
+        if len(rows) == 0:
+            app.db.execute('''
+            INSERT INTO Cart(product_id, buyer_id)
+            VALUES (:product_id, :buy_id);
+        ''', product_id=product_id, buy_id=buy_id)
+            return "Product added to cart."
+    
+    # If already in the cart
+        else: 
+            print(f"Product {product_id} is already in the cart for user {buy_id}")
+            return "Product already in the cart."
+
+
+    @staticmethod
+    def remove_from_cart(buyer_id):
+        rows = app.db.execute('''DELETE FROM Cart WHERE buyer_id=:buy_id''',
+                              buy_id=buyer_id)
+        return rows
+

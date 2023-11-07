@@ -61,9 +61,6 @@
         Account</a>
       <!--CHANGE: direct to a user info page-->
       <div style="text-align: left;">
-        <form action="{{ url_for('cart.cart')}}" method="GET">
-          <input type="submit" value="VIEW CART">
-        </form>
         <form action="{{ url_for('reviews.index')}}" method="GET">
           <input type="submit" value="VIEW Reviews">
         </form>
@@ -72,6 +69,7 @@
       <a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a>
       {% endif %}
     </div>
+    <a href="{{ url_for('cart.cart') }}" type="button" class="btn btn-light">My Wishlist</a>
     {% endblock %}
   </div>
   <div class="main">
