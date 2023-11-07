@@ -2,22 +2,30 @@ from flask import render_template, redirect, url_for, flash, request
 from werkzeug.urls import url_parse
 from flask_login import login_user, logout_user, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 
 from .models.user import User
+from .models.product import Product
+from .models.purchase import Purchase
 
-
+from humanize import naturaltime
+import datetime
+def humanize_time(dt):
+    return naturaltime(datetime.datetime.now() - dt)
 from flask import Blueprint
 bp = Blueprint('users', __name__)
-
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
-
+class BalanceForm(FlaskForm):
+    amount = IntegerField('Amount', validators=[DataRequired()])
+    deposit = SubmitField('Deposit')
+    withdraw = SubmitField('Withdraw')
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -66,8 +74,21 @@ class RegistrationForm(FlaskForm):
     def validate_email(self, email):
         if User.email_exists(email.data):
             raise ValidationError('Already a user with this email.')
+class UpdateForm(FlaskForm):
+    firstname = StringField('First Name', validators=[DataRequired()])
+    lastname = StringField('Last Name', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    password2 = PasswordField(
+        'Repeat Password', validators=[DataRequired(),
+                                       EqualTo('password')])
+    submit = SubmitField('Update')
 
+    def validate_email(self, email):
+        if User.email_exists(email.data):
+            raise ValidationError('Already a user with this email.')
 
+#comment
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -94,14 +115,66 @@ def register():
                          form.password.data,
                          form.firstname.data,
                          form.lastname.data):
-                flash('Congratulations, you are now a registered user!')
-                return redirect(url_for('users.login'))
-    print("validate_on_submit was false :((((")
-
-    form.errors.clear()
-    print(form.errors)
+            flash('Congratulations, you are now a registered user!')
+            return redirect(url_for('users.updateBalance'))
     return render_template('register.html', title='Register', form=form)
 
+@bp.route('/Update', methods=['GET', 'POST'])
+def update():
+    form = UpdateForm()
+    if form.validate_on_submit():
+        if User.update(current_user.id,
+                         form.email.data,
+                         form.password.data,
+                         form.firstname.data,
+                         form.lastname.data,
+                         current_user.balance):
+            flash('Congratulations, you have updated your information!')
+        return redirect(url_for('users.updateBalance'))
+    products = Product.get_all(True)
+    # find the products current user has bought:
+    if current_user.is_authenticated:
+        purchases = Purchase.get_all_by_uid_since(
+            current_user.id, datetime.datetime(1980, 9, 14, 0, 0, 0))
+    else:
+        purchases = None
+    return render_template('account.html', title = 'Update', form=form, avail_products=products,
+                           purchase_history=purchases,
+                           humanize_time=humanize_time)
+
+# @bp.route('/account', methods=['GET', 'POST'])
+# def account():
+#     form = BalanceForm()
+#     if current_user.is_authenticated: 
+#         return render_template('account.html', form=form)
+    
+@bp.route('/account', methods=['GET', 'POST'])    #DEPOSIT METHOD
+def updateBalance():
+    if not current_user.is_authenticated:
+        return redirect(url_for('users.update'))
+    id = current_user.id
+    form =BalanceForm()
+    if form.validate_on_submit:
+        amount = form.amount.data
+        if amount: 
+            if form.deposit.data:
+                new_balance = User.get_balance(id) + amount
+            elif form.withdraw.data:
+                new_balance = max(User.get_balance(id) - amount,0)
+            User.update_balance(id, new_balance)  
+            return redirect(url_for('users.updateBalance'))  #refreshes page 
+    else:
+        print("no balance entered")
+    products = Product.get_all(True)
+    # find the products current user has bought:
+    if current_user.is_authenticated:
+        purchases = Purchase.get_all_by_uid_since(
+            current_user.id, datetime.datetime(1980, 9, 14, 0, 0, 0))
+    else:
+        purchases = None
+    return render_template('account.html', form=form, avail_products=products,
+                           purchase_history=purchases,
+                           humanize_time=humanize_time)
 
 @bp.route('/logout')
 def logout():

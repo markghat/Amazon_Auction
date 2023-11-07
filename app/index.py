@@ -15,13 +15,18 @@ from .models.user import User
 
 from flask import Blueprint
 bp = Blueprint('index', __name__) #changed to purchased
+from humanize import naturaltime
 
+def humanize_time(dt):
+    return naturaltime(datetime.datetime.now() - dt)
 
 @bp.route('/')
 def index():
     
     # get all available products for sale:
     products = Product.get_all(True)
+    page = int(request.args.get('page', default=1))
+    
 
     # find the products current user has bought:
     if current_user.is_authenticated:
@@ -35,11 +40,11 @@ def index():
     #print("At homepage, this is the type of the purchases" + str(type(purchases)))
     #print("At homepage, this is the type of a purchase item" + str(type(products[0])))
 
-
-    return render_template('index.html',
+    return render_template('index.html', #change to purchased.html and add humanize
                            avail_products=products,
-                           purchase_history=purchases)
-
+                           purchase_history=purchases,
+                           humanize_time=humanize_time,
+                           page=page)
 
 
 @bp.route('/sells/', methods = ['GET'])

@@ -9,10 +9,10 @@ from .models.purchase import Purchase
 from flask import Blueprint
 bp = Blueprint('purchased', __name__) #changed to purchased
 
-# from humanize import naturaltime
+from humanize import naturaltime
 
-# def humanize_time(dt):
-#     return naturaltime(datetime.datetime.now() - dt)
+def humanize_time(dt):
+    return naturaltime(datetime.datetime.now() - dt)
 
 
 @bp.route('/purchased')
@@ -34,5 +34,8 @@ def purchased():
 
 @bp.route('/purchased/add/<int:product_id>', methods=['POST'])
 def purchased_add(product_id):
-    Purchase.add_purchase(current_user.id, product_id, datetime.datetime.now()) #how to get the current time
-    return redirect(url_for('purchased.purchased'))
+    if current_user.is_authenticated and current_user.balance > Product.getPrice(product_id):
+        Purchase.add_purchase(current_user.id, product_id, datetime.datetime.now()) #how to get the current time
+        return redirect(url_for('purchased.purchased'))
+    else:
+        return redirect(url_for('users.updateBalance'))

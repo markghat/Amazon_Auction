@@ -19,7 +19,17 @@ SELECT pg_catalog.setval('public.products_id_seq',
 
 \COPY Purchases FROM 'Purchases.csv' WITH DELIMITER ',' NULL '' CSV
 SELECT pg_catalog.setval('public.purchases_id_seq',
-                         (SELECT MAX(id)+1 FROM Purchases),
+                         (SELECT MAX(id)+1 FROM Purchases), 
+                         false);
+
+\COPY Cart FROM 'Cart.csv' WITH DELIMITER ',' NULL '' CSV
+SELECT pg_catalog.setval('public.cart_id_seq',
+                         (SELECT MAX(id)+1 FROM Cart),
+                         false);
+
+\COPY Orders FROM 'Orders.csv' WITH DELIMITER ',' NULL '' CSV
+SELECT pg_catalog.setval('public.orders_id_seq',
+                         (SELECT MAX(id)+1 FROM Orders), 
                          false);
 
 \COPY Wishlist FROM 'Wishes.csv' WITH DELIMITER ',' NULL '' CSV

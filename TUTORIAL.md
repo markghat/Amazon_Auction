@@ -83,7 +83,7 @@ We will walk you through the steps of checking in code changes next.
 2. Now, let's figure out what to add to `db/create.sql` to support
    wishlist.  How about a separate table `Wishes` with the same
    structure as `Purchases`, except you'd have `time_added` (to the
-   list) instead of `time_purchased`?  Go ahead edit `db/create.sql`
+   list) instead of `time_purhased`?  Go ahead edit `db/create.sql`
    add the new `CREATE TABLE` statement.
 
 3. Beside the schema, it would be a good idea to update the SQL data

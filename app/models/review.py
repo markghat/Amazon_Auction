@@ -36,8 +36,42 @@ class ProductReview:
                                 SELECT id, uid, pid, rating, date_posted, feedback
                                 FROM Reviews
                                 WHERE uid = :uid
+                                ORDER BY rating DESC
                                 ''',uid=uid)
         return [ProductReview(*row) for row in rows]
+    
+    #gets all reviews for a given product
+    @staticmethod
+    def get_by_pid(pid):
+        rows = app.db.execute('''
+                                SELECT id, uid, pid, rating, date_posted, feedback
+                                FROM Reviews
+                                WHERE pid = :pid
+                                ORDER BY rating DESC
+                                ''',pid=pid)
+        return [ProductReview(*row) for row in rows]
+    
+    #get total number of reviews for a given product
+    @staticmethod
+    def get_total_number_by_id(pid):
+        rows = app.db.execute('''
+                                SELECT id, uid, pid, rating, date_posted, feedback
+                                FROM Reviews
+                                WHERE pid = :pid
+                                ORDER BY rating DESC
+                                ''',pid=pid)
+        return [] if len(rows) == 0 else len(rows)
+    
+    #get average rating for a given product
+    @staticmethod
+    def get_average_rating(pid):
+        rows = app.db.execute('''
+                                SELECT ROUND(AVG(rating), 2) AS average_rating
+                                FROM Reviews
+                                WHERE pid = :pid
+                                ''',pid=pid)
+        return rows[0][0] if rows else None
+
 
     #finds 5 most recent reviews for a given user
     @staticmethod
@@ -58,3 +92,27 @@ class ProductReview:
                             DELETE FROM Reviews
                             WHERE id = :id; ''',id=id)
         return None
+    
+    @staticmethod
+    def add_review(uid, pid, rating, feedback):
+        rows = app.db.execute('''
+                INSERT INTO Reviews(uid, pid, rating, feedback)
+                VALUES(:uid, :pid, :rating, :feedback)
+                ON CONFLICT (uid, pid) DO UPDATE 
+                SET rating = :rating,
+                    feedback = :feedback
+                RETURNING id; ''', uid=uid,
+                              pid=pid,
+                              rating=rating,
+                              feedback=feedback)
+        id = rows[0][0]
+        return id
+    
+    @staticmethod
+    def get_last_review(pid, uid):
+        rows = app.db.execute('''
+                SELECT id, uid, pid, rating, upvote, feedback, date_posted
+                FROM Reviews
+                WHERE pid = :pid AND uid = :uid
+            ''', pid=pid, uid=uid)
+        return None if rows is None or len(rows) == 0 else ProductReview(*(rows[0]))
