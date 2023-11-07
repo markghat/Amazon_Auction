@@ -80,3 +80,14 @@ SELECT * FROM Products
 ORDER BY expiration;
     ''')
         return [Product(*row) for row in rows]
+    
+
+    @staticmethod
+    def change_price(id, amount):
+            rows = app.db.execute('''
+                    UPDATE Products
+SET price = :amount
+WHERE id = :id; ''', id=id,
+amount=amount
+                                )
+            return id

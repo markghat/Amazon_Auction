@@ -41,3 +41,8 @@ SELECT pg_catalog.setval('public.wishlist_id_seq',
 SELECT pg_catalog.setval('public.reviews_id_seq',
                          (SELECT MAX(id)+1 FROM Reviews),
                          false);
+
+\COPY Bids FROM 'Bids.csv' WITH DELIMITER ',' NULL '' CSV
+SELECT pg_catalog.setval('public.bids_id_seq',
+                         (SELECT MAX(id)+1 FROM Bids),
+                         false);
