@@ -2,12 +2,13 @@ from flask import current_app as app
 from flask import jsonify
 import datetime
 from humanize import naturaltime
+from .bid import Bid
 
 class Product:
     def __init__(self, id, name, price, available, catergory, expiration, image, rating):
         self.id = id
         self.name = name
-        self.price = price
+        self.price = Bid.get_max_bid(id).amount #Price is instantiated as current bid amount
         self.available = available
         self.image = image
         self.catergory = catergory

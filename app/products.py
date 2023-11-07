@@ -50,23 +50,31 @@ def product_info(product_id):
     # Replace this with code to fetch product information from your database based on product_id
     product = Product.get(product_id)
     #get user
-    currentbid = Bid.get_max_bid(product_id).amount
+    currentbid = Bid.get_max_bid(product_id).amount #!!!!THIS IS NOT THE SAME AS THE PRICE!!!
     product_reviews = ProductReview.get_by_pid(product_id)
     total_reviews = ProductReview.get_total_number_by_id(product_id)
     avg_rating = ProductReview.get_average_rating(product_id)
     # print(avg_rating)
 
+    # SOMETHING WRONG WITH CURRENT BID PRICE, NOT SAME AS PRICE DISPLAYED!!!
     if request.method == 'POST':
         # Handle bid submission here
         bid_amount = float(request.form.get('bidAmount'))
         print(bid_amount)
         if current_user.is_authenticated: #and current_user.balance >= bid_amount:
-            user_id = current_user.id
-            bid_amt = Bid.add_bid(user_id, product_id, bid_amount)
-            print(bid_amount)
-            Product.change_price(product.id, currentbid)
-            print('here')
-            product.price = bid_amount
+            user_id = current_user.id    
+            print("currentbid: "+str(currentbid))
+            print("bid_amount: "+str(bid_amount))
+            #print("bid_amt: "+str(bid_amt))
+            if bid_amount>currentbid and bid_amount<=current_user.balance:
+                Bid.add_bid(user_id, product_id, bid_amount)
+                Product.change_price(product.id, currentbid)
+                print('price changed')
+                product.price = bid_amount
+            elif bid_amount>current_user.balance:
+                print("not enough money")
+            elif bid_amount<currentbid:
+                print("Your bid must be higher than the current bid")
         # STILL DO: update the current id in your database
 
     return render_template('product_info.html', product=product, product_reviews=product_reviews, total=total_reviews, average=avg_rating)
