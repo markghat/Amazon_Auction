@@ -48,14 +48,27 @@
 <body>
   <div class="sidenav">
     {% block msg %}
-      <h1 style="color:aliceblue">Welcome to CompSci 316 Mini Amazon!</h1>
-      <div style="color: aliceblue; text-align: right; margin-bottom: 25px">
-        {% if current_user.is_authenticated %}
-          Hello {{current_user.firstname}}! <a href="{{ url_for('users.logout') }}" type="button" class="btn btn-light">Log out</a>
-        {% else %}
-          <a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a>
-        {% endif %}
+    <a href="{{ url_for('index.index') }}"
+      style="text-decoration: none; text-align: center; color: aliceblue; display: block; background-color: #007bff; padding: 10px 40px; border-radius: 5px;">Buddies'
+      Charity Auctions</a>
+
+    <div style="color: aliceblue; text-align: right; margin-bottom: 25px">
+      {% if current_user.is_authenticated %}
+      Hello {{current_user.firstname}}! <a href="{{ url_for('users.logout') }}" type="button" class="btn btn-light">Log
+        out</a>
+      <a href="{{ url_for('users.updateBalance') }}" type="button" class="btn btn-light">My
+        Account</a>
+      <!--CHANGE: direct to a user info page-->
+      <div style="text-align: left;">
+        <form action="{{ url_for('reviews.index')}}" method="GET">
+          <input type="submit" value="VIEW Reviews">
+        </form>
       </div>
+      {% else %}
+      <a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a>
+      {% endif %}
+      <a href="{{ url_for('cart.cart') }}" type="button" class="btn btn-light">My Wishlist</a>
+    </div>
     {% endblock %}
   </div>
   <div class="main">
