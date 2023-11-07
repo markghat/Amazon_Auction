@@ -145,8 +145,6 @@ WHERE id = :id
         return None
         
 
-
-
     @staticmethod
     def isCharity(uid):
         try:
