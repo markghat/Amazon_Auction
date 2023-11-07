@@ -42,6 +42,23 @@ def gen_users(num_users):
     return
 
 
+def gen_bids(num_products):
+    n_users = 0 
+    available_pids = []
+    with open('Bids.csv', 'w') as f:
+        writer = get_csv_writer(f)
+        print('Bids...', end=' ', flush=True)
+        for pid in range(num_products):
+            if pid % 100 == 0:
+                print(f'{pid}', end=' ', flush=True)
+                print(f'{n_users}', end=' ', flush=True)
+                n_users += 1
+            price = f'{str(fake.random_int(max=500))}.{fake.random_int(max=99):02}'
+            writer.writerow([pid, 0, pid, price])
+        print(f'{num_products} generated;')
+    return available_pids
+
+
 def gen_products(num_products):
     available_pids = []
     with open('Products.csv', 'w') as f:
@@ -102,4 +119,5 @@ def gen_purchases(num_purchases, available_pids):
 gen_users(num_users)
 available_pids = gen_products(num_products)
 gen_purchases(num_purchases, available_pids)
+gen_bids(num_products)
 

@@ -14,6 +14,12 @@
         <div class="col-md-6">
             <div class="current-bid">
                 <p>Current Bid Price: ${{ product.price }}</p>
+
+                <form method="POST" action="{{ url_for('products.product_info', product_id=product.id) }}">
+                    <label for="bidAmount">Place Your Bid:</label>
+                    <input type="number" id="bidAmount" name="bidAmount" placeholder="Enter your bid" required>
+                    <button type="submit">Submit Bid</button>
+                </form>
             </div>
         </div>
     </div>
