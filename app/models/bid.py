@@ -12,7 +12,7 @@ class Bid:
     def get(id):
         rows = app.db.execute('''
 SELECT *
-FROM Bid
+FROM Bids
 WHERE id = :id
 ''',
                               id=id)
@@ -41,4 +41,12 @@ LIMIT 1;
                                 pid=pid,
                                 amount=amount,
                                 )
+            rows = app.db.execute("""
+UPDATE Users
+SET balance = balance - (SELECT max(amount) FROM Bids WHERE pid = :pid)
+WHERE id = :uid
+""",
+                                  uid=uid,
+                                  pid=pid,
+                                  )
             return uid
