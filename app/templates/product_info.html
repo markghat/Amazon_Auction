@@ -18,6 +18,29 @@
         </div>
     </div>
     <div class="row">
+        <h2>Product reviews:</h2>
+        <br>
+        <table class='table table-hover table-bordered container'>
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Product ID</th>
+                    <th scope="col">User ID</th>
+                    <th scope="col">Rating</th>
+                    <th scope="col">Review</th>
+                </tr>
+            </thead>
+            <tbody>
+                    {% for review in product_reviews%}
+                    <tr>
+                        <th scope="row">{{review.pid}}</th>
+                        <td>{{review.uid}}</td>
+                        <td>{{review.rating}}</td>
+                        <td>{{review.feedback}}</td>
+                    </tr>
+                    {% endfor %}
+            </tbody>
+        </table>
     </div>
+    
 </div>
 {% endblock %}

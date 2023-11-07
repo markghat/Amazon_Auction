@@ -7,6 +7,7 @@ from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from flask import jsonify
 
 from .models.product import Product
+from .models.review import ProductReview
 
 from flask import Blueprint
 bp = Blueprint('products', __name__)
@@ -46,11 +47,11 @@ def products_filter():
 def product_info(product_id):
     # Replace this with code to fetch product information from your database based on product_id
     product = Product.get(product_id)
+    product_reviews = ProductReview.get_by_pid(product_id)
 
     # if request.method == 'POST':
     #     # Handle bid submission here
     #     bid_amount = float(request.form.get('bidAmount'))
     #     # Process the bid and update the current bid in your database
 
-    return render_template('product_info.html', product=product)
-
+    return render_template('product_info.html', product=product, product_reviews=product_reviews)
