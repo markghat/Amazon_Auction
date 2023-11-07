@@ -45,16 +45,24 @@ def products_filter():
 
 @bp.route('/product/<int:product_id>', methods=['GET', 'POST'])
 def product_info(product_id):
+    if not current_user.is_authenticated:
+        return redirect(url_for('index.index'))
     # Replace this with code to fetch product information from your database based on product_id
     product = Product.get(product_id)
     product_reviews = ProductReview.get_by_pid(product_id)
     total_reviews = ProductReview.get_total_number_by_id(product_id)
     avg_rating = ProductReview.get_average_rating(product_id)
-    print(avg_rating)
+    my_review = ProductReview.get_last_review(product_id, current_user.id)
 
     # if request.method == 'POST':
     #     # Handle bid submission here
     #     bid_amount = float(request.form.get('bidAmount'))
     #     # Process the bid and update the current bid in your database
 
-    return render_template('product_info.html', product=product, product_reviews=product_reviews, total=total_reviews, average=avg_rating)
+    return render_template('product_info.html',
+                           isNewReview=my_review is None, 
+                           my_review=my_review,
+                           product=product, 
+                           product_reviews=product_reviews, 
+                           total=total_reviews, 
+                           average=avg_rating)

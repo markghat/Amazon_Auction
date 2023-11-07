@@ -49,20 +49,21 @@ def fiveRecent(uid):
         return render_template('5reviews.html', soso_reviews=reviewsbysoso,all_reviews=reviews)
         
 
-# @bp.route('/addReview', methods=['GET', 'POST'])
-# def addReview():
-#     if not current_user.is_authenticated:
-#         return redirect(url_for('index.index'))
+@bp.route('/addReview', methods=['GET', 'POST'])
+def addReview():
+    if not current_user.is_authenticated:
+        return redirect(url_for('index.index'))
 
-#     pid = request.args.get('id')
-#     previous_review = ProductReview.get_last_review(pid, current_user.id)
+    pid = request.args.get('id')
+    my_review = ProductReview.get_last_review(pid, current_user.id)
 
-#     # Handle the post request
-#     if request.method == 'POST':
-#         ProductReview.add(current_user.id, pid, request.form['rating'], request.form['comment'])
+    # Handle the post request
+    if request.method == 'POST':
+        now = datetime.datetime.now()
+        ProductReview.add_review(current_user.id, pid, request.form['rating'], now, request.form['comment'])
         
-#         return redirect(url_for('reviews.review'))
-#     return render_template('addOrUpdateReview.html', isNewReview=previous_review is None, previous_review=previous_review)
+        return redirect('product/'+str(pid))
+    return render_template('addOrUpdateReview.html', my_review=my_review, isNewReview=my_review is None)
 
 
 # @bp.route('/reviews/add/<int:product_id>', methods=['POST', 'GET'])
