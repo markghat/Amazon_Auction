@@ -33,9 +33,12 @@ def cart():
     else:
         pass
 
-    total_price = sum(item.product_price for item in _cart) if _cart else 0
+    print("Here is value again\n")
+    print(_cart)
+
+    # total_price = sum(item.product_price for item in _cart) if _cart else 0
     return render_template('cart.html',
                            cart=_cart,
-                           total_price=total_price)
+                           )
     
 
