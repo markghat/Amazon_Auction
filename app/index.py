@@ -106,6 +106,8 @@ def sells_remove(product_id):
 @bp.route('/sells/inventory/add/', methods=['POST'])
 def sells_add():
 
+    print("reached sells_add method")
+
     price = request.form.get('price', default=0.0, type=float)
     name = request.form.get('name', default='', type=str)
 
