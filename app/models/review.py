@@ -1,4 +1,6 @@
 from flask import current_app as app
+from humanize import naturaltime
+import datetime
 
 
 class ProductReview:
@@ -7,7 +9,7 @@ class ProductReview:
         self.uid = uid
         self.pid = pid
         self.rating = rating
-        self.date_posted = date_posted
+        self.date_posted = naturaltime(datetime.datetime.now() - date_posted)
         self.feedback = feedback
 
     #gets all reviews
@@ -16,6 +18,7 @@ class ProductReview:
         rows = app.db.execute('''
                                 SELECT id, uid, pid, rating, date_posted, feedback
                                 FROM Reviews
+                                ORDER BY date_posted DESC
                                 ''')
         return [ProductReview(*row) for row in rows]
     
@@ -36,7 +39,7 @@ class ProductReview:
                                 SELECT id, uid, pid, rating, date_posted, feedback
                                 FROM Reviews
                                 WHERE uid = :uid
-                                ORDER BY rating DESC
+                                ORDER BY date_posted DESC
                                 ''',uid=uid)
         return [ProductReview(*row) for row in rows]
     
@@ -66,7 +69,7 @@ class ProductReview:
     @staticmethod
     def get_average_rating(pid):
         rows = app.db.execute('''
-                                SELECT ROUND(AVG(rating), 2) AS average_rating
+                                SELECT CAST(AVG(rating) AS INTEGER) AS average_rating
                                 FROM Reviews
                                 WHERE pid = :pid
                                 ''',pid=pid)
@@ -94,16 +97,18 @@ class ProductReview:
         return None
     
     @staticmethod
-    def add_review(uid, pid, rating, feedback):
+    def add_review(uid, pid, rating, date_posted, feedback):
         rows = app.db.execute('''
-                INSERT INTO Reviews(uid, pid, rating, feedback)
-                VALUES(:uid, :pid, :rating, :feedback)
+                INSERT INTO Reviews(uid, pid, rating, date_posted, feedback)
+                VALUES(:uid, :pid, :rating, :date_posted, :feedback)
                 ON CONFLICT (uid, pid) DO UPDATE 
                 SET rating = :rating,
+                    date_posted = :date_posted,
                     feedback = :feedback
                 RETURNING id; ''', uid=uid,
                               pid=pid,
                               rating=rating,
+                              date_posted=date_posted,
                               feedback=feedback)
         id = rows[0][0]
         return id
@@ -111,7 +116,7 @@ class ProductReview:
     @staticmethod
     def get_last_review(pid, uid):
         rows = app.db.execute('''
-                SELECT id, uid, pid, rating, upvote, feedback, date_posted
+                SELECT id, uid, pid, rating, date_posted, feedback
                 FROM Reviews
                 WHERE pid = :pid AND uid = :uid
             ''', pid=pid, uid=uid)
