@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+
+<h2> {{charityName}} (Charity ID {{mynum}})- Products for sale:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Order ID</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Buyer ID</th>
+      <th scope="col">Date Placed</th>
+      <th scope="col">Cost</th>
+      <th scope="col">Order Fulfilled</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for order in avail_orders%}
+    <tr>
+      <th scope="row">{{order.id}}</th>
+      <td>{{order.productName}}</td>
+      <td>{{order.buyerId}}</td>
+      <td>{{order.date_placed}}</td>
+      <td>{{order.cost}}</td>
+      <td>{{order.status}}</td>
+      <td>
+        <form method="post">
+
+          <input type = "hidden" name = "order_id" value = "{{order.id}}">
+          <input type = "hidden" name = "order_status" value = "{{order.status}}">
+
+          <button type = "submit">Change Order Fulfillment Status</button>
+
+        </form>
+      </td>
+
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

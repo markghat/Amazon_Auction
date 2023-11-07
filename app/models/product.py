@@ -13,6 +13,7 @@ class Product:
         self.image = image
         self.catergory = catergory
         self.expiration = naturaltime(datetime.datetime.now() - expiration)
+        print("successfully set self.expiration.\n")
         self.rating = rating
 
     @staticmethod
