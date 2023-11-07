@@ -75,6 +75,8 @@ def product_info(product_id):
                 print("not enough money")
             elif bid_amount<currentbid:
                 print("Your bid must be higher than the current bid")
+        else:
+            return redirect(url_for('users.login'))
         # STILL DO: update the current id in your database
 
     return render_template('product_info.html', product=product, product_reviews=product_reviews, total=total_reviews, average=avg_rating)
