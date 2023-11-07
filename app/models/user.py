@@ -79,8 +79,8 @@ WHERE id = :id
     def register_as_charity(email, password, firstname, lastname, charity_name):
         try:
             rows = app.db.execute("""
-                INSERT INTO Users(email, password, firstname, lastname)
-                VALUES(:email, :password, :firstname, :lastname)
+                INSERT INTO Users(email, password, firstname, lastname, balance)
+                VALUES(:email, :password, :firstname, :lastname, 0)
                 RETURNING id
                 """,
                 email=email,
@@ -189,6 +189,32 @@ WHERE userId = :uid
             # the following simply prints the error to the console:
             print(str(e))
             return None
+            
+    @staticmethod
+    def getCharityIdWithProductId(pid):
+        try:
+
+           
+            rows = app.db.execute("""
+            SELECT charityId
+            FROM Sells
+            WHERE productId = :pid
+            """,
+                                  pid=pid)
+            print("printing the ID")
+            print(rows[0][0])
+          
+
+            return rows[0][0] if rows else None
+
+            #return _ if rows else None  
+
+            #return User(*(rows[0])) if rows else None
+        except Exception as e:
+            # likely email already in use; better error checking and reporting needed;
+            # the following simply prints the error to the console:
+            print(str(e))
+            return None
 
     @staticmethod
     def getCharityName(uid):
@@ -198,7 +224,7 @@ WHERE userId = :uid
             rows = app.db.execute("""
             SELECT name
             FROM Charities
-            WHERE userId = :uid
+            WHERE userid = :uid
             """,
                                   uid=uid)
             print("printing the ID")

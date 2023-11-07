@@ -115,8 +115,8 @@ def register():
                          form.password.data,
                          form.firstname.data,
                          form.lastname.data):
-            flash('Congratulations, you are now a registered user!')
-            return redirect(url_for('users.updateBalance'))
+                flash('Congratulations, you are now a registered user!')
+                return redirect(url_for('users.updateBalance'))
     return render_template('register.html', title='Register', form=form)
 
 @bp.route('/Update', methods=['GET', 'POST'])

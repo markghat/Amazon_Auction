@@ -33,8 +33,31 @@
 </table>
 
 <form action="{{ url_for('index.sells_add')}}" method="POST">
+  <label for="name">Product Name:</label>
   <input type="text" name="name" required>
+
+  <label for="price">Price:</label>
   <input type="number" name="price" step="0.01" required>
+
+  <label for="category">Category:</label>
+  <input type="text" name="category" id="category">
+
+  <label for="expiration_month">Expiration Month:</label>
+  <input type="text" name="expiration_month" id="expiration_month" required>
+
+  <label for="expiration_day">Expiration Day:</label>
+  <input type="text" name="expiration_day" id="expiration_day" required>
+
+  <label for="expiration_year">Expiration Year:</label>
+  <input type="text" name="expiration_year" id="expiration_year" required>
+
+  <label for="expiration_time">Expiration Time (as HH:MM:SS):</label>
+  <input type="text" name="expiration_time" id="expiration_time" required>
+  
+  <!-- Might need to fix this bc i don't know how image is displayed -->
+  <label for="image">Image URL:</label>
+  <input type="text" name="image" id="image" required>
+
   <input type="submit" value="Add New Item">
 </form>
 

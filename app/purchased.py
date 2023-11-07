@@ -5,6 +5,10 @@ from flask import redirect, url_for
 
 from .models.product import Product
 from .models.purchase import Purchase
+from .models.sells import SoldItem
+from .models.order import Order
+
+from .models.user import User
 
 from flask import Blueprint
 bp = Blueprint('purchased', __name__) #changed to purchased
@@ -35,7 +39,23 @@ def purchased():
 @bp.route('/purchased/add/<int:product_id>', methods=['POST'])
 def purchased_add(product_id):
     if current_user.is_authenticated and current_user.balance > Product.getPrice(product_id):
-        Purchase.add_purchase(current_user.id, product_id, datetime.datetime.now()) #how to get the current time
+        newPurchase = Purchase.add_purchase(current_user.id, product_id, datetime.datetime.now()) #how to get the current time
+
+        #TODO: Implement Orders.add_order() method
+        charityId = User.getCharityIdWithProductId(product_id)
+        #TODO: make method to get the timePurchased (which will be same as date_placed)
+        date_placed = newPurchase.time_purchased
+        #TODO: make method to get the cost of the item
+        cost = newPurchase.price
+
+        purchaseId = newPurchase.id
+
+        productName = newPurchase.name
+
+        Order.add_order(purchaseId, productName, current_user.id, charityId, date_placed, cost, False)
+
+        SoldItem.remove_charity_item(product_id) # Removes item from Sells table, and then Product Table
+
         return redirect(url_for('purchased.purchased'))
     else:
         return redirect(url_for('users.updateBalance'))
