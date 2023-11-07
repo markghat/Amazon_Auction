@@ -24,10 +24,17 @@ class findReview(FlaskForm):
 @bp.route('/reviews', methods=['POST', 'GET'])
 def index():
 
+
     form = findReview()
     if form.validate_on_submit():
         uid = form.user_id.data
         return redirect('reviews/'+str(uid))
+    elif request.method == 'POST':
+        if request.form['action'] == 'delete_review':
+            ProductReview.delete_by_id(request.form['review_id'])
+            reviews = ProductReview.get_all()
+            myReviews = ProductReview.get_by_uid(current_user.id)
+            return render_template('reviews.html', all_reviews=reviews, my_reviews=myReviews, form=form)
     if current_user.is_authenticated:
         reviews = ProductReview.get_all()
         myReviews = ProductReview.get_by_uid(current_user.id)

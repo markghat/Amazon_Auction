@@ -18,6 +18,7 @@ class ProductReview:
         rows = app.db.execute('''
                                 SELECT id, uid, pid, rating, date_posted, feedback
                                 FROM Reviews
+                                ORDER BY date_posted DESC
                                 ''')
         return [ProductReview(*row) for row in rows]
     
@@ -38,7 +39,7 @@ class ProductReview:
                                 SELECT id, uid, pid, rating, date_posted, feedback
                                 FROM Reviews
                                 WHERE uid = :uid
-                                ORDER BY rating DESC
+                                ORDER BY date_posted DESC
                                 ''',uid=uid)
         return [ProductReview(*row) for row in rows]
     

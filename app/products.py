@@ -54,6 +54,21 @@ def product_info(product_id):
     avg_rating = ProductReview.get_average_rating(product_id)
     my_review = ProductReview.get_last_review(product_id, current_user.id)
 
+    if request.method == 'POST':
+        if request.form['action'] == 'delete_review':
+            ProductReview.delete_by_id(request.form['review_id'])
+            product_reviews = ProductReview.get_by_pid(product_id)
+            total_reviews = ProductReview.get_total_number_by_id(product_id)
+            avg_rating = ProductReview.get_average_rating(product_id)
+            my_review = ProductReview.get_last_review(product_id, current_user.id)
+            return render_template('product_info.html',
+                           isNewReview=my_review is None, 
+                           my_review=my_review,
+                           product=product, 
+                           product_reviews=product_reviews, 
+                           total=total_reviews, 
+                           average=avg_rating)
+
     # if request.method == 'POST':
     #     # Handle bid submission here
     #     bid_amount = float(request.form.get('bidAmount'))

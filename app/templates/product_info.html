@@ -19,11 +19,12 @@
     </div>
     <div>
         <h3>Your Review</h3>
-        <a href="{{ url_for('reviews.addReview', id=product.id)}}">
-            {{ 'Write a review...' if isNewReview else 'Update your review' }}
-        </a>
+        
         {% if isNewReview %}
-            <p>You have no reviews</p>
+        
+            <p>You have no reviews so <a href="{{ url_for('reviews.addReview', id=product.id)}}">
+                {{ 'write one dummy!'}}
+            </a></p>
         {% else %}
         <table class='table table-hover table-bordered container'>
             <thead class="thead-dark">
@@ -31,13 +32,24 @@
                     <th scope="col">Rating</th>
                     <th scope="col">Review</th>
                     <th scope="col">Last posted</th>
+                    <th scope="col">Update/Delete</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>{{my_review.rating}} ⭐</td>
+                    <td>{% for i in range(my_review.rating) %}⭐{% endfor %}</td>
                     <td>{{my_review.feedback}}</td>
                     <td>{{my_review.date_posted}}</td>
+                    <td>
+                        <a href="{{ url_for('reviews.addReview', id=product.id)}}">Update review</a>
+                        <br> <br>
+                        <form action="" id="delete_review" method="post">
+                            <input type="hidden" name="action" value="delete_review">
+                            <input type="hidden" name="review_id" value="{{ my_review.id }}">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -62,7 +74,7 @@
                     <tr>
                         <th scope="row">{{review.pid}}</th>
                         <td>{{review.uid}}</td>
-                        <td>{{review.rating}} ⭐</td>
+                        <td>{% for i in range(review.rating) %}⭐{% endfor %}</td>
                         <td>{{review.feedback}}</td>
                         <td>{{review.date_posted}}</td>
                     </tr>

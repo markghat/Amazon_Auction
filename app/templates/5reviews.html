@@ -20,7 +20,7 @@
         <tr>
             <th scope="row">{{review.pid}}</th>
             <td>{{review.uid}}</td>
-            <td>{{review.rating}}</td>
+            <td>{% for i in range(review.rating) %}⭐{% endfor %}</td>
             <td>{{review.feedback}}</td>
         </tr>
         {% endfor %}
@@ -30,6 +30,7 @@
         </tr>
         {% endif %}
     </tbody>
+    <a href="{{ url_for('reviews.index') }}">Go back</a>
 </table>
 
 {% if current_user.is_authenticated %}
@@ -49,7 +50,7 @@
         <tr>
             <th scope="row">{{review.pid}}</th>
             <td>{{review.uid}}</td>
-            <td>{{review.rating}}</td>
+            <td>{% for i in range(review.rating) %}⭐{% endfor %}</td>
             <td>{{review.feedback}}</td>
         </tr>
         {% endfor %}
@@ -71,7 +72,7 @@
         <tr>
             <th scope="row">{{review.pid}}</th>
             <td>{{review.uid}}</td>
-            <td>{{review.rating}}</td>
+            <td>{% for i in range(review.rating) %}⭐{% endfor %}</td>
             <td>{{review.feedback}}</td>
         </tr>
         {% endfor %}
