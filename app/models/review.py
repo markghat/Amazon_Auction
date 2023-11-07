@@ -36,6 +36,7 @@ class ProductReview:
                                 SELECT id, uid, pid, rating, date_posted, feedback
                                 FROM Reviews
                                 WHERE uid = :uid
+                                ORDER BY rating DESC
                                 ''',uid=uid)
         return [ProductReview(*row) for row in rows]
     
@@ -46,8 +47,31 @@ class ProductReview:
                                 SELECT id, uid, pid, rating, date_posted, feedback
                                 FROM Reviews
                                 WHERE pid = :pid
+                                ORDER BY rating DESC
                                 ''',pid=pid)
         return [ProductReview(*row) for row in rows]
+    
+    #get total number of reviews for a given product
+    @staticmethod
+    def get_total_number_by_id(pid):
+        rows = app.db.execute('''
+                                SELECT id, uid, pid, rating, date_posted, feedback
+                                FROM Reviews
+                                WHERE pid = :pid
+                                ORDER BY rating DESC
+                                ''',pid=pid)
+        return [] if len(rows) == 0 else len(rows)
+    
+    #get average rating for a given product
+    @staticmethod
+    def get_average_rating(pid):
+        rows = app.db.execute('''
+                                SELECT ROUND(AVG(rating), 2) AS average_rating
+                                FROM Reviews
+                                WHERE pid = :pid
+                                ''',pid=pid)
+        return rows[0][0] if rows else None
+
 
     #finds 5 most recent reviews for a given user
     @staticmethod

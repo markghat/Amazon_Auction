@@ -14,6 +14,8 @@ from flask import Blueprint
 from flask import jsonify
 bp = Blueprint('reviews', __name__)
 
+
+#Form for finding 5 most recent reviews
 class findReview(FlaskForm):
     user_id = IntegerField('User_ID', validators=[InputRequired('Please enter a user id!')])
     submit = SubmitField('Find 5 most recent reviews!')
@@ -47,6 +49,20 @@ def fiveRecent(uid):
         return render_template('5reviews.html', soso_reviews=reviewsbysoso,all_reviews=reviews)
         
 
+# @bp.route('/addReview', methods=['GET', 'POST'])
+# def addReview():
+#     if not current_user.is_authenticated:
+#         return redirect(url_for('index.index'))
+
+#     pid = request.args.get('id')
+#     previous_review = ProductReview.get_last_review(pid, current_user.id)
+
+#     # Handle the post request
+#     if request.method == 'POST':
+#         ProductReview.add(current_user.id, pid, request.form['rating'], request.form['comment'])
+        
+#         return redirect(url_for('reviews.review'))
+#     return render_template('addOrUpdateReview.html', isNewReview=previous_review is None, previous_review=previous_review)
 
 
 # @bp.route('/reviews/add/<int:product_id>', methods=['POST', 'GET'])
