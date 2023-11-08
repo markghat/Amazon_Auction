@@ -49,6 +49,7 @@ CREATE TABLE Purchases (
 CREATE TABLE Cart (
     buyer_id           INT NOT NULL REFERENCES Users(id),
     product_id         INT NOT NULL REFERENCES Products(id),
+    seller_id          INT NOT NULL REFERENCES Sells(charityId),
 );
 
 CREATE TABLE Orders (

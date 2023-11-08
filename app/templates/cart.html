@@ -13,7 +13,7 @@
                 <thead class="thead-dark">
                 <tr>
                     <th scope="col">Product name</th>
-                    <th scope="col">Seller</th>
+                    <!-- <th scope="col">Seller</th> -->
                     <th scope="col">Price</th>
                     <th scope="col">Actions</th>
                 </tr>
@@ -22,11 +22,12 @@
                 {% for i in cart %}
                     <tr>
                         <th scope="row">{{ i.product_name }}</th>
-                        <td>{{ i.seller_name }}</td>
+                        <!-- <td>{{ i.seller_name }}</td> -->
                         <td>{{ i.product_price }}</td>
                         <td>
                             <form action="{{ url_for('cart.cart') }}" method="post">
                                 <input type="hidden" name="action" value="remove"/>
+                                <input type="hidden" name="product_id" value="{{ i.product_id }}">
                                 <input type="submit" value="Remove from Cart">
                             </form>
                         </td>
