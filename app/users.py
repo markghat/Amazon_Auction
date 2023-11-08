@@ -65,9 +65,9 @@ class RegistrationForm(FlaskForm):
         'Repeat Password', validators=[DataRequired(),
                                        EqualTo('password')])
 
-    is_charity = BooleanField('Register as Charity?') # NEW FIELD: helps in adding new user to Charity table if checked!
-    charity_name = StringField('Charity Name', validators=[DataRequired()])  #NEW FIELD: IF user wants to be a Charity
-
+    is_charity = BooleanField('Register as Charity?')
+    #NEW FIELD: IF user wants to be a Charity
+    charity_name = StringField('Charity Name')
 
     submit = SubmitField('Register')
 
@@ -111,12 +111,16 @@ def register():
                 return redirect(url_for('users.login'))
         else:
             # Register as regular user
+            print("reached the last else statement in register()")
             if User.register(form.email.data,
                          form.password.data,
                          form.firstname.data,
                          form.lastname.data):
+                print("reached inside the User.register if statement")
                 flash('Congratulations, you are now a registered user!')
                 return redirect(url_for('users.updateBalance'))
+
+    print("not registered successfully :(((")
     return render_template('register.html', title='Register', form=form)
 
 @bp.route('/Update', methods=['GET', 'POST'])
