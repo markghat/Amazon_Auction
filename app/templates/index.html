@@ -44,7 +44,6 @@
                       </a>
                         <p class="card-text">Price: ${{ product.price }}</p>
                         <p class="card-text">Closes: {{ product.expiration }}</p>
-                        <p class="card-text">Rating: {{ product.rating }} stars</p>
                         <form action="{{ url_for('cart.cart') }}" method="POST">
                           <input type="hidden" name="action" value="add">
                           <input type="hidden" name="product_id" value="{{ product.id }}">
