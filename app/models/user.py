@@ -74,6 +74,43 @@ WHERE id = :id
                                   firstname=firstname, lastname=lastname, balance = balance)
             return None
 
+    # BELOW IS NEW CODE; If new user wants to register as charity
+    @staticmethod
+    def register_as_charity(email, password, firstname, lastname, charity_name):
+        try:
+            rows = app.db.execute("""
+                INSERT INTO Users(email, password, firstname, lastname, balance)
+                VALUES(:email, :password, :firstname, :lastname, 0)
+                RETURNING id
+                """,
+                email=email,
+                password=generate_password_hash(password),
+                firstname=firstname, lastname=lastname)
+            
+            user_id = rows[0][0]
+
+            print(type(user_id))
+            print(user_id)
+
+            print("before charities insert")
+            # Insert into Charities table
+            app.db.execute("""
+                INSERT INTO Charities (userid, name, email, password)
+                VALUES(:user_id, :charity_name, :email, :password)
+                """,
+                user_id=user_id,
+                charity_name=charity_name,
+                email=email,
+                password=generate_password_hash(password))
+
+            print("after charity insert")
+            print(User.get(user_id))
+            return User.get(user_id)
+        except Exception as e:
+            print(str(e))
+            return None
+
+
     @staticmethod
     @login.user_loader
     def get(id):
@@ -83,6 +120,8 @@ FROM Users
 WHERE id = :id
 """,
                               id=id)
+
+
         return User(*(rows[0])) if rows else None
     @staticmethod
     def get_balance(id):
@@ -105,3 +144,105 @@ WHERE id = :id
                     id=id, amount=amount)
         return None
         
+
+    @staticmethod
+    def isCharity(uid):
+        try:
+            rows = app.db.execute("""
+SELECT userId
+FROM Charities
+WHERE userId = :uid
+""",
+                                  uid=uid)
+
+        #return User(*(rows[0])) if rows else None
+            #return True if rows else None
+            return len(rows) > 0
+        except Exception as e:
+            # likely email already in use; better error checking and reporting needed;
+            # the following simply prints the error to the console:
+            print(str(e))
+            return None
+
+    @staticmethod
+    def getCharityId(uid):
+        try:
+
+           
+            rows = app.db.execute("""
+            SELECT id
+            FROM Charities
+            WHERE userId = :uid
+            """,
+                                  uid=uid)
+            print("printing the ID")
+            print(rows[0][0])
+          
+
+            return rows[0][0] if rows else None
+
+            #return _ if rows else None  
+
+            #return User(*(rows[0])) if rows else None
+        except Exception as e:
+            # likely email already in use; better error checking and reporting needed;
+            # the following simply prints the error to the console:
+            print(str(e))
+            return None
+            
+    @staticmethod
+    def getCharityIdWithProductId(pid):
+        try:
+
+           
+            rows = app.db.execute("""
+            SELECT charityId
+            FROM Sells
+            WHERE productId = :pid
+            """,
+                                  pid=pid)
+            print("printing the ID")
+            print(rows[0][0])
+          
+
+            return rows[0][0] if rows else None
+
+            #return _ if rows else None  
+
+            #return User(*(rows[0])) if rows else None
+        except Exception as e:
+            # likely email already in use; better error checking and reporting needed;
+            # the following simply prints the error to the console:
+            print(str(e))
+            return None
+
+    @staticmethod
+    def getCharityName(uid):
+        try:
+
+            print("before query")
+            rows = app.db.execute("""
+            SELECT name
+            FROM Charities
+            WHERE userid = :uid
+            """,
+                                  uid=uid)
+            print("printing the ID")
+            print(rows[0][0])
+          
+
+            return rows[0][0] if rows else None
+
+            #return _ if rows else None  
+
+            #return User(*(rows[0])) if rows else None
+        except Exception as e:
+            # likely email already in use; better error checking and reporting needed;
+            # the following simply prints the error to the console:
+            print(str(e))
+            return None
+
+
+
+
+

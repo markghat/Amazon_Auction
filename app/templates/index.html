@@ -44,7 +44,6 @@
                       </a>
                         <p class="card-text">Price: ${{ product.price }}</p>
                         <p class="card-text">Closes: {{ product.expiration }}</p>
-                        <p class="card-text">Rating: {{ product.rating }} stars</p>
                         <form action="{{ url_for('cart.cart') }}" method="POST">
                           <input type="hidden" name="action" value="add">
                           <input type="hidden" name="product_id" value="{{ product.id }}">
@@ -100,6 +99,15 @@
   <input type="number" name="charityId">
   <input type="submit" value="Enter charity ID">
 </form>
+
+{% if current_user.is_authenticated and current_user.isCharity(current_user.id) %}
+<a href="{{ url_for('index.seller_inventory') }}">
+  <button>See Inventory</button>
+</a>
+<a href="{{ url_for('index.seller_orders') }}">
+  <button>See Orders From Buyers</button>
+</a>
+{% endif %}
 
 <br><br>
 {% if current_user.is_authenticated %}
