@@ -48,7 +48,7 @@ def products_filter():
 @bp.route('/product/<int:product_id>', methods=['GET', 'POST'])
 def product_info(product_id):
     if not current_user.is_authenticated:
-        return redirect(url_for('index.index'))
+        return redirect(url_for('users.login'))
     # Replace this with code to fetch product information from your database based on product_id
     product = Product.get(product_id)
     #get user
