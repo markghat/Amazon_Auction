@@ -1,6 +1,3 @@
-
-
-
 {% extends "base.html" %}
 
 {% block content %}
@@ -20,15 +17,18 @@
                     <input type="number" id="bidAmount" name="bidAmount" placeholder="Enter your bid" required>
                     <button type="submit">Submit Bid</button>
                 </form>
+                <form action="{{ url_for('purchased.purchased_add', product_id=product.id) }}" method="POST">
+                    <input type="submit" class="btn btn-primary" value="Buy Now" />
+                </form>
             </div>
         </div>
     </div>
     <div>
         <h3>Your Review</h3>
-        
+
         {% if isNewReview %}
-        
-            <p>You have no reviews so <a href="{{ url_for('reviews.addReview', id=product.id)}}">
+
+        <p>You have no reviews so <a href="{{ url_for('reviews.addReview', id=product.id)}}">
                 {{ 'write one dummy!'}}
             </a></p>
         {% else %}
@@ -54,15 +54,15 @@
                             <input type="hidden" name="review_id" value="{{ my_review.id }}">
                             <button type="submit" class="btn btn-danger">Delete</button>
                         </form>
-                    
+
                     </td>
                 </tr>
             </tbody>
         </table>
-        
+
         {% endif %}
     </div>
-    <div >
+    <div>
         <h2>Product Review Summary:</h2>
         <p>There is/are {{total}} review(s) with an average rating of {{average}} ⭐</p>
         <table class='table table-hover table-bordered container'>
@@ -76,18 +76,18 @@
                 </tr>
             </thead>
             <tbody>
-                    {% for review in product_reviews%}
-                    <tr>
-                        <th scope="row">{{review.pid}}</th>
-                        <td>{{review.uid}}</td>
-                        <td>{% for i in range(review.rating) %}⭐{% endfor %}</td>
-                        <td>{{review.feedback}}</td>
-                        <td>{{review.date_posted}}</td>
-                    </tr>
-                    {% endfor %}
+                {% for review in product_reviews%}
+                <tr>
+                    <th scope="row">{{review.pid}}</th>
+                    <td>{{review.uid}}</td>
+                    <td>{% for i in range(review.rating) %}⭐{% endfor %}</td>
+                    <td>{{review.feedback}}</td>
+                    <td>{{review.date_posted}}</td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
-    
+
 </div>
 {% endblock %}
