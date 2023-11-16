@@ -6,7 +6,14 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from flask import jsonify
 
-from .models.product import Product
+#from .models.product import Product
+
+from flask import current_app as app
 
 from flask import Blueprint
 bp = Blueprint('order', __name__)
+
+
+
+
+    

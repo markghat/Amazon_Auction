@@ -8,11 +8,12 @@ class Product:
     def __init__(self, id, name, price, available, catergory, expiration, image, rating):
         self.id = id
         self.name = name
-        self.price = Bid.get_max_bid(id).amount #Price is instantiated as current bid amount
+        self.price = Bid.get_max_bid(id).amount if Bid.get_max_bid(id) else price#Price is instantiated as current bid amount
         self.available = available
         self.image = image
         self.catergory = catergory
         self.expiration = naturaltime(datetime.datetime.now() - expiration)
+        #print("successfully set self.expiration.\n")
         self.rating = rating
 
     @staticmethod
