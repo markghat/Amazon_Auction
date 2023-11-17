@@ -73,7 +73,7 @@ def product_info(product_id):
     #                        total=total_reviews, 
     #                        average=avg_rating)
 
-    # SOMETHING WRONG WITH CURRENT BID PRICE, NOT SAME AS PRICE DISPLAYED!!!
+    
     if request.method == 'POST':
         # Handle bid submission here
         bid_amount = float(request.form.get('bidAmount'))
