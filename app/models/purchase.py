@@ -10,16 +10,6 @@ class Purchase:
         self.uid = uid
         self.pid = pid
         self.time_purchased = time_purchased
-    #should I create a getName function that just joins with product?
-#     @staticmethod
-#     def get(id):
-#         rows = app.db.execute('''
-# SELECT id, uid, pid, time_purchased, Products.name, Products.price
-# FROM Purchases, Products
-# WHERE id = :id and Purchases.pid = Products.id
-# ''',
-#                               id=id)
-#         return Purchase(*(rows[0])) if rows else None
 
 
     @staticmethod
