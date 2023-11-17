@@ -5,8 +5,10 @@ from flask_login import current_user
 class Bid:
     def __init__(self, id, uid, pid, amount): #!!!Added Name
         self.uid = uid
+        self.id = id
         self.pid = pid
         self.amount = amount
+        # self.bidtime= bidtime
 
     @staticmethod
     def get(id):
@@ -18,6 +20,16 @@ WHERE id = :id
                               id=id)
         return Bid(*(rows[0])) if rows else None
     
+    @staticmethod
+    def get_bids(uid): 
+        rows = app.db.execute('''
+SELECT Bids.id, Bids.pid, Bids.amount, Products.name
+FROM Bids, Products
+WHERE uid = :uid and bids.pid = Products.id
+
+''',
+                              uid=uid)
+        return [Bid(*row) for row in rows]
     @staticmethod
     def get_max_bid(id):
         rows = app.db.execute('''

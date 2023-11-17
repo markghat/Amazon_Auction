@@ -45,7 +45,6 @@ ORDER BY time_purchased DESC
                               since=since)
         return [Purchase(*row) for row in rows]
 
-    
     @staticmethod
     def add_purchase(uid, pid, time_purchased): #!!!subtract balance by cost of prduct (come back)
         #try:
