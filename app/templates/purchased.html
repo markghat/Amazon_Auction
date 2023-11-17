@@ -45,9 +45,10 @@
 
 
 
-            <th scope="row"><a href="{{ url_for('products.product_info', product_id=bid.pid) }}">{{bid.amount}}</a>
+            <th scope="row"><a href="{{ url_for('products.product_info', product_id=bid.uid) }}">{{bid.bidtime}}</a>
             </th>
             <th scope="row">{{bid.pid}}</th>
+            <td>{{humanize_time(bid.amount)}}</td>
         </tr>
         {% endfor %}
     </tbody>

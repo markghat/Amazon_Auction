@@ -5,7 +5,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from flask import jsonify
-
+import datetime
 from .models.product import Product
 from .models.bid import Bid
 from .models.review import ProductReview
@@ -52,7 +52,7 @@ def product_info(product_id):
     # Replace this with code to fetch product information from your database based on product_id
     product = Product.get(product_id)
     #get user
-    currentbid = Bid.get_max_bid(product_id).amount if Bid.get_max_bid(product_id) else product.price#!!!!THIS IS NOT THE SAME AS THE PRICE!!!
+    currentbid = Bid.get_max_bid(product_id).amount if Bid.get_max_bid(product_id) else product.price
     product_reviews = ProductReview.get_by_pid(product_id)
     total_reviews = ProductReview.get_total_number_by_id(product_id)
     avg_rating = ProductReview.get_average_rating(product_id)
@@ -84,7 +84,7 @@ def product_info(product_id):
             print("bid_amount: "+str(bid_amount))
             #print("bid_amt: "+str(bid_amt))
             if bid_amount>currentbid and bid_amount<=current_user.balance:
-                Bid.add_bid(user_id, product_id, bid_amount)
+                Bid.add_bid(user_id, product_id, bid_amount, datetime.datetime.now())
                 Product.change_price(product.id, currentbid)
                 print('price changed')
                 product.price = bid_amount

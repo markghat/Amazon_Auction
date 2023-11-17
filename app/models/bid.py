@@ -3,12 +3,12 @@ from flask_login import current_user
 
 
 class Bid:
-    def __init__(self, id, uid, pid, amount): #!!!Added Name
+    def __init__(self, bidID, uid, pid, amount, bidtime): #!!!Added Name
         self.uid = uid
-        self.id = id
+        self.id = bidID
         self.pid = pid
         self.amount = amount
-        # self.bidtime= bidtime
+        self.bidtime= bidtime
 
     @staticmethod
     def get(id):
@@ -23,10 +23,10 @@ WHERE id = :id
     @staticmethod
     def get_bids(uid): 
         rows = app.db.execute('''
-SELECT Bids.id, Bids.pid, Bids.amount, Products.name
+SELECT Bids.id, Bids.pid, Bids.amount, Bids.bidtime, Products.name
 FROM Bids, Products
 WHERE uid = :uid and bids.pid = Products.id
-
+ORDER BY bidtime DESC
 ''',
                               uid=uid)
         return [Bid(*row) for row in rows]
@@ -45,13 +45,13 @@ LIMIT 1;
 
 
     @staticmethod
-    def add_bid(uid, pid, amount):
+    def add_bid(uid, pid, amount, bidtime):
             rows = app.db.execute('''
-                    INSERT INTO Bids(uid, pid, amount)
-                    VALUES(:uid, :pid, :amount)
+                    INSERT INTO Bids(uid, pid, amount, bidtime)
+                    VALUES(:uid, :pid, :amount, :bidtime)
                     ''', uid=uid,
                                 pid=pid,
-                                amount=amount,
+                                amount=amount, bidtime = bidtime
                                 )
             rows = app.db.execute("""
 UPDATE Users

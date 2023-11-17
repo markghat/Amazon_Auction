@@ -16,6 +16,7 @@ bp = Blueprint('purchased', __name__) #changed to purchased
 from humanize import naturaltime
 
 def humanize_time(dt):
+    print(dt)
     return naturaltime(datetime.datetime.now() - dt)
 
 

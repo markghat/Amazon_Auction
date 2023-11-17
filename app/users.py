@@ -9,6 +9,7 @@ from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from .models.user import User
 from .models.product import Product
 from .models.purchase import Purchase
+from .models.bid import Bid
 
 from humanize import naturaltime
 import datetime
@@ -174,11 +175,13 @@ def updateBalance():
     if current_user.is_authenticated:
         purchases = Purchase.get_all_by_uid_since(
             current_user.id, datetime.datetime(1980, 9, 14, 0, 0, 0))
+        bids = Bid.get_bids(current_user.id)
     else:
         purchases = None
     return render_template('account.html', form=form, avail_products=products,
                            purchase_history=purchases,
-                           humanize_time=humanize_time)
+                           humanize_time=humanize_time,
+                           bid_history = bids)
 
 @bp.route('/logout')
 def logout():
