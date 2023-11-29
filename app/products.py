@@ -86,12 +86,12 @@ def product_info(product_id):
             if bid_amount>currentbid and bid_amount<=current_user.balance:
                 Bid.add_bid(user_id, product_id, bid_amount, datetime.datetime.now())
                 Product.change_price(product.id, currentbid)
-                print('price changed')
+                flash('Price Changed', "info")
                 product.price = bid_amount
             elif bid_amount>current_user.balance:
-                print("not enough money")
+                flash("Insufficient Funds!", "warning")
             elif bid_amount<currentbid:
-                print("Your bid must be higher than the current bid")
+                flash("Your bid must be higher than the current bid!", "warning")
         else:
             return redirect(url_for('users.login'))
         # STILL DO: update the current id in your database

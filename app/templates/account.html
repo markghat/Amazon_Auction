@@ -2,7 +2,6 @@
 {% from 'bootstrap5/form.html' import render_form %}
 {% block content %}
 
-
 {% if current_user.is_authenticated %}
 <h2>User ID: {{current_user.id}} </h2>
 <h2>Account Name: {{current_user.firstname}} {{current_user.lastname}}</h2>
@@ -11,7 +10,13 @@
 <h2>Password: **********</h2>
 <h2>Balance: {{current_user.balance}}</h2>
 
-
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for msg in messages %}
+<h1>{{msg}}</h1>
+{% endfor %}
+{% endif %}
+{% endwith %}
 {{ render_form(form) }}
 
 <a href="{{ url_for('users.update') }}" type="button" class="btn btn-light">Account Settings</a>
