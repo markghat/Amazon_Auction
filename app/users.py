@@ -162,6 +162,7 @@ def updateBalance():
     if form.validate_on_submit:
         amount = form.amount.data
         if amount: 
+            flash("$$$$ Balance Updated $$$$", "info")
             if form.deposit.data:
                 new_balance = User.get_balance(id) + amount
             elif form.withdraw.data:
@@ -169,7 +170,7 @@ def updateBalance():
             User.update_balance(id, new_balance)  
             return redirect(url_for('users.updateBalance'))  #refreshes page 
     else:
-        print("no balance entered")
+        flash("No balance entered!", "Warning")
     products = Product.get_all(True)
     # find the products current user has bought:
     if current_user.is_authenticated:
