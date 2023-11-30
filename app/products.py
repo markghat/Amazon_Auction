@@ -85,7 +85,7 @@ def product_info(product_id):
             #print("bid_amt: "+str(bid_amt))
             if bid_amount>currentbid and bid_amount<=current_user.balance:
                 Bid.add_bid(user_id, product_id, bid_amount, datetime.datetime.now())
-                Product.change_price(product.id, currentbid)
+                Product.change_price(product.id, bid_amount)
                 flash('Price Changed', "info")
                 product.price = bid_amount
             elif bid_amount>current_user.balance:

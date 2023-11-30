@@ -50,6 +50,7 @@ def index():
                            page=page)
 
 
+
 @bp.route('/sells/', methods = ['GET'])
 def sells():
     charityId = request.args.get('charityId', default=5, type=int)
@@ -238,8 +239,3 @@ def sells_add():
 #     ''', is_checked=is_checked, order_id=order_id)
 
 #     return redirect(url_for('index.seller_orders'))
-
-
-
-
-
