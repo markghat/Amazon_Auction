@@ -8,12 +8,13 @@ class Product:
     def __init__(self, id, name, price, available, catergory, expiration, image, rating):
         self.id = id
         self.name = name
-        self.price = Bid.get_max_bid(id).amount #Price is instantiated as current bid amount
+        self.price = Bid.get_max_bid(id).amount if Bid.get_max_bid(id) else price#Price is instantiated as current bid amount
         self.available = available
         self.image = image
         self.catergory = catergory
+        #self.expiration = expiration
         self.expiration = naturaltime(datetime.datetime.now() - expiration)
-        print("successfully set self.expiration.\n")
+        #print("successfully set self.expiration.\n")
         self.rating = rating
 
     @staticmethod
@@ -32,9 +33,26 @@ WHERE id = :id
 SELECT id, name, price, available, catergory, expiration, image, rating
 FROM Products
 WHERE available = :available
+                              AND expiration >= now()
 ''',
                               available=available)
         return [Product(*row) for row in rows]
+    
+
+    @staticmethod
+    def get_all_by_category(catergory, available):
+        rows = app.db.execute('''
+SELECT *
+FROM Products
+WHERE catergory = :catergory
+                              AND available = :available
+
+''',
+                              available=available, catergory =catergory)
+        return [Product(*row) for row in rows]
+    
+    
+
     @staticmethod
     def getPrice(id):
         rows = app.db.execute('''
@@ -57,14 +75,25 @@ WHERE id = :id
     def get_most_expensive():
         rows = app.db.execute('''
 SELECT * FROM Products
+                              WHERE expiration >= now()
 ORDER BY price DESC
-    ''')
+                              
+    ''',
+    available = available)
         return [Product(*row) for row in rows]
     
+    def search_by_name(search_query):
+        rows = app.db.execute('''
+SELECT *
+FROM Products
+WHERE LOWER(name) LIKE LOWER(:name)
+''', name='%'+search_query+'%')
+        return [Product(*row) for row in rows]
     
     def get_least_expensive():
         rows = app.db.execute('''
 SELECT * FROM Products
+                              WHERE expiration >= now()
 ORDER BY price
     ''')
         return [Product(*row) for row in rows]
@@ -72,6 +101,7 @@ ORDER BY price
     def get_highest_rating():
         rows = app.db.execute('''
 SELECT * FROM Products
+                              WHERE expiration >= now()
 ORDER BY rating DESC
     ''')
         return [Product(*row) for row in rows]
@@ -79,6 +109,7 @@ ORDER BY rating DESC
     def get_expiration():
         rows = app.db.execute('''
 SELECT * FROM Products
+    WHERE expiration >= now()
 ORDER BY expiration;
     ''')
         return [Product(*row) for row in rows]
@@ -86,6 +117,8 @@ ORDER BY expiration;
 
     @staticmethod
     def change_price(id, amount):
+            print('MY ID:' + str(id))
+            print('MY AMOUNT:' + str(amount))
             rows = app.db.execute('''
                     UPDATE Products
 SET price = :amount

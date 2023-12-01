@@ -24,8 +24,13 @@ def cart():
             print("action == add so we are adding tings")
             product_id = request.form.get('product_id', type=int)
             Cart.add_to_cart(current_user.id, product_id)
+        # elif action == 'remove':
+        #     product_id = request.form.get('product_id', type=int)  # get the product_id from the form
+        #     Cart.remove_from_cart(current_user.id, product_id)
+
         elif action == 'remove':
-            Cart.remove_from_cart(current_user.id)
+            product_id = request.form.get('product_id', type=int)
+            Cart.remove_from_cart(current_user.id, product_id)
 
     _cart = []
     if current_user.is_authenticated:
@@ -36,9 +41,9 @@ def cart():
     print("Here is value again\n")
     print(_cart)
 
-    # total_price = sum(item.product_price for item in _cart) if _cart else 0
+    total_price = sum(item.product_price for item in _cart) if _cart else 0
     return render_template('cart.html',
-                           cart=_cart,
+                           cart=_cart, total_price=total_price,
                            )
     
 

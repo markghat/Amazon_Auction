@@ -9,6 +9,7 @@ from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from .models.user import User
 from .models.product import Product
 from .models.purchase import Purchase
+from .models.bid import Bid
 
 from humanize import naturaltime
 import datetime
@@ -65,9 +66,9 @@ class RegistrationForm(FlaskForm):
         'Repeat Password', validators=[DataRequired(),
                                        EqualTo('password')])
 
-    is_charity = BooleanField('Register as Charity?') # NEW FIELD: helps in adding new user to Charity table if checked!
-    charity_name = StringField('Charity Name', validators=[DataRequired()])  #NEW FIELD: IF user wants to be a Charity
-
+    is_charity = BooleanField('Register as Charity?')
+    #NEW FIELD: IF user wants to be a Charity
+    charity_name = StringField('Charity Name')
 
     submit = SubmitField('Register')
 
@@ -111,12 +112,16 @@ def register():
                 return redirect(url_for('users.login'))
         else:
             # Register as regular user
+            print("reached the last else statement in register()")
             if User.register(form.email.data,
                          form.password.data,
                          form.firstname.data,
                          form.lastname.data):
+                print("reached inside the User.register if statement")
                 flash('Congratulations, you are now a registered user!')
                 return redirect(url_for('users.updateBalance'))
+
+    print("not registered successfully :(((")
     return render_template('register.html', title='Register', form=form)
 
 @bp.route('/Update', methods=['GET', 'POST'])
@@ -157,6 +162,7 @@ def updateBalance():
     if form.validate_on_submit:
         amount = form.amount.data
         if amount: 
+            flash("$$$$ Balance Updated $$$$", "info")
             if form.deposit.data:
                 new_balance = User.get_balance(id) + amount
             elif form.withdraw.data:
@@ -164,17 +170,19 @@ def updateBalance():
             User.update_balance(id, new_balance)  
             return redirect(url_for('users.updateBalance'))  #refreshes page 
     else:
-        print("no balance entered")
+        flash("No balance entered!", "Warning")
     products = Product.get_all(True)
     # find the products current user has bought:
     if current_user.is_authenticated:
         purchases = Purchase.get_all_by_uid_since(
             current_user.id, datetime.datetime(1980, 9, 14, 0, 0, 0))
+        bids = Bid.get_bids(current_user.id)
     else:
         purchases = None
     return render_template('account.html', form=form, avail_products=products,
                            purchase_history=purchases,
-                           humanize_time=humanize_time)
+                           humanize_time=humanize_time,
+                           bid_history = bids)
 
 @bp.route('/logout')
 def logout():
