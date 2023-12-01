@@ -82,6 +82,13 @@ ORDER BY price DESC
     available = available)
         return [Product(*row) for row in rows]
     
+    def search_by_name(search_query):
+        rows = app.db.execute('''
+SELECT *
+FROM Products
+WHERE LOWER(name) LIKE LOWER(:name)
+''', name='%'+search_query+'%')
+        return [Product(*row) for row in rows]
     
     def get_least_expensive():
         rows = app.db.execute('''
