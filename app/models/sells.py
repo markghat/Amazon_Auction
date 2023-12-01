@@ -136,9 +136,17 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
 
     def search_by_seller(search_query): # TODO: CHANGE THISSSSS
         rows = app.db.execute('''
-SELECT *
-FROM Products
-WHERE LOWER(name) LIKE LOWER(:name)
+        SELECT P.*
+        FROM Products P
+        JOIN Sells S ON P.id = S.productId
+        JOIN Charities C ON S.charityId = C.id
+        WHERE LOWER(C.name) LIKE LOWER(:name)
 ''', name='%'+search_query+'%')
         return [Product(*row) for row in rows]
     
+
+"""
+SELECT *
+FROM Products
+WHERE LOWER(name) LIKE LOWER(:name)
+"""
