@@ -106,7 +106,15 @@ SELECT * FROM Products
 ORDER BY expiration;
     ''')
         return [Product(*row) for row in rows]
-    
+
+    def search_by_name(search_query):
+        rows = app.db.execute('''
+SELECT *
+FROM Products
+WHERE LOWER(name) LIKE LOWER(:name)
+''', name='%'+search_query+'%')
+        return [Product(*row) for row in rows]
+
 
     @staticmethod
     def change_price(id, amount):
