@@ -56,7 +56,7 @@ def search():
         results = Product.search_by_name(search_query)
     elif search_type == 'seller':
         # Search sellers by name or other attributes
-        results = sells.search_sellers(search_query)
+        results = SoldItem.search_by_seller(search_query)
     else:
         # Handle other search types or show an error message
         flash('Invalid search type', 'error')
