@@ -132,3 +132,12 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
             print(f"Product {product_id} availability updated to {new_status}")
         except Exception as e:
             print(f"Error updating product availability: {str(e)}")
+
+    def search_by_seller(search_query): # TODO: CHANGE THISSSSS
+        rows = app.db.execute('''
+SELECT *
+FROM Products
+WHERE LOWER(name) LIKE LOWER(:name)
+''', name='%'+search_query+'%')
+        return [Product(*row) for row in rows]
+    
