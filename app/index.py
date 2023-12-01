@@ -9,7 +9,6 @@ from flask import redirect, flash
 from .models.product import Product
 from .models.purchase import Purchase
 from .models.order import Order
-from .models.sells import SoldItem
 
 
 from .models.sells import SoldItem
@@ -39,33 +38,16 @@ def index():
     else:
         purchases = None
     # render the page by adding information to the index.html file
+
+    #print("At homepage, this is the type of the products" + str(type(products)))
+    #print("At homepage, this is the type of the purchases" + str(type(purchases)))
+    #print("At homepage, this is the type of a purchase item" + str(type(products[0])))
+
     return render_template('index.html', #change to purchased.html and add humanize
                            avail_products=products,
                            purchase_history=purchases,
                            humanize_time=humanize_time,
                            page=page)
-
-@bp.route('/search', methods=['GET'])
-def search():
-    search_query = request.args.get('search_query')
-    search_type = request.args.get('search_type')
-    page = int(request.args.get('page', default=1))
-    # Add logic to handle the search query based on the search type
-    if search_type == 'product':
-        # Search products by name or other attributes
-        results = Product.search_by_name(search_query)
-    elif search_type == 'seller':
-        # Search sellers by name or other attributes
-        results = sells.search_sellers(search_query)
-    else:
-        # Handle other search types or show an error message
-        flash('Invalid search type', 'error')
-        return redirect(url_for('index.index'))
-
-    # Render the search results page
-    return render_template('index.html', avail_products=results,
-                           page=page)
-
 
 
 
