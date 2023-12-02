@@ -41,6 +41,11 @@ SELECT pg_catalog.setval('public.reviews_id_seq',
                          (SELECT MAX(id)+1 FROM Reviews),
                          false);
 
+\COPY Reviewtransactions FROM 'Reviewtransactions.csv' WITH DELIMITER ',' NULL '' CSV
+SELECT pg_catalog.setval('public.reviewtransactions_id_seq',
+                         (SELECT MAX(id)+1 FROM Reviewtransactions),
+                         false);
+
 \COPY Bids FROM 'Bids.csv' WITH DELIMITER ',' NULL '' CSV
 SELECT pg_catalog.setval('public.bids_id_seq',
                          (SELECT MAX(id)+1 FROM Bids),
