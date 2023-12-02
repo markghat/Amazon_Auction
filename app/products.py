@@ -73,6 +73,7 @@ def product_info(product_id):
     #                        total=total_reviews, 
     #                        average=avg_rating)
 
+    page = int(request.args.get('page', default=1))
     
     if request.method == 'POST':
         # Handle bid submission here
@@ -102,4 +103,5 @@ def product_info(product_id):
                            product=product, 
                            product_reviews=product_reviews, 
                            total=total_reviews, 
-                           average=avg_rating)
+                           average=avg_rating,
+                           page=page)

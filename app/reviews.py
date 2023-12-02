@@ -23,7 +23,7 @@ class findReview(FlaskForm):
 
 @bp.route('/reviews', methods=['POST', 'GET'])
 def index():
-
+    page = int(request.args.get('page', default=1))
 
     form = findReview()
     if form.validate_on_submit():
@@ -34,14 +34,14 @@ def index():
             ProductReview.delete_by_id(request.form['review_id'])
             reviews = ProductReview.get_all()
             myReviews = ProductReview.get_by_uid(current_user.id)
-            return render_template('reviews.html', all_reviews=reviews, my_reviews=myReviews, form=form)
+            return render_template('reviews.html', all_reviews=reviews, my_reviews=myReviews, form=form, page=page)
     if current_user.is_authenticated:
         reviews = ProductReview.get_all()
         myReviews = ProductReview.get_by_uid(current_user.id)
-        return render_template('reviews.html', all_reviews=reviews, my_reviews=myReviews, form=form)
+        return render_template('reviews.html', all_reviews=reviews, my_reviews=myReviews, form=form, page=page)
     else:
         reviews = ProductReview.get_all()
-        return render_template('reviews.html', all_reviews=reviews, form=form)
+        return render_template('reviews.html', all_reviews=reviews, form=form, page=page)
 
 @bp.route('/reviews/<int:uid>', methods=['POST', 'GET'])
 def fiveRecent(uid):
