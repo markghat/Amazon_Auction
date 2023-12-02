@@ -58,6 +58,7 @@ RETURNING id
             print(str(e))
             return None
 
+
     @staticmethod
     @login.user_loader
     def get(id):
