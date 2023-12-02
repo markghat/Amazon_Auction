@@ -76,10 +76,16 @@ def product_info(product_id):
     page = int(request.args.get('page', default=1))
     
     if request.method == 'POST':
-        # Handle bid submission here
-        bid_amount = float(request.form.get('bidAmount'))
-        print(bid_amount)
-        if current_user.is_authenticated: #and current_user.balance >= bid_amount:
+         
+        if request.form['action'] == 'down_vote':
+            if int(request.form['likes']) > 0:
+                ProductReview.update_upvote_for_id(int(request.form['review_id']), -1, current_user.id)
+        elif request.form['action'] == 'upvote':
+            ProductReview.update_upvote_for_id(int(request.form['review_id']), 1, current_user.id)
+        elif current_user.is_authenticated: #and current_user.balance >= bid_amount:
+            # Handle bid submission here
+            bid_amount = float(request.form.get('bidAmount'))
+            print(bid_amount)
             user_id = current_user.id    
             print("currentbid: "+str(currentbid))
             print("bid_amount: "+str(bid_amount))
