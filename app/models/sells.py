@@ -144,9 +144,3 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
 ''', name='%'+search_query+'%')
         return [Product(*row) for row in rows]
     
-
-"""
-SELECT *
-FROM Products
-WHERE LOWER(name) LIKE LOWER(:name)
-"""
