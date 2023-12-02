@@ -2,6 +2,7 @@ from flask import current_app as app
 
 from .product import Product
 from .order import Order
+from .bid import Bid
 
 
 class SoldItem:
@@ -92,7 +93,7 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
             VALUES (:name, :price, TRUE, :category, :expiration, :image, 0.0)
             RETURNING id;
         """, name=name, price=price, category=category, expiration=expiration, image=image)
-
+        
 
         product_id = result[0][0]
 
@@ -132,3 +133,14 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
             print(f"Product {product_id} availability updated to {new_status}")
         except Exception as e:
             print(f"Error updating product availability: {str(e)}")
+
+    def search_by_seller(search_query): # TODO: CHANGE THISSSSS
+        rows = app.db.execute('''
+        SELECT P.*
+        FROM Products P
+        JOIN Sells S ON P.id = S.productId
+        JOIN Charities C ON S.charityId = C.id
+        WHERE LOWER(C.name) LIKE LOWER(:name)
+''', name='%'+search_query+'%')
+        return [Product(*row) for row in rows]
+    
