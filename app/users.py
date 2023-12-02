@@ -66,7 +66,7 @@ class RegistrationForm(FlaskForm):
         'Repeat Password', validators=[DataRequired(),
                                        EqualTo('password')])
 
-    is_charity = BooleanField('Register as Charity?')
+    is_charity = BooleanField('Register as Charity?', false_values=()) # if checkbox is unchecked, no data has been sent ==> we want this to evaluate to False!
     #NEW FIELD: IF user wants to be a Charity
     charity_name = StringField('Charity Name')
 
@@ -99,7 +99,7 @@ def register():
     if form.validate_on_submit():
         print("validate_on_submit is True")
         #if form.is_charity.data:
-        if form.is_charity:
+        if form.is_charity.data:
             # Register as Charity
             print("form.is_charity")
             if User.register_as_charity(form.email.data,
