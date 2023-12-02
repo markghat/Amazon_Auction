@@ -22,7 +22,7 @@ class ProductReview:
                                 ''')
         return [ProductReview(*row) for row in rows]
     
-    #gets a review
+    #gets a review based on unique review id
     @staticmethod
     def get(id):
         rows = app.db.execute('''
@@ -96,6 +96,7 @@ class ProductReview:
                             WHERE id = :id; ''',id=id)
         return None
     
+    #add review
     @staticmethod
     def add_review(uid, pid, rating, date_posted, feedback):
         rows = app.db.execute('''
@@ -113,6 +114,7 @@ class ProductReview:
         id = rows[0][0]
         return id
     
+    #get last review
     @staticmethod
     def get_last_review(pid, uid):
         rows = app.db.execute('''
