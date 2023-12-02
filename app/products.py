@@ -58,6 +58,16 @@ def product_info(product_id):
     avg_rating = ProductReview.get_average_rating(product_id)
     my_review = ProductReview.get_last_review(product_id, current_user.id)
 
+    charity_id = User.getCharityIdWithProductId(product_id)
+    print("this is our charity_id:")
+    print(type(charity_id))
+    print(charity_id)
+    charity_name = User.getCharityNameGivenCharityId(charity_id)
+    print("this is our charity_name:")
+    print(charity_name)
+
+    #charity = getCharityGivenProductId(product_id)
+
     # if request.method == 'POST':
     #     if request.form['action'] == 'delete_review':
     #         ProductReview.delete_by_id(request.form['review_id'])
@@ -102,4 +112,6 @@ def product_info(product_id):
                            product=product, 
                            product_reviews=product_reviews, 
                            total=total_reviews, 
-                           average=avg_rating)
+                           average=avg_rating,
+                           charity_id = charity_id,
+                           charity_name = charity_name)

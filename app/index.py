@@ -123,6 +123,65 @@ def seller_inventory():
     # avail_products = items,
     # mynum= charityId)
 
+
+@bp.route('/infopage/<int:charity_id>')
+def charity_info(charity_id):
+
+    # 2 cases: accessing a charity info page through user side, accessing a charity info page through charity side
+
+    #case 1: charity side
+    #if current_user.is_authenticated and current_user.isCharity(current_user.id):
+
+
+        # charityId = User.getCharityId(current_user.id) # TO DO: Need to make sure that this can be cast as an int
+        # charityDescription = User.get_charity_description(current_user.id)
+        # name = User.getCharityName(current_user.id)
+        # items = SoldItem.get_charity_items(int(charityId))
+
+        # return render_template('charity_info.html',
+        #     avail_products = items,
+        #     mynum= charityId,
+        #     charityName = name,
+        #     charityDescription = charityDescription)
+    #case 2: user side:
+    #else:
+        
+    charityId = charity_id # TO DO: Need to make sure that this can be cast as an int
+    charityDescription = User.getCharityDescriptionGivenCharityId(charityId)
+    name = User.getCharityNameGivenCharityId(charityId)
+    items = SoldItem.get_charity_items(int(charityId))
+
+    return render_template('charity_info.html',
+        avail_products = items,
+        mynum= charityId,
+        charityName = name,
+        charityDescription = charityDescription)
+
+@bp.route('/change_charity_description', methods = ['GET', 'POST'])
+def change_charity_description():
+    print("reached change_charity_description() method in index.py")
+
+
+    if current_user.isCharity(current_user.id): #and current_user.getCharityId(current_user.id) == charity_id:
+        charity_id = current_user.getCharityId(current_user.id)
+
+        new_description = request.form.get('newDescription')
+        print(new_description)
+
+        # Validate new_description if necessary
+
+        # Update the charity's description
+        User.update_charity_description(charity_id, new_description)
+
+        #flash('Charity description updated successfully.', 'success')
+        return redirect(url_for('index.charity_info', charity_id=charity_id))
+
+    flash('You do not have permission to change this charity\'s description.', 'error')
+    return redirect(url_for('users.account'))
+
+
+
+
 @bp.route('/sells/orders', methods = ['GET', 'POST'])
 def seller_orders():
     #charityId = request.args.get('charityId', default=5, type=int)
