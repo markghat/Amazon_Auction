@@ -9,6 +9,7 @@ from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from .models.user import User
 from .models.product import Product
 from .models.purchase import Purchase
+from .models.bid import Bid
 
 from humanize import naturaltime
 import datetime
@@ -65,7 +66,7 @@ class RegistrationForm(FlaskForm):
         'Repeat Password', validators=[DataRequired(),
                                        EqualTo('password')])
 
-    is_charity = BooleanField('Register as Charity?')
+    is_charity = BooleanField('Register as Charity?', false_values=()) # if checkbox is unchecked, no data has been sent ==> we want this to evaluate to False!
     #NEW FIELD: IF user wants to be a Charity
     charity_name = StringField('Charity Name')
 
@@ -98,7 +99,7 @@ def register():
     if form.validate_on_submit():
         print("validate_on_submit is True")
         #if form.is_charity.data:
-        if form.is_charity:
+        if form.is_charity.data:
             # Register as Charity
             print("form.is_charity")
             if User.register_as_charity(form.email.data,
@@ -161,6 +162,7 @@ def updateBalance():
     if form.validate_on_submit:
         amount = form.amount.data
         if amount: 
+            flash("$$$$ Balance Updated $$$$", "info")
             if form.deposit.data:
                 new_balance = User.get_balance(id) + amount
             elif form.withdraw.data:
@@ -168,17 +170,19 @@ def updateBalance():
             User.update_balance(id, new_balance)  
             return redirect(url_for('users.updateBalance'))  #refreshes page 
     else:
-        print("no balance entered")
+        flash("No balance entered!", "Warning")
     products = Product.get_all(True)
     # find the products current user has bought:
     if current_user.is_authenticated:
         purchases = Purchase.get_all_by_uid_since(
             current_user.id, datetime.datetime(1980, 9, 14, 0, 0, 0))
+        bids = Bid.get_bids(current_user.id)
     else:
         purchases = None
     return render_template('account.html', form=form, avail_products=products,
                            purchase_history=purchases,
-                           humanize_time=humanize_time)
+                           humanize_time=humanize_time,
+                           bid_history = bids)
 
 @bp.route('/logout')
 def logout():

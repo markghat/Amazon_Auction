@@ -2,11 +2,10 @@
 
 {% block content %}
 
-    <br><br>
+<br><br>
 
-    <h2>Wishlist</h2>
-    {% if current_user.is_authenticated %}
-        <h2>Your Wishlist:</h2>
+{% if current_user.is_authenticated %}
+<h2>Your Wishlist:</h2>
 
         {% if cart|length > 0 %}
             <table class='table table-hover table-bordered container'>
@@ -48,9 +47,3 @@
     {% endif %}
 
 {% endblock %}
-
-
-
-
-
-

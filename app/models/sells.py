@@ -2,6 +2,7 @@ from flask import current_app as app
 
 from .product import Product
 from .order import Order
+from .bid import Bid
 
 
 class SoldItem:
@@ -58,15 +59,37 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
             """,
                                     pid = pid)
 
-            app.db.execute("""
-                DELETE FROM Products WHERE id = :pid;
-            """,
-                                    pid = pid)
-            print("Deleted from Products:" + str(pid))
-
-
-
             print("Deleted from Sells:" + str(pid))
+            #TODO: Decide if we need to delete from products??
+            # app.db.execute("""
+            #     DELETE FROM Products WHERE id = :pid;
+            # """,
+            #                         pid = pid)
+            # print("Deleted from Products:" + str(pid))
+
+            #Revision: set available attribute for product in Products table ==> to False
+                        # Set available attribute to False for the product in Products table
+            app.db.execute("""
+                UPDATE Products
+                SET available = FALSE
+                WHERE id = :pid;
+            """, pid=pid)
+
+
+            # JUST FOR TESTING
+            rows = app.db.execute("""
+                SELECT available
+                FROM Products
+                WHERE id = :pid;
+            """, pid=pid)
+            
+            print("this is updated product availability")
+            print(rows[0][0]) 
+            # END OF TESTSING
+
+            print("Updated availability of just sold item to FALSE in the Products table.")
+
+
             #id = rows[0][0]
             #return Purchase.get(id)
         except Exception as e:
@@ -92,7 +115,7 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
             VALUES (:name, :price, TRUE, :category, :expiration, :image, 0.0)
             RETURNING id;
         """, name=name, price=price, category=category, expiration=expiration, image=image)
-
+        
 
         product_id = result[0][0]
 
@@ -132,3 +155,14 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
             print(f"Product {product_id} availability updated to {new_status}")
         except Exception as e:
             print(f"Error updating product availability: {str(e)}")
+
+    def search_by_seller(search_query): # TODO: CHANGE THISSSSS
+        rows = app.db.execute('''
+        SELECT P.*
+        FROM Products P
+        JOIN Sells S ON P.id = S.productId
+        JOIN Charities C ON S.charityId = C.id
+        WHERE LOWER(C.name) LIKE LOWER(:name)
+''', name='%'+search_query+'%')
+        return [Product(*row) for row in rows]
+    

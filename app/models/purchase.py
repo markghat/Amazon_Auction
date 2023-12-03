@@ -1,5 +1,6 @@
 from flask import current_app as app
 from flask_login import current_user
+from .user import User
 
 
 class Purchase:
@@ -10,16 +11,6 @@ class Purchase:
         self.uid = uid
         self.pid = pid
         self.time_purchased = time_purchased
-    #should I create a getName function that just joins with product?
-#     @staticmethod
-#     def get(id):
-#         rows = app.db.execute('''
-# SELECT id, uid, pid, time_purchased, Products.name, Products.price
-# FROM Purchases, Products
-# WHERE id = :id and Purchases.pid = Products.id
-# ''',
-#                               id=id)
-#         return Purchase(*(rows[0])) if rows else None
 
 
     @staticmethod
@@ -45,9 +36,8 @@ ORDER BY time_purchased DESC
                               since=since)
         return [Purchase(*row) for row in rows]
 
-    
     @staticmethod
-    def add_purchase(uid, pid, time_purchased): #!!!subtract balance by cost of prduct (come back)
+    def add_purchase(uid, pid, time_purchased): # Marks product as purchased (inserts into Purchases table); updates buying User and Charity balances
         #try:
         rows = app.db.execute("""
 INSERT INTO PURCHASES(uid, pid, time_purchased)
@@ -57,12 +47,27 @@ RETURNING id
                                 uid=uid,
                                 pid=pid,
                                 time_purchased=time_purchased)
+
+        # decrement buyer's balance
         rows2 = app.db.execute("""
 UPDATE Users
 SET balance = balance - (SELECT price FROM Products WHERE id = :pid)
 WHERE Users.id = :uid
 """,
                                 uid=uid,
+                                pid=pid,
+                                )
+        cid = User.getCharityIdWithProductId(pid)
+        charity_uid = User.getUserIdByCharityId(cid)
+
+        #increment Charity's balance
+
+        rows3 = app.db.execute("""
+UPDATE Users
+SET balance = balance + (SELECT price FROM Products WHERE id = :pid)
+WHERE Users.id = :uid
+""",
+                                uid=charity_uid,
                                 pid=pid,
                                 )
 
