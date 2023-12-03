@@ -2,52 +2,112 @@
 {% from 'bootstrap5/form.html' import render_form %}
 {% block content %}
 
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" rel="stylesheet">
 
-{% if current_user.is_authenticated %}
-<h2>User ID: {{current_user.id}} </h2>
-<h2>Account Name: {{current_user.firstname}} {{current_user.lastname}}</h2>
-<h2>Email: {{current_user.email}}</h2>
+<style>
+    body {
+        background-color: #f2f2f2; /* Light grey background for overall body */
+    }
+    .dashboard-container {
+        background-color: #ffffff; /* White background for the dashboard */
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+    }
+    .icon-box {
+        text-align: center;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-bottom: 10px;
+        background-color: #f9f9f9; /* Light grey background for icon boxes */
+    }
+    .icon-box i {
+        margin-bottom: 10px;
+    }
+    .icon-box:hover {
+        background-color: #e9ecef; /* Slightly darker background on hover */
+        cursor: pointer;
+    }
+    .table {
+        margin-top: 20px;
+    }
+    .table-hover tbody tr:hover {
+        background-color: #f8f8f8; /* Very light grey for hover effect */
+    }
+    .btn-light {
+        background-color: #f8f8f8; /* Light grey for button */
+        border-color: #f8f8f8;
+    }
+    .btn-light:hover {
+        background-color: #e2e6ea; /* Slightly darker grey for hover effect */
+    }
+    .balance-display {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+    }
+</style>
 
-<h2>Password: **********</h2>
-<h2>Balance: {{current_user.balance}}</h2>
+<div class="container dashboard-container">
+    <h2>My Dashboard</h2>
+    <p>Hello, {{ current_user.firstname }} {{ current_user.lastname }}!</p>
+    <p>From your My Account Dashboard you have the ability to view a snapshot of your recent account activity and update your account information. Select a link below to view or edit information.</p>
 
 
-{{ render_form(form) }}
+    <!-- Removed Account Information icon and replaced it with Balance display -->
+    <div class="balance-display">
+        <strong>Balance:</strong> ${{ current_user.balance }}
+    </div>
 
-<a href="{{ url_for('users.update') }}" type="button" class="btn btn-light">Account Settings</a>
 
-<h2>Recent Purchases:</h2>
-<table class='table table-hover table-bordered container'>
-    <thead class="thead-dark">
-        <tr>
-            <th scope="col">Purchase ID</th>
-            <th scope="col">Product Name</th>
-            <th scope="col">Price</th>
-            <th scope="col">Date of Purchase</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for purchase in purchase_history%}
-        <tr>
 
-            <td>{{purchase.pid}}</td>
-            <th scope="row">{{purchase.name}}</th>
-            <th scope="row">{{purchase.price}}</th><!--prints name of product with id +1, caps at 7 items-->
-            <td>{{humanize_time(purchase.time_purchased)}}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    {{ render_form(form) }}
 
-<div>
-    <h2>
-        <a href="{{ url_for('reviews.index') }}">Check your reviews here</a>
-    </h2>
+    <h3> </h3>
+    <h3>Recent Purchases</h3>
+    <table class='table table-hover'>
+        <thead>
+            <tr>
+                <th>Order #</th>
+                <th>Name of Product</th>
+                <th>Order Date</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for purchase in purchase_history %}
+            <tr>
+                <td>{{ purchase.pid }}</td>
+                <td>{{ purchase.name }}</td>
+                <td>{{ humanize_time(purchase.time_purchased) }}</td>
+                <td>{{ purchase.price }}</td>
+                <td>{{ purchase.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- ... other code ... -->
+
+<div class="container dashboard-container">
+    <!-- ... other dashboard content ... -->
+
+    <a href="{{ url_for('users.update') }}" type="button" class="btn btn-light">Account Settings</a>
+
+    <!-- ... recent purchases table ... -->
+
+    <div class="mt-3">
+        <a href="{{ url_for('reviews.index') }}" class="btn btn-primary">Check your reviews here</a>
+    </div>
 </div>
 
-{% else %}
-<p><a href="{{ url_for('users.login') }}">Log in</a> to proceed!</p>
+<!-- ... rest of your code ... -->
 
-{% endif %}
 
 {% endblock %}
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js

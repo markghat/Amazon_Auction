@@ -2,40 +2,79 @@
 
 {% block content %}
 
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" rel="stylesheet">
+
+<style>
+    body {
+        background-color: #f2f2f2;
+    }
+    .container {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-top: 20px;
+    }
+    h2 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+    .table {
+        margin-bottom: 20px;
+    }
+    .table-hover tbody tr:hover {
+        background-color: #f8f8f8;
+    }
+    button {
+        background-color: #f8f8f8;
+        border-color: #f8f8f8;
+        color: #333;
+        padding: 0.375rem 0.75rem;
+        border-radius: 0.25rem;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #e2e6ea;
+    }
+</style>
+
 <br><br>
 
-<h2>  Charity ID {{mynum}} - Products for sale:</h2>
-<table class='table table-hover table-bordered container'>
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">Product ID</th>
-      <th scope="col">Product Name</th>
-      <th scope="col">Price</th>
-      <th scope="col">Category</th>
-      <th scope="col">Expiration</th>
-      <th scope="col">Image</th>
-      <th scope="col">Rating</th>
-      <th scope="col">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for product in avail_products %}
-    <tr>
-      <th scope="row">{{ product.id }}</th>
-      <td>{{ product.name }}</td>
-      <td>{{ product.price }}</td>
-      <td>{{ product.catergory }}</td>
-      <td>{{ product.expiration }}</td>
-      <td>{{ product.image }}</td>
-      <td>{{ product.rating }}</td>
-      <td>
-        <form action="{{ url_for('purchased.purchased_add', product_id=product.id) }}" method="POST">
-          <input type="submit" value="Purchase" />
-        </form>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="container">
+    <h2>Charity ID {{ mynum }} - Products for sale:</h2>
+    <table class='table table-hover'>
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Product ID</th>
+                <th scope="col">Product Name</th>
+                <th scope="col">Price</th>
+                <th scope="col">Category</th>
+                <th scope="col">Expiration</th>
+                <th scope="col">Image</th>
+                <th scope="col">Rating</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in avail_products %}
+            <tr>
+                <th scope="row">{{ product.id }}</th>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price }}</td>
+                <td>{{ product.category }}</td>
+                <td>{{ product.expiration }}</td>
+                <td>{{ product.image }}</td>
+                <td>{{ product.rating }}</td>
+                <td>
+                    <form method="post">
+                        <button type="submit" class="btn btn-light">Purchase</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 {% endblock %}

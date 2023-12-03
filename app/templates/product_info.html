@@ -49,7 +49,7 @@
                     <td>
                         <a href="{{ url_for('reviews.addReview', id=product.id)}}">Update review</a>
                         <br> <br>
-                        <form action="" id="delete_review" method="post">
+                        <form action="delete_review" id="delete_review" method="post">
                             <input type="hidden" name="action" value="delete_review">
                             <input type="hidden" name="review_id" value="{{ my_review.id }}">
                             <button type="submit" class="btn btn-danger">Delete</button>
