@@ -18,24 +18,45 @@
   </form>
 </div>
 
-<br><br>
 <div class="container">
-  <h2>Filter Products</h2>
-  <form action="{{ url_for('products.products_filter')}}" method="GET">
-    <label for="attribute">Select Attribute:</label>
-    <select name="attribute" id="attribute">
-      <option value="Most Expensive">Most Expensive</option>
-      <option value="Least Expensive">Least Expensive</option>
-      <option value="Highest rating">Highest rating</option>
-      <option value="Closing Soon">Closing Soon</option>
-      <!-- Add other attribute options as needed -->
-    </select>
-    <input type="submit" value="Apply Filter">
-  </form>
+  <div class="row">
+    <!-- Filter panel -->
+    <div class="col-md-3">
+      <h4>Filter Options</h4>
+      <form id="filterForm">
+        <label for="category">Select Category:</label>
+        <select name="category" id="category">
+          <option value="">All Categories</option>
+          <!-- Add options dynamically based on your categories -->
+          <option value="electronics">Electronics</option>
+          <option value="art&decor">Art and Decor</option>
+          <!-- Add more options as needed -->
+        </select>
+        <label for="priceRange">Select Price Range:</label>
+        <select name="priceRange" id="priceRange">
+          <option value="">Any Price</option>
+          <option value="0-50">$0 - $50</option>
+          <option value="50-100">$50 - $100</option>
+          <!-- Add more options as needed -->
+        </select>
+        <input type="button" id="applyFiltersButton" value="Apply Filters" onclick="applyFilters()">
+      </form>
+    </div>
 
-
-</div>
-
+    <!-- Product display -->
+    <div class="col-md-9">
+      <h2>Filter Products</h2>
+      <form action="{{ url_for('products.products_filter')}}" method="GET">
+        <label for="attribute">Select Attribute:</label>
+        <select name="attribute" id="attribute">
+          <option value="Most Expensive">Most Expensive</option>
+          <option value="Least Expensive">Least Expensive</option>
+          <option value="Highest rating">Highest rating</option>
+          <option value="Closing Soon">Closing Soon</option>
+          <!-- Add other attribute options as needed -->
+        </select>
+        <input type="submit" value="Apply Filter">
+      </form>
 
 
 
@@ -122,4 +143,28 @@
 
 <br><br>
 
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("applyFiltersButton").onclick = function() {
+      applyFilters();
+    };
+  });
+
+  function applyFilters() {
+    console.log("applyFilters() called");
+
+    // Retrieve filter values
+    var category = document.getElementById("category").value;
+    var priceRange = document.getElementById("priceRange").value;
+
+    // You can use AJAX to send the filter values to the server and get updated product data
+    // For simplicity, let's just reload the page with the filter values as URL parameters
+    var queryParams = "category=" + encodeURIComponent(category) + "&priceRange=" + encodeURIComponent(priceRange);
+    window.location.href = "{{ url_for('index.index') }}" + "?" + queryParams;
+  }
+</script>
+
 {% endblock %}
+
+
+

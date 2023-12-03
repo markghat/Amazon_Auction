@@ -24,11 +24,34 @@ from humanize import naturaltime
 def humanize_time(dt):
     return naturaltime(datetime.datetime.now() - dt)
 
+def apply_filters(products, category_filter, price_range_filter):
+    # Implement filter logic
+    filtered_products = products
+    # Apply category filter
+    if category_filter and category_filter != 'All Categories':
+        filtered_products = [product for product in filtered_products if product.catergory == category_filter]
+
+    # Apply price range filter
+    if price_range_filter:
+        min_price, max_price = map(int, price_range_filter.split('-'))
+        filtered_products = [product for product in filtered_products if min_price <= product.price <= max_price]
+
+    return filtered_products
+
 @bp.route('/')
 def index():
     
     # get all available products for sale:
     products = Product.get_all(True)
+
+    # Retrieve the selected category filter and price range filter from the URL
+    category_filter = request.args.get('category', default='', type=str)
+    price_range_filter = request.args.get('priceRange', default='', type=str)
+
+    # Apply the filters to the products based on the selected category and price range
+    filtered_products = apply_filters(products, category_filter, price_range_filter)
+
+
     page = int(request.args.get('page', default=1))
     
 
@@ -40,7 +63,7 @@ def index():
         purchases = None
     # render the page by adding information to the index.html file
     return render_template('index.html', #change to purchased.html and add humanize
-                           avail_products=products,
+                           avail_products=filtered_products,
                            purchase_history=purchases,
                            humanize_time=humanize_time,
                            page=page)
@@ -316,3 +339,5 @@ def sells_add():
 #     ''', is_checked=is_checked, order_id=order_id)
 
 #     return redirect(url_for('index.seller_orders'))
+
+
