@@ -312,6 +312,22 @@ WHERE userId = :uid
             print(str(e))  # Handle the error appropriately
             return None
 
+
+    @staticmethod
+    def getUserIdByCharityId(charity_id):
+        try:
+            rows = app.db.execute("""
+                SELECT userid
+                FROM Charities
+                WHERE id = :charity_id
+                """,
+                charity_id=charity_id
+            )
+            return rows[0][0] if rows else None
+        except Exception as e:
+            print(str(e))
+            return None
+
     
 
     
