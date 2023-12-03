@@ -23,6 +23,7 @@
                     <label for="bidAmount">Place Your Bid:</label>
                     <input type="number" id="bidAmount" name="bidAmount" placeholder="Enter your bid" required>
                     <button type="submit">Submit Bid</button>
+                    <input type="hidden" name="action" value="bid">
                 </form>
                 <form action="{{ url_for('purchased.purchased_add', product_id=product.id) }}" method="POST">
                     <input type="submit" class="btn btn-primary" value="Buy Now" />
@@ -117,7 +118,7 @@
                         </form>
                         
                         <form action="/product/{{review.pid}}" id="down_vote_form" method="post">
-                            <input type="hidden" name="action" value="down_vote">
+                            <input type="hidden" name="action" value="downvote">
                             <input type="hidden" name="likes" value="{{ review.upvote }}">
                             <input type="hidden" name="review_id" value="{{ review.id }}">
                             <button type="submit" class="btn btn-link">
