@@ -57,6 +57,32 @@ def product_info(product_id):
     total_reviews = ProductReview.get_total_number_by_id(product_id)
     avg_rating = ProductReview.get_average_rating(product_id)
     my_review = ProductReview.get_last_review(product_id, current_user.id)
+
+    charity_id = User.getCharityIdWithProductId(product_id)
+    print("this is our charity_id:")
+    print(type(charity_id))
+    print(charity_id)
+    charity_name = User.getCharityNameGivenCharityId(charity_id)
+    print("this is our charity_name:")
+    print(charity_name)
+
+    #charity = getCharityGivenProductId(product_id)
+
+    # if request.method == 'POST':
+    #     if request.form['action'] == 'delete_review':
+    #         ProductReview.delete_by_id(request.form['review_id'])
+    #         product_reviews = ProductReview.get_by_pid(product_id)
+    #         total_reviews = ProductReview.get_total_number_by_id(product_id)
+    #         avg_rating = ProductReview.get_average_rating(product_id)
+    #         my_review = ProductReview.get_last_review(product_id, current_user.id)
+    #         return render_template('product_info.html',
+    #                        isNewReview=my_review is None, 
+    #                        my_review=my_review,
+    #                        product=product, 
+    #                        product_reviews=product_reviews, 
+    #                        total=total_reviews, 
+    #                        average=avg_rating)
+
     page = int(request.args.get('page', default=1))
 
     if request.method == 'POST':
@@ -113,6 +139,9 @@ def product_info(product_id):
             return redirect(url_for('users.login'))
         # STILL DO: update the current id in your database
 
+    print("charity_id being passed from product_info() endpoint")
+    print(charity_id)
+
     return render_template('product_info.html',
                            isNewReview=my_review is None, 
                            my_review=my_review,
@@ -120,4 +149,6 @@ def product_info(product_id):
                            product_reviews=product_reviews, 
                            total=total_reviews, 
                            average=avg_rating,
-                           page=page)
+                           page=page,
+                           charity_id = charity_id,
+                           charity_name = charity_name)

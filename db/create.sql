@@ -15,7 +15,8 @@ CREATE TABLE Charities (
     userid INT NOT NULL REFERENCES Users(id),
     name VARCHAR(255) UNIQUE NOT NULL,
     email VARCHAR UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    description VARCHAR NOT NULL
 );
 
 -- Charity(charity_user_id, org_id)

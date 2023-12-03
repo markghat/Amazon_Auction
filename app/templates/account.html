@@ -5,6 +5,15 @@
 {% if current_user.is_authenticated %}
 <h2>User ID: {{current_user.id}} </h2>
 <h2>Account Name: {{current_user.firstname}} {{current_user.lastname}}</h2>
+
+
+{% if current_user.isCharity(current_user.id) %}
+
+<h2>Charity Description: {{ current_user.get_charity_description(current_user.id) }}</h2>
+
+{% endif %}
+
+
 <h2>Email: {{current_user.email}}</h2>
 
 <h2>Password: **********</h2>

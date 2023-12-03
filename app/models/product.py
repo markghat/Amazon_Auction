@@ -62,7 +62,17 @@ WHERE id = :id
 ''',
                               id=id)
         return int(*(rows[0])) if rows else None
-
+    
+    @staticmethod
+    def getCategory(id):
+        rows = app.db.execute('''
+SELECT catergory
+FROM Products
+WHERE id = :id
+''',
+                              id=id)
+        return int(*(rows[0])) if rows else None
+    
     @staticmethod
     def get_seller(id):
         row = app.db.execute('''
@@ -76,10 +86,12 @@ WHERE id = :id
         rows = app.db.execute('''
 SELECT * FROM Products
                               WHERE expiration >= now()
+                              AND available = :available
 ORDER BY price DESC
                               
+                              
     ''',
-    available = available)
+    available = True)
         return [Product(*row) for row in rows]
     
     def search_by_name(search_query):
@@ -87,6 +99,8 @@ ORDER BY price DESC
 SELECT *
 FROM Products
 WHERE LOWER(name) LIKE LOWER(:name)
+                              AND available = true
+                              AND expiration >= now()
 ''', name='%'+search_query+'%')
         return [Product(*row) for row in rows]
     
@@ -94,6 +108,7 @@ WHERE LOWER(name) LIKE LOWER(:name)
         rows = app.db.execute('''
 SELECT * FROM Products
                               WHERE expiration >= now()
+                              AND available = true
 ORDER BY price
     ''')
         return [Product(*row) for row in rows]

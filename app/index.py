@@ -24,11 +24,34 @@ from humanize import naturaltime
 def humanize_time(dt):
     return naturaltime(datetime.datetime.now() - dt)
 
+def apply_filters(products, category_filter, price_range_filter):
+    # Implement filter logic
+    filtered_products = products
+    # Apply category filter
+    if category_filter and category_filter != 'All Categories':
+        filtered_products = [product for product in filtered_products if product.catergory == category_filter]
+
+    # Apply price range filter
+    if price_range_filter:
+        min_price, max_price = map(int, price_range_filter.split('-'))
+        filtered_products = [product for product in filtered_products if min_price <= product.price <= max_price]
+
+    return filtered_products
+
 @bp.route('/')
 def index():
     
     # get all available products for sale:
     products = Product.get_all(True)
+
+    # Retrieve the selected category filter and price range filter from the URL
+    category_filter = request.args.get('category', default='', type=str)
+    price_range_filter = request.args.get('priceRange', default='', type=str)
+
+    # Apply the filters to the products based on the selected category and price range
+    filtered_products = apply_filters(products, category_filter, price_range_filter)
+
+
     page = int(request.args.get('page', default=1))
     
 
@@ -40,7 +63,7 @@ def index():
         purchases = None
     # render the page by adding information to the index.html file
     return render_template('index.html', #change to purchased.html and add humanize
-                           avail_products=products,
+                           avail_products=filtered_products,
                            purchase_history=purchases,
                            humanize_time=humanize_time,
                            page=page)
@@ -122,6 +145,72 @@ def seller_inventory():
     # return render_template('seller_inventory.html', 
     # avail_products = items,
     # mynum= charityId)
+
+
+@bp.route('/infopage/', methods = ['GET', 'POST'])
+def charity_info():
+
+    charity_id = request.args.get('charity_id')
+    print(charity_id)
+    if charity_id == None:
+        charity_id = current_user.getCharityId(current_user.id)
+    print(charity_id)
+    # 2 cases: accessing a charity info page through user side, accessing a charity info page through charity side
+
+    #case 1: charity side
+    #if current_user.is_authenticated and current_user.isCharity(current_user.id):
+
+
+        # charityId = User.getCharityId(current_user.id) # TO DO: Need to make sure that this can be cast as an int
+        # charityDescription = User.get_charity_description(current_user.id)
+        # name = User.getCharityName(current_user.id)
+        # items = SoldItem.get_charity_items(int(charityId))
+
+        # return render_template('charity_info.html',
+        #     avail_products = items,
+        #     mynum= charityId,
+        #     charityName = name,
+        #     charityDescription = charityDescription)
+    #case 2: user side:
+    #else:
+
+    print("reached after long commend thing in charity_info()")
+        
+    charityId = charity_id # TO DO: Need to make sure that this can be cast as an int
+    charityDescription = User.getCharityDescriptionGivenCharityId(charityId)
+    name = User.getCharityNameGivenCharityId(charityId)
+    items = SoldItem.get_charity_items(int(charityId))
+
+    return render_template('charity_info.html',
+        avail_products = items,
+        charity_id= charityId,
+        charityName = name,
+        charityDescription = charityDescription)
+
+@bp.route('/change_charity_description', methods = ['GET', 'POST'])
+def change_charity_description():
+    print("reached change_charity_description() method in index.py")
+
+
+    if current_user.isCharity(current_user.id): #and current_user.getCharityId(current_user.id) == charity_id:
+        charity_id = current_user.getCharityId(current_user.id)
+
+        new_description = request.form.get('newDescription')
+        print(new_description)
+
+        # Validate new_description if necessary
+
+        # Update the charity's description
+        User.update_charity_description(charity_id, new_description)
+
+        #flash('Charity description updated successfully.', 'success')
+        return redirect(url_for('index.charity_info', charity_id=charity_id))
+
+    flash('You do not have permission to change this charity\'s description.', 'error')
+    return redirect(url_for('users.account'))
+
+
+
 
 @bp.route('/sells/orders', methods = ['GET', 'POST'])
 def seller_orders():
@@ -257,3 +346,5 @@ def sells_add():
 #     ''', is_checked=is_checked, order_id=order_id)
 
 #     return redirect(url_for('index.seller_orders'))
+
+
