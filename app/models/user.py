@@ -254,7 +254,7 @@ WHERE userId = :uid
             WHERE id = :cid
             """,
                                   cid=cid)
-            print("printing the charity ID")
+            print("printing the charity name")
             print(rows[0][0])
           
 

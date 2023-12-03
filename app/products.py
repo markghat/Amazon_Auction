@@ -113,6 +113,9 @@ def product_info(product_id):
             return redirect(url_for('users.login'))
         # STILL DO: update the current id in your database
 
+    print("charity_id being passed from product_info() endpoint")
+    print(charity_id)
+
     return render_template('product_info.html',
                            isNewReview=my_review is None, 
                            my_review=my_review,

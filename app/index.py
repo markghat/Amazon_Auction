@@ -124,9 +124,14 @@ def seller_inventory():
     # mynum= charityId)
 
 
-@bp.route('/infopage/<int:charity_id>')
-def charity_info(charity_id):
+@bp.route('/infopage/', methods = ['GET', 'POST'])
+def charity_info():
 
+    charity_id = request.args.get('charity_id')
+    print(charity_id)
+    if charity_id == None:
+        charity_id = current_user.getCharityId(current_user.id)
+    print(charity_id)
     # 2 cases: accessing a charity info page through user side, accessing a charity info page through charity side
 
     #case 1: charity side
@@ -145,6 +150,8 @@ def charity_info(charity_id):
         #     charityDescription = charityDescription)
     #case 2: user side:
     #else:
+
+    print("reached after long commend thing in charity_info()")
         
     charityId = charity_id # TO DO: Need to make sure that this can be cast as an int
     charityDescription = User.getCharityDescriptionGivenCharityId(charityId)
@@ -153,7 +160,7 @@ def charity_info(charity_id):
 
     return render_template('charity_info.html',
         avail_products = items,
-        mynum= charityId,
+        charity_id= charityId,
         charityName = name,
         charityDescription = charityDescription)
 
