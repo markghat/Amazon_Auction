@@ -62,11 +62,41 @@ def index():
     else:
         purchases = None
     # render the page by adding information to the index.html file
+    return render_template('welcome.html', #change to purchased.html and add humanize
+                           avail_products=filtered_products,
+                           purchase_history=purchases,
+                           humanize_time=humanize_time,
+                           page=page)
+
+@bp.route('/products')
+def products():
+        # get all available products for sale:
+    products = Product.get_all(True)
+
+    # Retrieve the selected category filter and price range filter from the URL
+    category_filter = request.args.get('category', default='', type=str)
+    price_range_filter = request.args.get('priceRange', default='', type=str)
+
+    # Apply the filters to the products based on the selected category and price range
+    filtered_products = apply_filters(products, category_filter, price_range_filter)
+
+
+    page = int(request.args.get('page', default=1))
+    
+
+    # find the products current user has bought:
+    if current_user.is_authenticated:
+        purchases = Purchase.get_all_by_uid_since(
+            current_user.id, datetime.datetime(1980, 9, 14, 0, 0, 0))
+    else:
+        purchases = None
+    # render the page by adding information to the index.html file
     return render_template('index.html', #change to purchased.html and add humanize
                            avail_products=filtered_products,
                            purchase_history=purchases,
                            humanize_time=humanize_time,
                            page=page)
+
 
 @bp.route('/search', methods=['GET'])
 def search():
@@ -346,5 +376,3 @@ def sells_add():
 #     ''', is_checked=is_checked, order_id=order_id)
 
 #     return redirect(url_for('index.seller_orders'))
-
-
