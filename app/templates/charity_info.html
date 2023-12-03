@@ -5,12 +5,12 @@
 This is charity info page!
 <br><br>
 
-<h2> {{charityName}} (Charity ID {{mynum}})</h2>
+<h2> {{charityName}} (Charity ID {{charity_id}})</h2>
 <h3> Charity Description:</h3>
 <body>{{charityDescription}}</body>
 
 
-{% if current_user.is_authenticated and current_user.isCharity(current_user.id) and (current_user.getCharityId(current_user.id) == mynum) %}
+{% if current_user.is_authenticated and current_user.isCharity(current_user.id) and (current_user.getCharityId(current_user.id) == charity_id) %}
 <form method="post" action="{{ url_for('index.change_charity_description', charity_id=current_user.getCharityId(current_user.id)) }}">
   <label for="newDescription">New Description:</label>
   <input type="text" id="newDescription" name="newDescription" required>
