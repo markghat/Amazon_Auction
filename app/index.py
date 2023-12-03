@@ -27,7 +27,6 @@ def humanize_time(dt):
 def apply_filters(products, category_filter, price_range_filter):
     # Implement filter logic
     filtered_products = products
-    print("YOPPP")
     # Apply category filter
     if category_filter and category_filter != 'All Categories':
         filtered_products = [product for product in filtered_products if product.catergory == category_filter]
@@ -35,7 +34,6 @@ def apply_filters(products, category_filter, price_range_filter):
     # Apply price range filter
     if price_range_filter:
         min_price, max_price = map(int, price_range_filter.split('-'))
-        print(min_price)
         filtered_products = [product for product in filtered_products if min_price <= product.price <= max_price]
 
     return filtered_products
@@ -49,8 +47,6 @@ def index():
     # Retrieve the selected category filter and price range filter from the URL
     category_filter = request.args.get('category', default='', type=str)
     price_range_filter = request.args.get('priceRange', default='', type=str)
-    print(category_filter)
-    print('up^^^')
 
     # Apply the filters to the products based on the selected category and price range
     filtered_products = apply_filters(products, category_filter, price_range_filter)
