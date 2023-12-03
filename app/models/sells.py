@@ -59,15 +59,37 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
             """,
                                     pid = pid)
 
-            app.db.execute("""
-                DELETE FROM Products WHERE id = :pid;
-            """,
-                                    pid = pid)
-            print("Deleted from Products:" + str(pid))
-
-
-
             print("Deleted from Sells:" + str(pid))
+            #TODO: Decide if we need to delete from products??
+            # app.db.execute("""
+            #     DELETE FROM Products WHERE id = :pid;
+            # """,
+            #                         pid = pid)
+            # print("Deleted from Products:" + str(pid))
+
+            #Revision: set available attribute for product in Products table ==> to False
+                        # Set available attribute to False for the product in Products table
+            app.db.execute("""
+                UPDATE Products
+                SET available = FALSE
+                WHERE id = :pid;
+            """, pid=pid)
+
+
+            # JUST FOR TESTING
+            rows = app.db.execute("""
+                SELECT available
+                FROM Products
+                WHERE id = :pid;
+            """, pid=pid)
+            
+            print("this is updated product availability")
+            print(rows[0][0]) 
+            # END OF TESTSING
+
+            print("Updated availability of just sold item to FALSE in the Products table.")
+
+
             #id = rows[0][0]
             #return Purchase.get(id)
         except Exception as e:

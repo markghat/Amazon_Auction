@@ -64,7 +64,8 @@ RETURNING id
                                   status = status
                                   )
 
-            return Order.get(id)
+            #return Order.get(id)
+            return
         except Exception as e:
             # likely email already in use; better error checking and reporting needed;
             # the following simply prints the error to the console:
@@ -84,7 +85,8 @@ RETURNING id
             print(newStatus)
             print("\n")
 
-            return Order.get(id)
+            #return Order.get(id)
+            return
         except Exception as e:
             # likely email already in use; better error checking and reporting needed;
             # the following simply prints the error to the console:
