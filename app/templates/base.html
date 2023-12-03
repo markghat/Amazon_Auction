@@ -67,6 +67,14 @@
           <input type="submit" value="VIEW Reviews">
         </form>
       </div>
+      {% if current_user.is_authenticated and current_user.isCharity(current_user.id) %}
+      <div style="text-align: right; margin-top: 20px;">
+        <form action="{{ url_for('index.charity_info', charity_id=current_user.getCharityId(current_user.id)) }}" method="GET">
+          <input type="submit" value="View Your Info Page">
+        </form>
+      </div>
+      {% endif %} 
+
       {% else %}
       <a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a>
       {% endif %}
@@ -77,6 +85,9 @@
   <div class="main">
     {% block content %}{% endblock %}
   </div>
+  
+
+
 </body>
 
 </html>

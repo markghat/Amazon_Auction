@@ -20,10 +20,10 @@ class findReview(FlaskForm):
     user_id = IntegerField('User_ID', validators=[InputRequired('Please enter a user id!')])
     submit = SubmitField('Find 5 most recent reviews!')
 
-
+#index page for reviews that shows user reviews with update/delete functionality
 @bp.route('/reviews', methods=['POST', 'GET'])
 def index():
-
+    page = int(request.args.get('page', default=1))
 
     form = findReview()
     if form.validate_on_submit():
@@ -34,15 +34,16 @@ def index():
             ProductReview.delete_by_id(request.form['review_id'])
             reviews = ProductReview.get_all()
             myReviews = ProductReview.get_by_uid(current_user.id)
-            return render_template('reviews.html', all_reviews=reviews, my_reviews=myReviews, form=form)
+            return render_template('reviews.html', all_reviews=reviews, my_reviews=myReviews, form=form, page=page)
     if current_user.is_authenticated:
         reviews = ProductReview.get_all()
         myReviews = ProductReview.get_by_uid(current_user.id)
-        return render_template('reviews.html', all_reviews=reviews, my_reviews=myReviews, form=form)
+        return render_template('reviews.html', all_reviews=reviews, my_reviews=myReviews, form=form, page=page)
     else:
         reviews = ProductReview.get_all()
-        return render_template('reviews.html', all_reviews=reviews, form=form)
+        return render_template('reviews.html', all_reviews=reviews, form=form, page=page)
 
+#getting reviews for a specific user
 @bp.route('/reviews/<int:uid>', methods=['POST', 'GET'])
 def fiveRecent(uid):
     if current_user.is_authenticated:
@@ -56,6 +57,7 @@ def fiveRecent(uid):
         return render_template('5reviews.html', soso_reviews=reviewsbysoso,all_reviews=reviews)
         
 
+#page for adding reviews
 @bp.route('/addReview', methods=['GET', 'POST'])
 def addReview():
     if not current_user.is_authenticated:
@@ -71,22 +73,3 @@ def addReview():
         
         return redirect('product/'+str(pid))
     return render_template('addOrUpdateReview.html', my_review=my_review, isNewReview=my_review is None)
-
-
-# @bp.route('/reviews/add/<int:product_id>', methods=['POST', 'GET'])
-# def addReview():
-#     if not current_user.is_authenticated:
-#         return redirect(url_for('index.index'))
-#     if current_user.is_authenticated:
-#         reviews = ProductReview.get_5_most_recent(current_user.id)
-#         return jsonify([review.__dict__ for review in reviews])
-#     # Handle the post request
-#     if request.method == 'POST':
-#         ProductReview.add(current_user.id,
-#                             product_id,
-#                             request.form['rating'],
-#                             request.form['comment'])
-#         return redirect(url_for('reviews.review'))
-#     else:
-#         return jsonify({}), 404
-    

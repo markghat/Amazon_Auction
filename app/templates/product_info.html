@@ -14,7 +14,7 @@
             <h1>{{ product.name }}</h1>
             <img src="{{ product.image }}" alt="{{ product.name }}" width="300">
             <p>Product Expiry Date: {{ product.expiration }}</p>
-            <!-- <p>Charity: <a href="{{ url_for('index.charity_info', charity_id=charity_id) }}">{{ charity_name }}</a></p> -->
+            <p>Charity: <a href="{{ url_for('index.charity_info', charity_id=charity_id) }}">{{ charity_name }}</a></p>
 
         </div>
         <div class="col-md-6">
