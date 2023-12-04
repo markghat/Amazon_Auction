@@ -13,6 +13,7 @@
             <th scope="col">Product Name</th>
             <th scope="col">Price</th>
             <th scope="col">Date of Purchase</th>
+            <th scope="col">Status</th>
         </tr>
     </thead>
     <tbody>
@@ -25,6 +26,7 @@
 
             <th scope="row">{{purchase.price}}</th>
             <td>{{humanize_time(purchase.time_purchased)}}</td>
+            <td>Unfullfilled</td>
         </tr>
         {% endfor %}
     </tbody>
