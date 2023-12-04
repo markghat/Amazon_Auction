@@ -13,6 +13,7 @@
             <th scope="col">Product Name</th>
             <th scope="col">Price</th>
             <th scope="col">Date of Purchase</th>
+            <th scope="col">Status</th>
         </tr>
     </thead>
     <tbody>
@@ -25,6 +26,7 @@
 
             <th scope="row">{{purchase.price}}</th>
             <td>{{humanize_time(purchase.time_purchased)}}</td>
+            <td>Unfullfilled</td>
         </tr>
         {% endfor %}
     </tbody>
@@ -37,7 +39,6 @@
             <th scope="col">Product Name</th>
             <th scope="col">Amount</th>
             <th scope="col">Time of Bid</th>
-            <th scope="col">Status</th>
         </tr>
     </thead>
     <tbody>
@@ -50,7 +51,6 @@
             </th>
             <th scope="row">{{bid.pid}}</th>
             <td>{{humanize_time(bid.amount)}}</td>
-            <td>Unfullfilled</td>
         </tr>
         {% endfor %}
     </tbody>
