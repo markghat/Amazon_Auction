@@ -46,4 +46,3 @@ def cart():
                            cart=_cart, total_price=total_price,
                            )
     
-
