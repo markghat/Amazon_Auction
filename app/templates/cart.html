@@ -2,45 +2,117 @@
 
 {% block content %}
 
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    body, h2, table, a, input, button, th, td {
+        font-family: Georgia, serif;
+    }
+
+    body {
+        background-color: #E6E6FA; /* Lavender background */
+    }
+
+    .container {
+        background-color: #B0C4DE; /* Light steel blue background */
+        border: 2px solid #4682B4; /* Steel blue border */
+        border-radius: 0; /* Square borders */
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    h2 {
+        color: #000; /* Black color for heading text */
+        margin-bottom: 20px;
+    }
+
+    .table {
+        margin-bottom: 20px;
+        border-collapse: collapse;
+    }
+
+    .table, .table th, .table td {
+        border: 1px solid #A9A9A9; /* Dark grey border for the table and cells */
+    }
+
+    .table th {
+        background-color: #B0C4DE; /* Light steel blue background for table header */
+        color: #000; /* Black color for header text */
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f8f8f8; /* Light grey for hover effect */
+    }
+
+    a {
+        color: #4682B4; /* Steel blue text for links */
+    }
+
+    a:hover {
+        color: #4169E1; /* Royal blue for link hover */
+    }
+
+    input[type="submit"] {
+        background-color: #4682B4; /* Steel blue background for buttons */
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        margin-top: 10px;
+        border-radius: 4px;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #4169E1; /* Royal blue background for button hover */
+    }
+
+    .btn-dark {
+        background-color: #000; /* Black background for checkout button */
+        color: white;
+    }
+
+    .btn-dark:hover {
+        background-color: #333; /* Darker grey for button hover */
+    }
+
+    /* Add any additional styling needed */
+</style>
+
 <br><br>
 
 {% if current_user.is_authenticated %}
 <h2>Your Wishlist:</h2>
 
 {% if cart|length > 0 %}
-<table class='table table-hover table-bordered container'>
-    <thead class="thead-dark">
-        <tr>
-            <th scope="col">Product name</th>
-            <!-- <th scope="col">Seller</th> -->
-            <th scope="col">Price</th>
-            <th scope="col">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for i in cart %}
-        <tr>
-
-            <th scope="row"><a href="{{ url_for('products.product_info', product_id=i.product_id) }}">{{ i.product_name
-                    }}</a>
-            </th>
-            <th scope="row">{{ i.product_price }}</th>
-            <td>
-                <form action="{{ url_for('cart.cart') }}" method="post">
-                    <input type="hidden" name="action" value="remove" />
-                    <input type="hidden" name="product_id" value="{{ i.product_id }}">
-                    <input type="submit" value="Remove from Wishlist">
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<h4>Total price: {{ total_price }}</h4>
-<form action="{{ url_for('cart.cart') }}" method="post">
-    <input type="hidden" name="action" value="checkout" />
-    <input type="submit" value="Checkout" class="btn btn-dark">
-</form>
+<div class="container">
+    <table class='table table-hover'>
+        <thead>
+            <tr>
+                <th scope="col">Product name</th>
+                <th scope="col">Price</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in cart %}
+            <tr>
+                <th scope="row"><a href="{{ url_for('products.product_info', product_id=i.product_id) }}">{{ i.product_name }}</a></th>
+                <td>{{ i.product_price }}</td>
+                <td>
+                    <form action="{{ url_for('cart.cart') }}" method="post">
+                        <input type="hidden" name="action" value="remove" />
+                        <input type="hidden" name="product_id" value="{{ i.product_id }}" />
+                        <input type="submit" value="Remove from Wishlist">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h4>Total price: {{ total_price }}</h4>
+    <form action="{{ url_for('cart.cart') }}" method="post">
+        <input type="hidden" name="action" value="checkout" />
+        <input type="submit" value="Checkout" class="btn btn-dark">
+    </form>
+</div>
 {% else %}
 <p>No item found in your Wishlist.</p>
 {% endif %}
