@@ -41,7 +41,29 @@ LIMIT 1;
 ''',
                               id=id)
         return Bid(*(rows[0])) if rows else None
-
+    
+    @staticmethod #not working
+    def get_max_bid_amount(id):
+        rows = app.db.execute('''
+SELECT amount
+FROM Bids AS B
+WHERE B.pid = :id
+ORDER BY B.amount DESC
+LIMIT 1;
+''',
+                              id=id)
+        return rows() if rows else None
+    @staticmethod
+    def get_recent_bid(id):
+        rows = app.db.execute('''
+SELECT *
+FROM Bids AS B
+WHERE B.pid = :id
+ORDER BY B.bidtime DESC
+LIMIT 1;
+''',
+                              id=id)
+        return Bid(*(rows[0])) if rows else None
 
 
     @staticmethod

@@ -131,6 +131,12 @@ def product_info(product_id):
                 Product.change_price(product.id, bid_amount)
                 flash('Price Changed', "info")
                 product.price = bid_amount
+                bids = Bid.get_bids(current_user.id)
+    
+                for bid in bids:
+                    if Bid.get_max_bid(bid.uid).amount > bid.pid: #make sure it is comparing the same product
+                        User.update_balance(bid.id, current_user.balance + float(bid.pid)) #!!!!!
+                
             elif bid_amount>current_user.balance:
                 flash("Insufficient Funds!", "warning")
             elif bid_amount<currentbid:
