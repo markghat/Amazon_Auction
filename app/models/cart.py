@@ -14,11 +14,12 @@ class Cart:
     
   
     
+    # buy_now will be displayed in the wishlist!
     @staticmethod
-    def get_cart_for_user(buyer_id):
+    def get_cart_for_user(buyer_id): 
     # Ensure the SELECT statement fetches all fields required for Cart initialization
         rows = app.db.execute('''
-        SELECT Cart.product_id, Products.name, Cart.buyer_id, Products.price As product_price
+        SELECT Cart.product_id, Products.name, Cart.buyer_id, Products.buy_now As product_price
         FROM Cart, Products
         WHERE 
             Cart.buyer_id = :buyer_id and Cart.product_id = Products.id

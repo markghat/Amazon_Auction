@@ -1,14 +1,16 @@
 from flask import current_app as app
 from flask_login import current_user
 
-
 class Bid:
-    def __init__(self, bidID, uid, pid, amount, bidtime): #!!!Added Name
+    #def __init__(self, bidID, uid, pid, amount, bidtime): #!!!Added Name
+    def __init__(self, bidID, uid, pid, amount, bidtime): 
         self.uid = uid
         self.id = bidID
         self.pid = pid
         self.amount = amount
         self.bidtime= bidtime
+        self.product_name = Bid.get_product_name(pid)
+        
 
     @staticmethod
     def get(id):
@@ -23,7 +25,7 @@ WHERE id = :id
     @staticmethod
     def get_bids(uid): 
         rows = app.db.execute('''
-SELECT Bids.id, Bids.pid, Bids.amount, Bids.bidtime, Products.name
+SELECT Bids.id, Bids.uid, Bids.pid, Bids.amount, Bids.bidtime
 FROM Bids, Products
 WHERE uid = :uid and bids.pid = Products.id
 ORDER BY bidtime DESC
@@ -62,3 +64,12 @@ WHERE id = :uid
                                   pid=pid,
                                   )
             return uid
+
+    @staticmethod
+    def get_product_name(pid):
+        rows = app.db.execute('''
+            SELECT name
+            FROM Products
+            WHERE id = :pid
+        ''', pid=pid)
+        return rows[0][0] if rows else None

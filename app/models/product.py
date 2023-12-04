@@ -4,11 +4,22 @@ import datetime
 from humanize import naturaltime
 from .bid import Bid
 
+
 class Product:
-    def __init__(self, id, name, price, available, catergory, expiration, image, rating):
+
+
+    # buyNow to getbuyNow()
+    # product.price is supposed to be bid price????? NOT the buy now price
+    # charity must be able to set BOTH buy now price AND bid price
+
+
+    #add purchase
+    def __init__(self, id, name, starting_bid, buy_now, available, catergory, expiration, image, rating):
         self.id = id
         self.name = name
-        self.price = Bid.get_max_bid(id).amount if Bid.get_max_bid(id) else price#Price is instantiated as current bid amount
+        #self.price = Bid.get_max_bid(id).amount if Bid.get_max_bid(id) else price#Price is instantiated as current bid amount
+        self.starting_bid = starting_bid
+        self.buy_now = buy_now
         self.available = available
         self.image = image
         self.catergory = catergory
@@ -17,62 +28,82 @@ class Product:
         #print("successfully set self.expiration.\n")
         self.rating = rating
 
+        self.current_max_bid = Bid.get_max_bid(id).amount if Bid.get_max_bid(id) else starting_bid
+
+
     @staticmethod
     def get(id):
         rows = app.db.execute('''
-SELECT id, name, price, available, catergory, expiration, image, rating
-FROM Products
-WHERE id = :id
-''',
-                              id=id)
+    SELECT id, name, starting_bid, buy_now, available, catergory, expiration, image, rating
+    FROM Products
+    WHERE id = :id
+    ''',
+                                id=id)
         return Product(*(rows[0])) if rows is not None else None
+
 
     @staticmethod
     def get_all(available=True):
         rows = app.db.execute('''
-SELECT id, name, price, available, catergory, expiration, image, rating
-FROM Products
-WHERE available = :available
-                              AND expiration >= now()
-''',
-                              available=available)
+    SELECT id, name, starting_bid, buy_now, available, catergory, expiration, image, rating
+    FROM Products
+    WHERE available = :available
+                                AND expiration >= now()
+    ''',
+                                available=available)
         return [Product(*row) for row in rows]
-    
+
+
 
     @staticmethod
     def get_all_by_category(catergory, available):
         rows = app.db.execute('''
-SELECT *
-FROM Products
-WHERE catergory = :catergory
-                              AND available = :available
+    SELECT *
+    FROM Products
+    WHERE catergory = :catergory
+                                AND available = :available
 
-''',
-                              available=available, catergory =catergory)
+
+    ''',
+                                available=available, catergory =catergory)
         return [Product(*row) for row in rows]
-    
-    
+
+
+
+
+    #     @staticmethod
+    #     def getPrice(id):
+    #         rows = app.db.execute('''
+    # SELECT price
+    # FROM Products
+    # WHERE id = :id
+    # ''',
+    #                               id=id)
+    #         return int(*(rows[0])) if rows else None
+
 
     @staticmethod
-    def getPrice(id):
+    def getBuyNow(id):
         rows = app.db.execute('''
-SELECT price
-FROM Products
-WHERE id = :id
-''',
-                              id=id)
+    SELECT buy_now
+    FROM Products
+    WHERE id = :id
+    ''',
+                                id=id)
         return int(*(rows[0])) if rows else None
-    
+
+
+
     @staticmethod
     def getCategory(id):
         rows = app.db.execute('''
-SELECT catergory
-FROM Products
-WHERE id = :id
-''',
-                              id=id)
+    SELECT catergory
+    FROM Products
+    WHERE id = :id
+    ''',
+                                id=id)
         return int(*(rows[0])) if rows else None
-    
+
     @staticmethod
     def get_seller(id):
         row = app.db.execute('''
@@ -82,62 +113,69 @@ WHERE id = :id
     ''', id=id).fetchone()
         return Product(*(row)) if row is not None else None
 
+
     def get_most_expensive():
         rows = app.db.execute('''
-SELECT * FROM Products
-                              WHERE expiration >= now()
-                              AND available = :available
-ORDER BY price DESC
-                              
-                              
+    SELECT * FROM Products
+                                WHERE expiration >= now()
+                                AND available = :available
+    ORDER BY price DESC
+                            
+                            
     ''',
     available = True)
         return [Product(*row) for row in rows]
-    
+
     def search_by_name(search_query):
         rows = app.db.execute('''
-SELECT *
-FROM Products
-WHERE LOWER(name) LIKE LOWER(:name)
-                              AND available = true
-                              AND expiration >= now()
-''', name='%'+search_query+'%')
+    SELECT *
+    FROM Products
+    WHERE LOWER(name) LIKE LOWER(:name)
+                                AND available = true
+                                AND expiration >= now()
+    ''', name='%'+search_query+'%')
         return [Product(*row) for row in rows]
-    
+
     def get_least_expensive():
         rows = app.db.execute('''
-SELECT * FROM Products
-                              WHERE expiration >= now()
-                              AND available = true
-ORDER BY price
+    SELECT * FROM Products
+                                WHERE expiration >= now()
+                                AND available = true
+    ORDER BY buy_now
     ''')
         return [Product(*row) for row in rows]
-    
+
     def get_highest_rating():
         rows = app.db.execute('''
-SELECT * FROM Products
-                              WHERE expiration >= now()
-ORDER BY rating DESC
+    SELECT * FROM Products
+                                WHERE expiration >= now()
+    ORDER BY rating DESC
     ''')
         return [Product(*row) for row in rows]
-    
+
     def get_expiration():
         rows = app.db.execute('''
-SELECT * FROM Products
+    SELECT * FROM Products
     WHERE expiration >= now()
-ORDER BY expiration;
+    ORDER BY expiration;
     ''')
         return [Product(*row) for row in rows]
-    
 
+
+
+
+
+
+
+    # TODO: Determine if change_price needs to be modified or just removed ==> AFTER modifying products.py
     @staticmethod
     def change_price(id, amount):
             print('MY ID:' + str(id))
             print('MY AMOUNT:' + str(amount))
             rows = app.db.execute('''
                     UPDATE Products
-SET price = :amount
-WHERE id = :id; ''', id=id,
-amount=amount
+    SET price = :amount
+    WHERE id = :id; ''', id=id,
+    amount=amount
                                 )
             return id

@@ -3,6 +3,7 @@ from flask_login import current_user
 import datetime
 from flask import redirect, url_for
 
+
 from .models.product import Product
 from .models.purchase import Purchase
 from .models.sells import SoldItem
@@ -10,14 +11,19 @@ from .models.order import Order
 from .models.bid import Bid
 from .models.user import User
 
+
 from flask import Blueprint
 bp = Blueprint('purchased', __name__) #changed to purchased
 
+
 from humanize import naturaltime
+
 
 def humanize_time(dt):
     print(dt)
     return naturaltime(datetime.datetime.now() - dt)
+
+
 
 
 @bp.route('/purchased')
@@ -33,16 +39,18 @@ def purchased():
         purchases = None
     # render the page by adding information to the index.html file
     return render_template('purchased.html', #change to purchased.html and add humanize
-                           avail_products=products,
-                           purchase_history=purchases,
-                           bid_history = bids,
-                           humanize_time=humanize_time
+                            avail_products=products,
+                            purchase_history=purchases,
+                            bid_history = bids,
+                            humanize_time=humanize_time
                             )
+
 
 @bp.route('/purchased/add/<int:product_id>', methods=['POST'])
 def purchased_add(product_id):
-    if current_user.is_authenticated and current_user.balance > Product.getPrice(product_id):
+    if current_user.is_authenticated and current_user.balance > Product.getBuyNow(product_id): #Product.getPrice(product_id):
         newPurchase = Purchase.add_purchase(current_user.id, product_id, datetime.datetime.now()) #how to get the current time
+
 
         #TODO: Implement Orders.add_order() method
         charityId = User.getCharityIdWithProductId(product_id)
@@ -51,13 +59,18 @@ def purchased_add(product_id):
         #TODO: make method to get the cost of the item
         cost = newPurchase.price
 
+
         purchaseId = newPurchase.id
+
 
         productName = newPurchase.name
 
+
         Order.add_order(purchaseId, productName, current_user.id, charityId, date_placed, cost, False)
 
+
         SoldItem.remove_charity_item(product_id) # Removes item from Sells table, and then Product Table
+
 
         return redirect(url_for('purchased.purchased'))
     else:

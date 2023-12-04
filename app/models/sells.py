@@ -1,30 +1,37 @@
 from flask import current_app as app
 
+
 from .product import Product
 from .order import Order
 from .bid import Bid
+
+
 
 
 class SoldItem:
     def __init__(self, charityId):
         print("charityID is" + str(charityId))
         self.charityId = charityId
-#self.productId = productId
+    #self.productId = productId
+
 
     @staticmethod
     def get_charity_items(charityId): # get ALL items sold by a given charity (by charityId)
-        # Original query: 
+        # Original query:
         #SELECT P.id, P.name, P.price, P.available FROM Sells AS S JOIN Products AS P ON S.productId = P.id WHERE S.charityId = :charityId;
         rows = app.db.execute('''
-SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.rating FROM Sells AS S JOIN Products AS P ON S.productId = P.id WHERE S.charityId = :charityId AND P.available = true;
-''',
-                              charityId=charityId)
+    SELECT P.id, P.name, P.starting_bid, P.buy_now, P.available, P.catergory,P.expiration, P.image, P.rating FROM Sells AS S JOIN Products AS P ON S.productId = P.id WHERE S.charityId = :charityId AND P.available = true;
+    ''',
+                                charityId=charityId)
         #return [SoldItem(*rows) for rows in rows]
+
 
         ##return [SoldItem(row[0]) for row in rows]
 
+
         #for row in rows:
             #print(len(row))
+
 
         #return [row for row in rows]
         # print("IN get_charity_items() method in sells.py!!!!!!")
@@ -34,9 +41,13 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
         # print("P.available=" + str(rows[0][3]))
         # print("P.image=" + str(rows[0][0]))
 
+
         # print("\n\n\n")
 
+
         return [Product(*row) for row in rows]
+
+
 
 
     @staticmethod
@@ -47,17 +58,22 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
             WHERE O.sellerId = :charityId;
         ''', charityId=charityId)
 
+
         return [Order(*row) for row in rows]
+
+
 
 
     @staticmethod
     def remove_charity_item(pid):
         try:
 
+
             app.db.execute("""
                 DELETE FROM Sells WHERE productId = :pid;
             """,
                                     pid = pid)
+
 
             print("Deleted from Sells:" + str(pid))
             #TODO: Decide if we need to delete from products??
@@ -66,6 +82,7 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
             # """,
             #                         pid = pid)
             # print("Deleted from Products:" + str(pid))
+
 
             #Revision: set available attribute for product in Products table ==> to False
                         # Set available attribute to False for the product in Products table
@@ -76,6 +93,8 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
             """, pid=pid)
 
 
+
+
             # JUST FOR TESTING
             rows = app.db.execute("""
                 SELECT available
@@ -84,10 +103,13 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
             """, pid=pid)
             
             print("this is updated product availability")
-            print(rows[0][0]) 
+            print(rows[0][0])
             # END OF TESTSING
 
+
             print("Updated availability of just sold item to FALSE in the Products table.")
+
+
 
 
             #id = rows[0][0]
@@ -99,35 +121,43 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
             return None
 
 
+
+
     @staticmethod
-    def add_charity_item(charityId, name, price, category, expiration, image):
+    def add_charity_item(charityId, name, starting_bid, buy_now, category, expiration, image):
+
+
+        #charityId, name, starting_bid, buy_now, category, expiration_dt, image
         #try:
         # Step 1: Add a new product to the Products table
 
+
         # result = app.db.execute("""
-        #     INSERT INTO Products (name, price) 
+        #     INSERT INTO Products (name, price)
         #     VALUES (:name, :price)
         #     RETURNING id;
         # """, name=name, price=price)
                 # Step 1: Add a new product to the Products table
         result = app.db.execute("""
-            INSERT INTO Products (name, price, available, catergory, expiration, image, rating) 
-            VALUES (:name, :price, TRUE, :category, :expiration, :image, 0.0)
+            INSERT INTO Products (name, starting_bid, buy_now, available, catergory, expiration, image, rating)
+            VALUES (:name, :starting_bid, :buy_now, TRUE, :category, :expiration, :image, 0.0)
             RETURNING id;
-        """, name=name, price=price, category=category, expiration=expiration, image=image)
+        """, name=name, starting_bid=starting_bid, buy_now = buy_now, category=category, expiration=expiration, image=image)
         
+
 
         product_id = result[0][0]
 
+
         #expiration_test = result[0][5]
-       # print("expiration:")
+        # print("expiration:")
         #print(expiration_test)
         ##print(type(expiration_test))
- 
         #product_id = result.fetchone()[0]
         #print(product_id)
         #print(type(product_id))
         
+
 
         # Step 2: Associate the product with the charity in the Sells table
         app.db.execute("""
@@ -135,12 +165,15 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
             VALUES (:charityId, :productId);
         """, charityId=charityId, productId=product_id)
 
+
         return 4
-       # except Exception as e:
+        # except Exception as e:
             # likely email already in use; better error checking and reporting needed;
             # the following simply prints the error to the console:
             #print(str(e))
             #return None
+
+
 
 
     @staticmethod
@@ -152,9 +185,11 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
                 WHERE id = :product_id;
             """, new_status=new_status, product_id=product_id)
 
+
             print(f"Product {product_id} availability updated to {new_status}")
         except Exception as e:
             print(f"Error updating product availability: {str(e)}")
+
 
     def search_by_seller(search_query): # TODO: CHANGE THISSSSS
         rows = app.db.execute('''
@@ -163,6 +198,8 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
         JOIN Sells S ON P.id = S.productId
         JOIN Charities C ON S.charityId = C.id
         WHERE LOWER(C.name) LIKE LOWER(:name)
-''', name='%'+search_query+'%')
+    ''', name='%'+search_query+'%')
         return [Product(*row) for row in rows]
-    
+
+
+
