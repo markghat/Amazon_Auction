@@ -2,63 +2,114 @@
 
 {% block content %}
 
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    body, h2, table, input, label, button, select, textarea {
+        font-family: Georgia, serif; 
+    }
 
-<br><br>
+    body {
+        background-color: #E6E6FA; 
+    }
+    .container {
+        background-color: #B0C4DE; 
+        border-radius: 0; 
+        border: 2px solid #4682B4; 
+        padding: 20px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    .table, .table th, .table td {
+        border: 1px solid #A9A9A9; 
+    }
+    .table th {
+        background-color: #B0C4DE; 
+        color: #000;
+    }
+    .table-hover tbody tr:hover {
+        background-color: #f8f8f8;
+    }
+    input[type="submit"] {
+        background-color: #4682B4; 
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        margin-top: 10px;
+        border-radius: 4px;
+    }
+    input[type="submit"]:hover {
+        background-color: #4169E1; 
+    }
+    input[type="text"], input[type="number"], select {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 4px;
+        border: 1px solid #ced4da;
+    }
+    label {
+        margin-top: 15px;
+        display: block;
+    }
+    form {
+        margin-top: 20px;
+    }
+</style>
 
-<h2> {{charityName}} (Charity ID {{mynum}})- Products for sale:</h2>
-<table class='table table-hover table-bordered container'>
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">Product ID</th>
-      <th scope="col">Product Name</th>
-      <th scope="col">Buy Now Price</th>
-      <th scope="col">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for product in avail_products%}
-    <tr>
-      <th scope="row">{{product.id}}</th>
-      <td>{{product.name}}</td>
-      <td>{{product.price}}</td>
-      <td>
-        <form action="{{ url_for('index.sells_remove', product_id=product.id) }}" method="POST">
-          <input type="submit" value="Remove" />
-        </form>
-      </td>
+<div class="container">
+    <h2>{{ charityName }} (Charity ID {{ mynum }}) - Products for sale:</h2>
+    <table class='table table-hover'>
+        <thead>
+            <tr>
+                <th scope="col">Product ID</th>
+                <th scope="col">Product Name</th>
+                <th scope="col">Buy Now Price</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in avail_products %}
+            <tr>
+                <th scope="row">{{ product.id }}</th>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price }}</td>
+                <td>
+                    <form action="{{ url_for('index.sells_remove', product_id=product.id) }}" method="POST">
+                        <input type="submit" value="Remove" />
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    <form action="{{ url_for('index.sells_add')}}" method="POST">
+        <label for="name">Product Name:</label>
+        <input type="text" name="name" id="name" required>
 
-<form action="{{ url_for('index.sells_add')}}" method="POST">
-  <label for="name">Product Name:</label>
-  <input type="text" name="name" required>
+        <label for="price">Buy Now Price:</label>
+        <input type="number" name="price" id="price" step="0.01" required>
 
-  <label for="price">Buy Now Price:</label>
-  <input type="number" name="price" step="0.01" required>
+        <label for="category">Category:</label>
+        <input type="text" name="category" id="category">
 
-  <label for="category">Category:</label>
-  <input type="text" name="category" id="category">
+        <label for="expiration_month">Expiration Month:</label>
+        <input type="text" name="expiration_month" id="expiration_month" required>
 
-  <label for="expiration_month">Expiration Month:</label>
-  <input type="text" name="expiration_month" id="expiration_month" required>
+        <label for="expiration_day">Expiration Day:</label>
+        <input type="text" name="expiration_day" id="expiration_day" required>
 
-  <label for="expiration_day">Expiration Day:</label>
-  <input type="text" name="expiration_day" id="expiration_day" required>
+        <label for="expiration_year">Expiration Year:</label>
+        <input type="text" name="expiration_year" id="expiration_year" required>
 
-  <label for="expiration_year">Expiration Year:</label>
-  <input type="text" name="expiration_year" id="expiration_year" required>
-
-  <label for="expiration_time">Expiration Time (as HH:MM:SS):</label>
-  <input type="text" name="expiration_time" id="expiration_time" required>
+        <label for="expiration_time">Expiration Time (as HH:MM:SS):</label>
+        <input type="text" name="expiration_time" id="expiration_time" required>
   
-  <!-- Might need to fix this bc i don't know how image is displayed -->
-  <label for="image">Image URL:</label>
-  <input type="text" name="image" id="image" required>
+        <label for="image">Image URL:</label>
+        <input type="text" name="image" id="image" required>
 
-  <input type="submit" value="Add New Item">
-</form>
+        <input type="submit" value="Add New Item">
+    </form>
+</div>
 
 {% endblock %}

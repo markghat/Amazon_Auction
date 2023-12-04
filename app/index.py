@@ -376,3 +376,4 @@ def sells_add():
 #     ''', is_checked=is_checked, order_id=order_id)
 
 #     return redirect(url_for('index.seller_orders'))
+
