@@ -14,7 +14,7 @@ from .models.cart import Cart
 from flask import Blueprint
 bp = Blueprint('cart', __name__)
 
-
+#gets what's currently in the authenticated users cart/wishlist
 @bp.route('/cart', methods=['POST', 'GET'])
 def cart():
     if request.method == 'POST' and current_user.is_authenticated:

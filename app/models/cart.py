@@ -11,6 +11,7 @@ class Cart:
         self.product_price = product_price
         self.seller_id = seller_id 
     
+    #gets what's currently in a given users cart
     @staticmethod
     def get_cart_for_user(buyer_id):
         rows = app.db.execute('''
@@ -22,6 +23,7 @@ class Cart:
         ''', buyer_id=buyer_id)
         return [Cart(*row) for row in rows]
 
+    #adds a product to a users cart for a given user id and product id
     @staticmethod
     def add_to_cart(buy_id, product_id):
         print(f"Attempting to add product {product_id} to cart for user {buy_id}")
@@ -41,6 +43,7 @@ class Cart:
             print(f"Product {product_id} is already in the cart for user {buy_id}")
             return "Product already in the cart."
 
+    #removes a product from a users cart for a given product and user id
     @staticmethod
     def remove_from_cart(buyer_id, product_id):
         rows = app.db.execute('''
