@@ -124,6 +124,7 @@ def search():
 
 
 
+#gets products for sale for a charity 5 by default
 @bp.route('/sells/', methods = ['GET'])
 def sells():
     charityId = request.args.get('charityId', default=5, type=int)
@@ -145,6 +146,7 @@ def sells():
     avail_products = items,
     mynum= charityId)
 
+#for charities to add new items to their inventory
 @bp.route('/sells/inventory', methods = ['GET'])
 def seller_inventory():
     #charityId = request.args.get('charityId', default=5, type=int)
@@ -179,6 +181,7 @@ def seller_inventory():
     # mynum= charityId)
 
 
+#renders charity info page for a given charity
 @bp.route('/infopage/', methods = ['GET', 'POST'])
 def charity_info():
 
@@ -219,6 +222,7 @@ def charity_info():
         charityName = name,
         charityDescription = charityDescription)
 
+#changes charity description
 @bp.route('/change_charity_description', methods = ['GET', 'POST'])
 def change_charity_description():
     print("reached change_charity_description() method in index.py")
@@ -243,7 +247,7 @@ def change_charity_description():
 
 
 
-
+#shows items that have been sold
 @bp.route('/sells/orders', methods = ['GET', 'POST'])
 def seller_orders():
     #charityId = request.args.get('charityId', default=5, type=int)
@@ -294,12 +298,14 @@ def seller_orders():
         return redirect(url_for('index.index'))
 
 
+#removes items from seller list
 @bp.route('/sells/inventory/remove/<int:product_id>', methods=['POST'])
 def sells_remove(product_id):
     #Purchase.add_purchase(current_user.id, product_id, datetime.datetime.now()) #how to get the current time
     SoldItem.remove_charity_item(product_id)
     return redirect(url_for('index.seller_inventory'))
 
+#adds to inventory
 @bp.route('/sells/inventory/add/', methods=['POST'])
 def sells_add():
 
