@@ -20,6 +20,7 @@ bp = Blueprint('products', __name__)
 
 
 
+#returns the product with the highest price attribute
 @bp.route('/product/expensive/', methods=['GET'])
 def products_get_most_expensive():
     k = request.args.get('k', default=5, type=int)
@@ -27,7 +28,8 @@ def products_get_most_expensive():
     return render_template('product_expensive.html',
                            avail_products=items,
                            mynum=k)
-
+    
+#Sorts categories by attribute
 @bp.route('/sort/', methods=['GET'])
 def products_filter():
     page = int(request.args.get('page', default=1))
@@ -44,14 +46,12 @@ def products_filter():
                            avail_products=items,
                            page = page)
 
-
+#returns product metadata to be displayed in product info page
 @bp.route('/product/<int:product_id>', methods=['GET', 'POST'])
 def product_info(product_id):
     if not current_user.is_authenticated:
         return redirect(url_for('users.login'))
-    # Replace this with code to fetch product information from your database based on product_id
     product = Product.get(product_id)
-    #get user
     currentbid = Bid.get_max_bid(product_id).amount if Bid.get_max_bid(product_id) else product.price
     product_reviews = ProductReview.get_by_pid(product_id)
     total_reviews = ProductReview.get_total_number_by_id(product_id)
@@ -66,26 +66,11 @@ def product_info(product_id):
     print("this is our charity_name:")
     print(charity_name)
 
-    #charity = getCharityGivenProductId(product_id)
-
-    # if request.method == 'POST':
-    #     if request.form['action'] == 'delete_review':
-    #         ProductReview.delete_by_id(request.form['review_id'])
-    #         product_reviews = ProductReview.get_by_pid(product_id)
-    #         total_reviews = ProductReview.get_total_number_by_id(product_id)
-    #         avg_rating = ProductReview.get_average_rating(product_id)
-    #         my_review = ProductReview.get_last_review(product_id, current_user.id)
-    #         return render_template('product_info.html',
-    #                        isNewReview=my_review is None, 
-    #                        my_review=my_review,
-    #                        product=product, 
-    #                        product_reviews=product_reviews, 
-    #                        total=total_reviews, 
-    #                        average=avg_rating)
-
     page = int(request.args.get('page', default=1))
 
     if request.method == 'POST':
+        
+        #User requests to delete review
         if request.form['action'] == 'delete_review':
             ProductReview.delete_by_id(request.form['review_id'])
             product_reviews = ProductReview.get_by_pid(product_id)
@@ -103,8 +88,8 @@ def product_info(product_id):
 
     
     
-    if request.method == 'POST' and current_user.is_authenticated:
-         
+    if request.method == 'POST' and current_user.is_authenticated: #verifies that user is authenticated
+        #User downvotes product
         if request.form['action'] == 'downvote':
             if int(request.form['likes']) > 0:
                 ProductReview.update_upvote_for_id(int(request.form['review_id']), -1, current_user.id)
@@ -112,28 +97,28 @@ def product_info(product_id):
                 total_reviews = ProductReview.get_total_number_by_id(product_id)
                 avg_rating = ProductReview.get_average_rating(product_id)
                 my_review = ProductReview.get_last_review(product_id, current_user.id)
+        #User upvotes product
         elif request.form['action'] == 'upvote':
             ProductReview.update_upvote_for_id(int(request.form['review_id']), 1, current_user.id)
             product_reviews = ProductReview.get_by_pid(product_id)
             total_reviews = ProductReview.get_total_number_by_id(product_id)
             avg_rating = ProductReview.get_average_rating(product_id)
             my_review = ProductReview.get_last_review(product_id, current_user.id)
-        elif request.form['action'] == 'bid': #and current_user.balance >= bid_amount:
-            # Handle bid submission here
+        #User bids on product
+        elif request.form['action'] == 'bid': 
             bid_amount = float(request.form.get('bidAmount'))
             print(bid_amount)
             user_id = current_user.id    
             print("currentbid: "+str(currentbid))
             print("bid_amount: "+str(bid_amount))
-            #print("bid_amt: "+str(bid_amt))
-            if bid_amount>currentbid and bid_amount<=current_user.balance:
+            if bid_amount>currentbid and bid_amount<=current_user.balance: #verifies bid is greater than current max bid and user has enough money
                 Bid.add_bid(user_id, product_id, bid_amount, datetime.datetime.now())
                 Product.change_price(product.id, bid_amount)
                 flash('Price Changed', "info")
                 product.price = bid_amount
-            elif bid_amount>current_user.balance:
+            elif bid_amount>current_user.balance: #if user doesn't have enough money
                 flash("Insufficient Funds!", "warning")
-            elif bid_amount<currentbid:
+            elif bid_amount<currentbid: #if bid is less than current bid price
                 flash("Your bid must be higher than the current bid!", "warning")
         else:
             return redirect(url_for('users.login'))

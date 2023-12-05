@@ -19,7 +19,7 @@ def humanize_time(dt):
     print(dt)
     return naturaltime(datetime.datetime.now() - dt)
 
-
+#returns purchase history
 @bp.route('/purchased')
 def purchased():
     # get all available products for sale:
@@ -38,7 +38,8 @@ def purchased():
                            bid_history = bids,
                            humanize_time=humanize_time
                             )
-
+    
+#adds purchase to purchase history
 @bp.route('/purchased/add/<int:product_id>', methods=['POST'])
 def purchased_add(product_id):
     if current_user.is_authenticated and current_user.balance > Product.getPrice(product_id):
