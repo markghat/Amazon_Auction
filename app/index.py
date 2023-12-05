@@ -68,6 +68,7 @@ def index():
                            humanize_time=humanize_time,
                            page=page)
 
+#displays all available products for sale with an option to filter by price, rating etc
 @bp.route('/products')
 def products():
         # get all available products for sale:
@@ -98,6 +99,7 @@ def products():
                            page=page)
 
 
+#searches the products/sellers based on a given search query
 @bp.route('/search', methods=['GET'])
 def search():
     search_query = request.args.get('search_query')
@@ -376,4 +378,3 @@ def sells_add():
 #     ''', is_checked=is_checked, order_id=order_id)
 
 #     return redirect(url_for('index.seller_orders'))
-
