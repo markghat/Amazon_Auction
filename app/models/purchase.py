@@ -12,7 +12,7 @@ class Purchase:
         self.pid = pid
         self.time_purchased = time_purchased
 
-
+    #returns the product purchased by id
     @staticmethod
     def get(id):
         rows = app.db.execute('''
@@ -22,7 +22,7 @@ class Purchase:
             WHERE Purchases.id = :id
         ''', id=id)
         return Purchase(*rows[0]) if rows else None
-
+    #returns all purchased products since given date
     @staticmethod
     def get_all_by_uid_since(uid, since): 
         rows = app.db.execute('''
@@ -35,10 +35,10 @@ ORDER BY time_purchased DESC
                               uid=uid,
                               since=since)
         return [Purchase(*row) for row in rows]
-
+    
+    # Marks product as purchased (inserts into Purchases table); updates buying User and Charity balances
     @staticmethod
-    def add_purchase(uid, pid, time_purchased): # Marks product as purchased (inserts into Purchases table); updates buying User and Charity balances
-        #try:
+    def add_purchase(uid, pid, time_purchased): 
         rows = app.db.execute("""
 INSERT INTO PURCHASES(uid, pid, time_purchased)
 VALUES(:uid, :pid, :time_purchased)
