@@ -3,14 +3,30 @@ from flask_login import LoginManager
 from .config import Config
 from .db import DB
 from flask_bootstrap import Bootstrap5
+from flask_mail import Mail
 
 login = LoginManager()
 login.login_view = 'users.login' 
+
+app = Flask(__name__)
+
+# Configure Flask-Mail
+
+mail = Mail()
 
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+
+    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+    app.config['MAIL_PORT'] = 587
+    app.config['MAIL_USERNAME'] = 'my-email@gmail.com'
+    app.config['MAIL_PASSWORD'] = 'insert passowrd*'
+    app.config['MAIL_USE_TLS'] = True
+    app.config['MAIL_USE_SSL'] = False
+    mail.init_app(app)
+
 
     app.db = DB(app)
     login.init_app(app)

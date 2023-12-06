@@ -1,7 +1,9 @@
-from flask import render_template, request, url_for
+from flask import current_app, Flask, render_template, request, url_for
 from flask_login import login_user, logout_user, current_user
 import datetime
 from flask import request, jsonify
+from flask_mail import Mail, Message
+
 
 from flask import redirect, flash
 
@@ -20,6 +22,8 @@ from .models.user import User
 from flask import Blueprint
 bp = Blueprint('index', __name__) #changed to purchased
 from humanize import naturaltime
+from app import mail  # import the mail instance
+
 
 def humanize_time(dt):
     return naturaltime(datetime.datetime.now() - dt)
@@ -369,6 +373,27 @@ def sells_add():
     #SoldItem.add_charity_item(0, 5.50,"broski??????")
 
     return redirect(url_for('index.seller_inventory'))
+
+@bp.route('/support')
+def support():
+    return render_template('support.html')
+
+@bp.route('/submit_support_request', methods=['POST'])
+def submit_support_request():
+    # name = request.form['name']
+    # email = request.form['email']
+    # message = request.form['message']
+
+    # msg = Message("Support Request from " + name,
+    #               sender=email,
+    #               recipients=["damiawofisayo@gmail.com"])
+    # msg.body = f"Name: {name}\nEmail: {email}\nMessage: {message}"
+
+    # with current_app.app_context():
+    #     mail.send(msg)
+
+    return redirect(url_for('index.support'))  # adjust the redirect as needed
+
 
 
 # @bp.route('/changeorderstatus', methods=['POST'])

@@ -29,7 +29,8 @@ CREATE TABLE Products (
     catergory VARCHAR(255),
     expiration timestamp without time zone NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC'),
     image VARCHAR NOT NULL,
-    rating DECIMAL(12,2) NOT NULL
+    rating DECIMAL(12,2) NOT NULL,
+    description VARCHAR NOT NULL
 );
 
 CREATE TABLE Sells (

@@ -5,7 +5,7 @@ from humanize import naturaltime
 from .bid import Bid
 
 class Product:
-    def __init__(self, id, name, price, available, catergory, expiration, image, rating):
+    def __init__(self, id, name, price, available, catergory, expiration, image, rating, description):
         self.id = id
         self.name = name
         self.price = Bid.get_max_bid(id).amount if Bid.get_max_bid(id) else price#Price is instantiated as current bid amount
@@ -16,12 +16,13 @@ class Product:
         self.expiration = naturaltime(datetime.datetime.now() - expiration)
         #print("successfully set self.expiration.\n")
         self.rating = rating
+        self.description = description
         
     #gets product by id
     @staticmethod
     def get(id):
         rows = app.db.execute('''
-SELECT id, name, price, available, catergory, expiration, image, rating
+SELECT *
 FROM Products
 WHERE id = :id
 ''',
@@ -31,7 +32,7 @@ WHERE id = :id
     @staticmethod
     def get_all(available=True):
         rows = app.db.execute('''
-SELECT id, name, price, available, catergory, expiration, image, rating
+SELECT *
 FROM Products
 WHERE available = :available
                               AND expiration >= now()
