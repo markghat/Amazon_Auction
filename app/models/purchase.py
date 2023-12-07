@@ -38,7 +38,7 @@ ORDER BY time_purchased DESC
     
     # Marks product as purchased (inserts into Purchases table); updates buying User and Charity balances
     @staticmethod
-    def add_purchase(uid, pid, time_purchased): 
+    def add_purchase(uid, pid, time_purchased, price): 
         rows = app.db.execute("""
 INSERT INTO PURCHASES(uid, pid, time_purchased)
 VALUES(:uid, :pid, :time_purchased)
@@ -47,15 +47,26 @@ RETURNING id
                                 uid=uid,
                                 pid=pid,
                                 time_purchased=time_purchased)
+        
+        rows4 = app.db.execute("""
+UPDATE Products
+SET price = :price
+WHERE Products.id = :pid
+""",
+                                uid=uid,
+                                pid=pid,
+                                price=price
+                                )
 
         # decrement buyer's balance
         rows2 = app.db.execute("""
 UPDATE Users
-SET balance = balance - (SELECT price FROM Products WHERE id = :pid)
+SET balance = balance - :price
 WHERE Users.id = :uid
 """,
                                 uid=uid,
                                 pid=pid,
+                                price=price
                                 )
         cid = User.getCharityIdWithProductId(pid)
         charity_uid = User.getUserIdByCharityId(cid)
@@ -64,14 +75,27 @@ WHERE Users.id = :uid
 
         rows3 = app.db.execute("""
 UPDATE Users
-SET balance = balance + (SELECT price FROM Products WHERE id = :pid)
+SET balance = balance + :price
 WHERE Users.id = :uid
 """,
                                 uid=charity_uid,
                                 pid=pid,
+                                price=price
                                 )
+        
+        rows5 = app.db.execute("""
+UPDATE Charities
+SET moneyraised = moneyraised + :price
+WHERE Charities.id = :id
+""",
+                                id=cid,
+                                pid=pid,
+                                price=price
+                                )
+        
 
         print("value of id")
+        print(cid)
         print(rows[0][0])
         #print(id)
         print("type of id:")

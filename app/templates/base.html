@@ -119,6 +119,7 @@
             <a href="{{ url_for('cart.cart') }}"  class="btn borders" style="color: #304674;">My Wishlist</a>
             {% if current_user.is_authenticated and current_user.isCharity(current_user.id) %}
             <a href="{{ url_for('index.charity_info', charity_id=current_user.getCharityId(current_user.id)) }}" class="btn borders" style="color: #304674;">Your listings</a>
+            <a href="{{ url_for('index.seller_inventory') }}" class="btn borders" style="color: #304674;">Dashboard</a>
             {% endif %}
             <a href="{{ url_for('index.support') }}" class="btn borders" style="color: #304674;">Support</a>
             <a href="{{ url_for('users.logout') }}" class="btn borders" style="color: #304674;">Log out</a>

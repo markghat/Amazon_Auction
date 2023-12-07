@@ -55,8 +55,51 @@
         margin-top: 20px;
     }
 </style>
+<div class="container">
+<!-- Section for Total Money Raised -->
+<div class="container">
+    <h2>Total Money Raised for {{ charityName }}</h2>
+
+    <!-- Money Raised Graph -->
+    <div>
+        <canvas id="moneyRaisedGraph"></canvas>
+    </div>
+
+    <!-- Total Money Raised Display -->
+    <div>
+        <p>Total Money Raised: $<span id="totalMoneyRaised">{{ total_money }}</span></p>
+    </div>
+</div>
+
+<!-- Include Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Assuming 'graphData' is passed from the Flask view as JSON
+    var graphData = JSON.parse('{{ graph_data | tojson }}');
+
+    // Render the Money Raised Graph
+    var ctx = document.getElementById('moneyRaisedGraph').getContext('2d');
+    var moneyRaisedGraph = new Chart(ctx, {
+        type: 'line',  // You can change the type of graph (e.g., 'bar')
+        data: {
+            labels: graphData.labels,  // X-axis labels (e.g., dates)
+            datasets: [{
+                label: 'Money Raised',
+                data: graphData.data,  // Y-axis data
+                // Other styling options for the graph
+            }]
+        },
+        options: {
+            // Configuration options for the graph
+        }
+    });
+</script>
+
+</div>
 
 <div class="container">
+
     <h2>{{ charityName }} (Charity ID {{ mynum }}) - Products for sale:</h2>
     <table class='table table-hover'>
         <thead>
@@ -64,15 +107,16 @@
                 <th scope="col">Product ID</th>
                 <th scope="col">Product Name</th>
                 <th scope="col">Buy Now Price</th>
-                <th scope="col">Actions</th>
+                <th scope="col">Time Left</th>
             </tr>
         </thead>
         <tbody>
             {% for product in avail_products %}
             <tr>
                 <th scope="row">{{ product.id }}</th>
-                <td>{{ product.name }}</td>
+                <td><a href="{{ url_for('products.product_info', product_id=product.id) }}">{{ product.name }}</a></td>
                 <td>{{ product.price }}</td>
+                <td>{{ product.expiration }}</td>
                 <td>
                     <form action="{{ url_for('index.sells_remove', product_id=product.id) }}" method="POST">
                         <input type="submit" value="Remove" />
@@ -87,24 +131,24 @@
         <label for="name">Product Name:</label>
         <input type="text" name="name" id="name" required>
 
-        <label for="price">Buy Now Price:</label>
+        <label for="buynow">Buy Now Price:</label>
+        <input type="number" name="buynow" id="buynow" step="0.01" required>
+
+        <label for="price">Minimum Bid Price:</label>
         <input type="number" name="price" id="price" step="0.01" required>
+
+        <label for="description">Product Description:</label>
+        <input type="text" name="description" id="description" required>
 
         <label for="category">Category:</label>
         <input type="text" name="category" id="category">
 
-        <label for="expiration_month">Expiration Month:</label>
-        <input type="text" name="expiration_month" id="expiration_month" required>
-
-        <label for="expiration_day">Expiration Day:</label>
-        <input type="text" name="expiration_day" id="expiration_day" required>
-
-        <label for="expiration_year">Expiration Year:</label>
-        <input type="text" name="expiration_year" id="expiration_year" required>
-
-        <label for="expiration_time">Expiration Time (as HH:MM:SS):</label>
-        <input type="text" name="expiration_time" id="expiration_time" required>
-  
+        <label for="expiration_date">Expiration Date:</label>
+        <input type="date" name="expiration_date" id="expiration_date" required>
+    
+        <label for="expiration_time">Expiration Time:</label>
+        <input type="time" name="expiration_time" id="expiration_time" required>
+        
         <label for="image">Image URL:</label>
         <input type="text" name="image" id="image" required>
 

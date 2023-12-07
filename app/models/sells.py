@@ -16,7 +16,7 @@ class SoldItem:
         # Original query: 
         #SELECT P.id, P.name, P.price, P.available FROM Sells AS S JOIN Products AS P ON S.productId = P.id WHERE S.charityId = :charityId;
         rows = app.db.execute('''
-SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.rating FROM Sells AS S JOIN Products AS P ON S.productId = P.id WHERE S.charityId = :charityId AND P.available = true;
+SELECT P.id, P.name, P.price, P.buynow, P.available, P.catergory,P.expiration, P.image, P.rating, P.description FROM Sells AS S JOIN Products AS P ON S.productId = P.id WHERE S.charityId = :charityId AND P.available = true;
 ''',
                               charityId=charityId)
         #return [SoldItem(*rows) for rows in rows]
@@ -100,7 +100,7 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
 
 
     @staticmethod
-    def add_charity_item(charityId, name, price, category, expiration, image):
+    def add_charity_item(charityId, name, price, buynow, category, expiration, image, description):
         #try:
         # Step 1: Add a new product to the Products table
 
@@ -111,10 +111,10 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
         # """, name=name, price=price)
                 # Step 1: Add a new product to the Products table
         result = app.db.execute("""
-            INSERT INTO Products (name, price, available, catergory, expiration, image, rating) 
-            VALUES (:name, :price, TRUE, :category, :expiration, :image, 0.0)
+            INSERT INTO Products (name, price, buynow, available, catergory, expiration, image, rating, description) 
+            VALUES (:name, :price, :buynow, TRUE, :category, :expiration, :image, 0.0, :description)
             RETURNING id;
-        """, name=name, price=price, category=category, expiration=expiration, image=image)
+        """, name=name, price=price, buynow=buynow, category=category, expiration=expiration, image=image, description=description)
         
 
         product_id = result[0][0]
@@ -134,6 +134,8 @@ SELECT P.id, P.name, P.price, P.available, P.catergory,P.expiration, P.image, P.
             INSERT INTO Sells (charityId, productId)
             VALUES (:charityId, :productId);
         """, charityId=charityId, productId=product_id)
+
+        print("inserted into sells")
 
         return 4
        # except Exception as e:
