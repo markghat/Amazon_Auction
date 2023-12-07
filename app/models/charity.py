@@ -6,12 +6,15 @@ from .. import login
 
 
 class Charity(UserMixin):
-    def __init__(self, id, orgId, name, email, password):
+    def __init__(self, id, orgId, name, email, password, description, category, moneyraised):
         self.id = id
         self.orgId = orgId
         self.name = name
         self.email = email
         self.password = password
+        self.description = description
+        self.category = category
+        self.moneyraised = moneyraised
 
     @staticmethod
     def get_by_auth(email, password):
@@ -69,3 +72,43 @@ WHERE id = :id
 """,
                               id=id)
         return Charity(*(rows[0])) if rows else None
+    
+#     @staticmethod
+#     def get_products(id):
+#         rows = app.db.execute("""
+# SELECT *
+# FROM Products
+# WHERE id = :id
+# """,
+#                               id=id)
+#         return Charity(*(rows[0])) if rows else None
+
+    def calculate_total_money_raised(id):
+        # Query your database to sum up the total donations or money raised
+        rows = app.db.execute("""
+SELECT moneyraised
+FROM Charities
+WHERE id = :id
+""",
+                              id=id)
+        return rows[0][0] if rows else 0
+
+    def prepare_graph_data(charity_id):
+        # Execute the SQL query to get sales data grouped by date for a specific charity
+        rows = app.db.execute("""
+        SELECT DATE(p.time_purchased) as purchase_date, SUM(pr.price) as total_sales
+        FROM Purchases p
+        JOIN Products pr ON p.pid = pr.id
+        JOIN Sells s ON s.productId = pr.id
+        WHERE s.charityId = :charity_id
+        GROUP BY DATE(p.time_purchased)
+        ORDER BY DATE(p.time_purchased)
+        """,
+        charity_id=charity_id)
+
+        # Extract data for graph
+        print(rows)
+        labels = [row[0].strftime("%Y-%m-%d") for row in rows]  # Dates as labels
+        data = [row[1] for row in rows]  # Sales data
+
+        return {"labels": labels, "data": data}

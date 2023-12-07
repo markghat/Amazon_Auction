@@ -5,7 +5,7 @@ from humanize import naturaltime
 from .bid import Bid
 
 class Product:
-    def __init__(self, id, name, price, available, catergory, expiration, image, rating):
+    def __init__(self, id, name, price, buynow, available, catergory, expiration, image, rating, description):
         self.id = id
         self.name = name
         self.price = Bid.get_max_bid(id).amount if Bid.get_max_bid(id) else price#Price is instantiated as current bid amount
@@ -15,13 +15,15 @@ class Product:
         #self.expiration = expiration
         self.expiration = naturaltime(datetime.datetime.now() - expiration)
         #print("successfully set self.expiration.\n")
+        self.buynow = buynow
         self.rating = rating
+        self.description = description
         
     #gets product by id
     @staticmethod
     def get(id):
         rows = app.db.execute('''
-SELECT id, name, price, available, catergory, expiration, image, rating
+SELECT *
 FROM Products
 WHERE id = :id
 ''',
@@ -31,7 +33,7 @@ WHERE id = :id
     @staticmethod
     def get_all(available=True):
         rows = app.db.execute('''
-SELECT id, name, price, available, catergory, expiration, image, rating
+SELECT *
 FROM Products
 WHERE available = :available
                               AND expiration >= now()
@@ -58,6 +60,17 @@ WHERE catergory = :catergory
     def getPrice(id):
         rows = app.db.execute('''
 SELECT price
+FROM Products
+WHERE id = :id
+''',
+                              id=id)
+        return int(*(rows[0])) if rows else None
+    
+    #returns the buynow of the product
+    @staticmethod
+    def getBuyNow(id):
+        rows = app.db.execute('''
+SELECT buynow
 FROM Products
 WHERE id = :id
 ''',
@@ -148,5 +161,16 @@ ORDER BY expiration;
 SET price = :amount
 WHERE id = :id; ''', id=id,
 amount=amount
+                                )
+            return id
+    
+        #mutator for the price attribute of the product
+    @staticmethod
+    def change_available(id):
+
+            rows = app.db.execute('''
+                    UPDATE Products
+SET available = :a
+WHERE id = :id; ''', id=id, a=False
                                 )
             return id
