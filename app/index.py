@@ -44,6 +44,23 @@ def apply_filters(products, category_filter, price_range_filter):
 
     return filtered_products
 
+
+@bp.route('/charities')
+def list_charities():
+    # Logic to retrieve all charities
+    page = int(request.args.get('page', default=1))
+    charities = Charity.get_all()
+    return render_template('charities.html', charities=charities, page=page)
+
+@bp.route('/charities/search', methods=['GET'])
+def search_charities():
+    search_query = request.args.get('search_query')
+    page = int(request.args.get('page', default=1))
+    # Implement search logic (e.g., by name)
+    results = Charity.search_by_name(search_query)
+    return render_template('charities.html', charities=results,
+                           page=page)
+
 @bp.route('/')
 def index():
     

@@ -33,6 +33,15 @@ WHERE email = :email
         else:
             return User(*(rows[0][1:]))
 
+   #gets all available products
+    @staticmethod
+    def get_all():
+        rows = app.db.execute('''
+SELECT *
+FROM Charities
+''')
+        return [Charity(*row) for row in rows]
+    
     @staticmethod
     def email_exists(email):
         rows = app.db.execute("""
@@ -113,3 +122,14 @@ WHERE id = :id
         data = [row[1] for row in rows]  # Sales data
 
         return {"labels": labels, "data": data}
+
+    #returns the product with a matching name
+    def search_by_name(search_query):
+        rows = app.db.execute('''
+SELECT *
+FROM Charities
+WHERE LOWER(name) LIKE LOWER(:name)
+                              AND available = true
+                              AND expiration >= now()
+''', name='%'+search_query+'%')
+        return [Charity(*row) for row in rows]

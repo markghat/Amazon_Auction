@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" rel="stylesheet">
+
+<style>
+    body, h1, h2, h3, h4, h5, h6, p, a, th, td, input, button, select, textarea {
+        font-family: Georgia, serif; 
+    }
+
+    body {
+        background-color: #E6E6FA; 
+    }
+    .container {
+        background-color: #B0C4DE; 
+        border-radius: 0; 
+        border: 2px solid #4682B4; 
+        margin-top: 20px;
+        padding: 20px;
+    }
+    h1, h2, h3, p, a, input[type="submit"], button {
+        color: #000; 
+    }
+    .pagination .page-link {
+        color: #4682B4;
+    }
+    .pagination .active .page-link {
+        background-color: #4682B4; 
+        border-color: #4682B4;
+    }
+    .pagination .page-item.disabled .page-link {
+        color: #A9A9A9; 
+    }
+    .pagination .page-link:hover {
+        color: #4169E1; 
+    }
+    .card-img-top {
+        border: 2px solid #4682B4; 
+    }
+    .btn-warning {
+        background-color: #4682B4; 
+        border-color: #4682B4;
+        color: white;
+    }
+    .btn-warning:hover {
+        background-color: #4169E1; 
+        border-color: #4169E1;
+    }
+
+</style>
+
+<br><br>
+
+<div class="container">
+  <form action="{{ url_for('index.search_charities')}}" method="GET">
+    <label for="search_query">Search Charities:</label>
+    <input type="text" name="search_query" id="search_query" required>
+    <input type="submit" value="Search">
+  </form>
+</div>
+
+<div class="container">
+  <div class="row">
+
+    <div class="col-md-3">
+      <h4>Filter Options</h4>
+      <form id="filterForm">
+        <label for="category">Select Category:</label>
+        <select name="category" id="category">
+          <option value="">All Categories</option>
+          <option value="climate">Climate</option>
+          <option value="economic_opportunity">Economic Opportunity</option>
+          <option value="social_justice">Social Justice</option>
+          <option value="food_security">Food Security</option>
+          <option value="female_empowerment">Female Empowerment</option>
+          <option value="child_services">Child Services</option>
+          <option value="humanitarian_aid">Humanitarian Aid</option>
+          <!-- (Other categories) -->
+        </select>
+        <label for="region">Select Region:</label>
+        <select name="region" id="region">
+          <option value="">Any Region</option>
+          <option value="africa">Africa</option>
+          <option value="europe">Europe</option>
+          <option value="asia">Asia</option>
+          <option value="middle_east">Middle East</option>
+          <option value="north_america">North America</option>
+          <option value="south_america">South America</option>
+          <option value="carribean">Carribean</option>
+          <!-- (Other regions) -->
+        </select>
+        <input type="button" id="applyFiltersButton" value="Apply Filters" onclick="applyFilters()">
+      </form>
+    </div>
+
+      <h2>Charities Available:</h2>
+      <div class="container">
+        <div class="row">
+            {% set products_per_page = 20 %}
+    {% set start_index = (page - 1) * products_per_page %}
+    {% set end_index = start_index + products_per_page %}
+          {% for i in range(start_index, end_index) %}
+            {% if i < available_charities|length %} 
+              {% set charity = available_charities[i] %} 
+              <div class="col-md-4">
+                <a href="{{ url_for('index.charity_info', charity_id=charity.id) }}">
+                  <div class="card mb-4 shadow-sm">
+                    <img class="card-img-top" src="{{ charity.image }}" alt="{{ charity.name }}">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ charity.name }}</h5>
+                      <p class="card-text">Category: {{ charity.category }}</p>
+                      <p class="card-text">Region: {{ charity.region }}</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      <div class="container">
+        <ul class="pagination">
+          {% set total_pages = (avail_products|length + products_per_page - 1) // products_per_page %}
+          {% set max_pages_shown = 5 %} {# Adjust the number of page links to display #}
+          {% set half_max_pages_shown = (max_pages_shown // 2) %}
+      
+          {# Previous button #}
+          <li class="page-item {% if page == 1 %}disabled{% endif %}">
+            <a class="page-link" href="?page={{ page - 1 }}" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+      
+          {# Page links #}
+          {% for page_num in range(1, total_pages + 1) %}
+          {% if page_num == page or (page_num >= page - half_max_pages_shown and page_num <= page + half_max_pages_shown) %}
+            <li class="page-item {% if page == page_num %}active{% endif %}">
+            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+      
+            {# Next button #}
+            <li class="page-item {% if page == total_pages %}disabled{% endif %}">
+              <a class="page-link" href="?page={{ page + 1 }}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br><br>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("applyFiltersButton").onclick = function() {
+      applyFilters();
+    };
+  });
+
+  function applyFilters() {
+    console.log("applyFilters() called");
+
+
+    var category = document.getElementById("category").value;
+    var priceRange = document.getElementById("priceRange").value;
+
+
+    var queryParams = "category=" + encodeURIComponent(category) + "&priceRange=" + encodeURIComponent(priceRange);
+    window.location.href = "{{ url_for('index.index') }}" + "?" + queryParams;
+  }
+</script>
+
+<!-- (Rest of your existing HTML and JavaScript) -->
+
+{% endblock %}
