@@ -46,16 +46,16 @@ def purchased_add(product_id, price):
 
         newPurchase = Purchase.add_purchase(current_user.id, product_id, datetime.datetime.now(), price) #how to get the current time
 
-        #TODO: Implement Orders.add_order() method
         charityId = User.getCharityIdWithProductId(product_id)
-        #TODO: make method to get the timePurchased (which will be same as date_placed)
         date_placed = newPurchase.time_purchased
-        #TODO: make method to get the cost of the item
 
         purchaseId = newPurchase.id
 
         productName = newPurchase.name
-
+        
+        if Bid.get_max_bid(product_id):
+                    max_bidder_id = Bid.get_max_bid(product_id).uid #get user id of current max bidder
+                    Bid.remove_bid(max_bidder_id,product_id) #remove bid from table when outbid and refund user
         Order.add_order(purchaseId, productName, current_user.id, charityId, date_placed, price, False)
         Product.change_available(product_id)
 

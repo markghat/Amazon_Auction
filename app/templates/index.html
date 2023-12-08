@@ -121,7 +121,7 @@
 
     {% for i in range(start_index, end_index) %}
     {% if i < avail_products|length %} {% set product=avail_products[i] %} <div class="col-md-4">
-      <a href="{{ url_for('products.product_info', product_id=product.id) }}">
+      <a="{{ url_for('products.product_info', product_id=product.id) }}">
         <div class="card mb-4 shadow-sm">
           <img class="card-img-top" src="{{ product.image }}" alt="{{ product.name }}">
           <div class="card-body">

@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  
+
   <title>Mini Amazon</title>
   <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -11,16 +11,14 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 
   <style>
-
-    
     body {
       font-family: "Georgia";
-      background: 	#c6d3e3;
+      background: #c6d3e3;
       color: #304674;
       text-align: center;
     }
 
-    .big{
+    .big {
       font-size: 80px;
     }
 
@@ -43,31 +41,31 @@
       z-index: 100;
     }
 
-    .flex{
+    .flex {
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .borders{
+    .borders {
       border-style: solid;
       border-color: #304674;
       color: #304674;
     }
 
-    .play{
+    .play {
       font-family: 'Playfair Display', serif;
     }
 
-    .spacebetween{
+    .spacebetween {
       justify-content: space-between;
     }
 
-    .spacearound{
+    .spacearound {
       justify-content: space-around;
     }
 
-    .spaceevenly{
+    .spaceevenly {
       justify-content: space-evenly;
     }
 
@@ -86,7 +84,6 @@
       background-color: #000 !important;
       color: #fff;
     }
-
   </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -102,54 +99,57 @@
           style="text-align: center; color: #304674; background-color: #98bad5; padding: 10px 40px; border-radius: 5px;"
           class="play">Buddies' Charity Auctions</a>
       </div>
-    
+
       <div class="flex space-evenly">
         <div style="text-align: right" class="flex spacearound">
           {% if current_user.is_authenticated %}
-    
+
           <div style="margin-right: 20px;">
             Hello {{current_user.firstname}}!
           </div>
-    
+
           <div>
-            
-            <a href="{{ url_for('users.updateBalance') }}"  class="btn borders" style="color: #304674;">My Account</a>
-            
-            <a href="{{ url_for('reviews.index')}}"  class="btn borders" style="color: #304674;"> View Reviews</a>
-            <a href="{{ url_for('cart.cart') }}"  class="btn borders" style="color: #304674;">My Wishlist</a>
+
+            <a href="{{ url_for('users.updateBalance') }}" class="btn borders" style="color: #304674;">My Account</a>
+
+            <a href="{{ url_for('reviews.index')}}" class="btn borders" style="color: #304674;"> View Reviews</a>
+            {% if not current_user.isCharity(current_user.id) %}
+            <a href="{{ url_for('cart.cart') }}" class="btn borders" style="color: #304674;">My Wishlist</a>
+            {% endif %}
             {% if current_user.is_authenticated and current_user.isCharity(current_user.id) %}
-            <a href="{{ url_for('index.charity_info', charity_id=current_user.getCharityId(current_user.id)) }}" class="btn borders" style="color: #304674;">Your listings</a>
+            <a href="{{ url_for('index.charity_info', charity_id=current_user.getCharityId(current_user.id)) }}"
+              class="btn borders" style="color: #304674;">Your listings</a>
             <a href="{{ url_for('index.seller_inventory') }}" class="btn borders" style="color: #304674;">Dashboard</a>
             {% endif %}
             <a href="{{ url_for('index.support') }}" class="btn borders" style="color: #304674;">Support</a>
             <a href="{{ url_for('users.logout') }}" class="btn borders" style="color: #304674;">Log out</a>
           </div>
-    
-    
-          
-    
-    
+
+
+
+
+
           {% else %}
           <div class="flex space-evenly">
             <a href="{{ url_for('users.login') }}" class="btn borders" style="margin-right: 20px;">Log in</a>
             <a href="{{ url_for('users.register') }}" class="btn borders">Sign up</a>
           </div>
-          
+
           {% endif %}
         </div>
         {% endblock %}
-    
+
       </div>
-    
-    
-    
+
+
+
     </div>
   </div>
-  
+
   <div class="main">
     {% block content %}{% endblock %}
   </div>
-  
+
 
 
 </body>
