@@ -18,6 +18,7 @@ CREATE TABLE Charities (
     password VARCHAR(255) NOT NULL,
     description VARCHAR NOT NULL,
     category VARCHAR,
+    region VARCHAR(255),
     moneyraised DECIMAL(12,2) NOT NULL DEFAULT 0.00
 );
 

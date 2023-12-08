@@ -6,7 +6,7 @@ from .. import login
 
 
 class Charity(UserMixin):
-    def __init__(self, id, orgId, name, email, password, description, category, moneyraised):
+    def __init__(self, id, orgId, name, email, password, description, category, region, moneyraised):
         self.id = id
         self.orgId = orgId
         self.name = name
@@ -14,6 +14,7 @@ class Charity(UserMixin):
         self.password = password
         self.description = description
         self.category = category
+        self.region = region
         self.moneyraised = moneyraised
 
     @staticmethod

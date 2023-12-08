@@ -36,9 +36,38 @@ def gen_users(num_users):
             name_components = profile['name'].split(' ')
             firstname = name_components[0]
             lastname = name_components[-1]
-            writer.writerow([uid, email, password, firstname, lastname])
+            balance = f'{str(fake.random_int(max=500))}.{fake.random_int(max=99):02}'
+            writer.writerow([uid, email, password, firstname, lastname, balance])
         print(f'{num_users} generated')
     return
+
+def gen_charities(num_users):
+    with open('Charities.csv', 'w') as f:
+        writer = get_csv_writer(f)
+        n = 0
+        print('Charities...', end=' ', flush=True)
+        for uid in range(num_users):
+            if uid % 10 == 0:
+                n += 1
+                if uid != 0:
+                    id = uid / 10
+                else:
+                    id = uid
+                
+                print(f'{uid}', end=' ', flush=True)
+                profile = fake.profile()
+                email = profile['mail']
+                plain_password = f'pass{uid}'
+                password = generate_password_hash(plain_password)
+                name_components = profile['name'].split(' ')
+                category = fake.random_element(elements=('Climate', 'Economic Opportunity', 'Social Justice', 'Food Security', 'Female Empowerment', 'Child Services', 'Humanitarian Aid'))
+                region = fake.random_element(elements=('Africa', 'Europe', 'Asia', 'Middle East', 'North America ', 'South America', 'Carribean'))
+                name = fake.sentence(nb_words=4)[:-1]
+                description = fake.sentence(nb_words=20)
+                balance = f'{str(fake.random_int(max=500))}.{fake.random_int(max=99):02}'
+                writer.writerow([id, uid, name, email, password, description, category, region, balance])
+        print(f'{num_users} generated')
+    return n
 
 
 def gen_bids(num_products):
@@ -53,7 +82,26 @@ def gen_bids(num_products):
                 print(f'{n_users}', end=' ', flush=True)
                 n_users += 1
             price = f'{str(fake.random_int(max=500))}.{fake.random_int(max=99):02}'
-            writer.writerow([pid, 0, pid, price])
+            uid = f'{str(fake.random_int(max=6))}'
+            time_purchased = fake.date_time()
+            writer.writerow([pid, uid, pid, price, time_purchased])
+        print(f'{num_products} generated;')
+    return available_pids
+
+
+def gen_sells(num_products, num_charities):
+    n_users = 0 
+    available_pids = []
+    with open('Sells.csv', 'w') as f:
+        writer = get_csv_writer(f)
+        print('Sells...', end=' ', flush=True)
+        for pid in range(num_products):
+            if pid % 100 == 0:
+                print(f'{pid}', end=' ', flush=True)
+                print(f'{n_users}', end=' ', flush=True)
+                n_users += 1
+            cid = f'{str(fake.random_int(max=num_charities))}'
+            writer.writerow([pid, cid])
         print(f'{num_products} generated;')
     return available_pids
 
@@ -117,8 +165,10 @@ def gen_purchases(num_purchases, available_pids):
     return
 
 
-gen_users(num_users)
-available_pids = gen_products(num_products)
-gen_purchases(num_purchases, available_pids)
+# gen_users(num_users)
+# available_pids = gen_products(num_products)
+# gen_purchases(num_purchases, available_pids)
 gen_bids(num_products)
+# charities = gen_charities(num_users)
+# gen_sells(num_products, charities)
 

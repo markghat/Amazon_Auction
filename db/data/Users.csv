@@ -4,3 +4,4 @@
 3,user3@example.com,pbkdf2:sha256:260000$1GvmeoAkcWb89TyU$5f711eafb243c1c1a884715dd9bd6d185f29ccd3dab59ad19cc201a7260091cb,Charlie,Williams,2000.25
 4,user4@example.com,pbkdf2:sha256:260000$1GvmeoAkcWb89TyU$5f711eafb243c1c1a884715dd9bd6d185f29ccd3dab59ad19cc201a7260091cb,David,Brown,750.75
 5,user5@example.com,pbkdf2:sha256:260000$1GvmeoAkcWb89TyU$5f711eafb243c1c1a884715dd9bd6d185f29ccd3dab59ad19cc201a7260091cb,Eva,Davis,3000.00
+6,dami@dami.com,"hello",Dami,Awofisayo,3000.00
