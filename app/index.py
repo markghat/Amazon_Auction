@@ -50,6 +50,8 @@ def list_charities():
     # Logic to retrieve all charities
     page = int(request.args.get('page', default=1))
     charities = Charity.get_all()
+    print(charities[0].name)
+    print('woahhhh')
     return render_template('charities.html', charities=charities, page=page)
 
 @bp.route('/charities/search', methods=['GET'])
