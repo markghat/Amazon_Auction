@@ -14,19 +14,16 @@ from .models.cart import Cart
 from flask import Blueprint
 bp = Blueprint('cart', __name__)
 
-
+#gets what's currently in the authenticated users cart/wishlist
 @bp.route('/cart', methods=['POST', 'GET'])
 def cart():
     if request.method == 'POST' and current_user.is_authenticated:
         action = request.form.get('action', type=str)
-        # Determine which action to perform
+
         if action == 'add':
-            print("action == add so we are adding tings")
             product_id = request.form.get('product_id', type=int)
             Cart.add_to_cart(current_user.id, product_id)
-        # elif action == 'remove':
-        #     product_id = request.form.get('product_id', type=int)  # get the product_id from the form
-        #     Cart.remove_from_cart(current_user.id, product_id)
+      
 
         elif action == 'remove':
             product_id = request.form.get('product_id', type=int)
@@ -38,12 +35,10 @@ def cart():
     else:
         pass
 
-    print("Here is value again\n")
-    print(_cart)
+
 
     total_price = sum(item.product_price for item in _cart) if _cart else 0
     return render_template('cart.html',
                            cart=_cart, total_price=total_price,
                            )
     
-

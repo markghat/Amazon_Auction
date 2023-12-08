@@ -1,7 +1,11 @@
-from flask import render_template, request, url_for
+from flask import current_app, Flask, render_template, request, url_for
 from flask_login import login_user, logout_user, current_user
 import datetime
 from flask import request, jsonify
+from flask_mail import Mail, Message
+from .models.charity import Charity
+
+
 
 from flask import redirect, flash
 
@@ -20,6 +24,8 @@ from .models.user import User
 from flask import Blueprint
 bp = Blueprint('index', __name__) #changed to purchased
 from humanize import naturaltime
+from app import mail  # import the mail instance
+
 
 def humanize_time(dt):
     return naturaltime(datetime.datetime.now() - dt)
@@ -68,6 +74,7 @@ def index():
                            humanize_time=humanize_time,
                            page=page)
 
+#displays all available products for sale with an option to filter by price, rating etc
 @bp.route('/products')
 def products():
         # get all available products for sale:
@@ -98,6 +105,7 @@ def products():
                            page=page)
 
 
+#searches the products/sellers based on a given search query
 @bp.route('/search', methods=['GET'])
 def search():
     search_query = request.args.get('search_query')
@@ -122,6 +130,7 @@ def search():
 
 
 
+#gets products for sale for a charity 5 by default
 @bp.route('/sells/', methods = ['GET'])
 def sells():
     charityId = request.args.get('charityId', default=5, type=int)
@@ -143,6 +152,7 @@ def sells():
     avail_products = items,
     mynum= charityId)
 
+#for charities to add new items to their inventory
 @bp.route('/sells/inventory', methods = ['GET'])
 def seller_inventory():
     #charityId = request.args.get('charityId', default=5, type=int)
@@ -164,10 +174,17 @@ def seller_inventory():
         
         items = SoldItem.get_charity_items(int(charityId))
 
+        total_money_raised = Charity.calculate_total_money_raised(charityId)
+        print(total_money_raised)
+        graph_data = Charity.prepare_graph_data(charityId)
+        print(graph_data)
         return render_template('seller_inventory.html', 
         avail_products = items,
         mynum= charityId,
-        charityName = name)
+        charityName = name,
+        graph_data = graph_data,
+    total_money = total_money_raised
+        )
     else:
         return redirect(url_for('index.index'))
 
@@ -177,6 +194,7 @@ def seller_inventory():
     # mynum= charityId)
 
 
+#renders charity info page for a given charity
 @bp.route('/infopage/', methods = ['GET', 'POST'])
 def charity_info():
 
@@ -217,6 +235,7 @@ def charity_info():
         charityName = name,
         charityDescription = charityDescription)
 
+#changes charity description
 @bp.route('/change_charity_description', methods = ['GET', 'POST'])
 def change_charity_description():
     print("reached change_charity_description() method in index.py")
@@ -241,7 +260,7 @@ def change_charity_description():
 
 
 
-
+#shows items that have been sold
 @bp.route('/sells/orders', methods = ['GET', 'POST'])
 def seller_orders():
     #charityId = request.args.get('charityId', default=5, type=int)
@@ -292,6 +311,7 @@ def seller_orders():
         return redirect(url_for('index.index'))
 
 
+#removes items from seller list
 @bp.route('/sells/inventory/remove/<int:product_id>', methods=['POST'])
 def sells_remove(product_id):
     #Purchase.add_purchase(current_user.id, product_id, datetime.datetime.now()) #how to get the current time
@@ -300,67 +320,59 @@ def sells_remove(product_id):
 
 @bp.route('/sells/inventory/add/', methods=['POST'])
 def sells_add():
-
     print("reached sells_add method")
 
     # Retrieving form data:
     name = request.form.get('name', default='', type=str)
     price = request.form.get('price', default=0.0, type=float)
+    buynow = request.form.get('buynow', default=0.0, type=float)
     category = request.form.get('category', default='', type=str)
-    #expiration_str = request.form.get('expiration', default='', type=str)
+    description = request.form.get('description', default='No description available', type=str)
     image = request.form.get('image', default='', type=str)
 
-    # Retrieve separate expiration date components
-    expiration_month_name = request.form.get('expiration_month', default='', type=str)
-    expiration_day = request.form.get('expiration_day', default='', type=str)
-    expiration_year = request.form.get('expiration_year', default='', type=str)
-    
-    # Retrieve expiration time
+    # Retrieve expiration date and time
+    expiration_date = request.form.get('expiration_date', default='', type=str)
     expiration_time = request.form.get('expiration_time', default='', type=str)
 
-    
-    # Validate the form data (might remove this if statement altogether??)
-    if not name or not price or not expiration_month_name or not expiration_day or not expiration_year or not expiration_time:
+    # Validate the form data
+    if not name or not price or not expiration_date or not expiration_time:
         flash('Name, price, and expiration details are required fields.', 'error')
         return redirect(url_for('index.seller_inventory'))
 
-    month_name_to_number = {
-    'January': '01',
-    'February': '02',
-    'March': '03',
-    'April': '04',
-    'May': '05',
-    'June': '06',
-    'July': '07',
-    'August': '08',
-    'September': '09',
-    'October': '10',
-    'November': '11',
-    'December': '12'
-    }
-
-    # Convert the month name to the corresponding number
-    expiration_month = month_name_to_number.get(expiration_month_name)
-    if not expiration_month:
-        flash('Invalid month name.', 'error')
+    # Combine expiration date and time into a datetime object
+    try:
+        expiration_dt = datetime.datetime.strptime(f'{expiration_date} {expiration_time}', '%Y-%m-%d %H:%M')
+    except ValueError:
+        flash('Invalid expiration date or time format.', 'error')
         return redirect(url_for('index.seller_inventory'))
 
-    # Combine expiration components into a string
-    expiration_str = f"{expiration_year}-{expiration_month}-{expiration_day} {expiration_time}"
+    charityId = User.getCharityId(current_user.id) # Ensure this returns an integer or handle exceptions
 
-    #expiration_dt = datetime.strptime(expiration_str, '%Y-%m-%d %H:%M:%S.%f')
-    expiration_dt = datetime.datetime.strptime(expiration_str, '%Y-%m-%d %H:%M:%S')
-
-
-    charityId = User.getCharityId(current_user.id) # TO DO: Need to make sure that this can be cast as an int
-
-    SoldItem.add_charity_item(charityId, name, price, category, expiration_dt, image)
-
-
-    #SoldItem.add_charity_item(int(charityId), str(name), price, category, expiration, image)
-    #SoldItem.add_charity_item(0, 5.50,"broski??????")
+    # Add the charity item to the database
+    SoldItem.add_charity_item(charityId, name, price, buynow, category, expiration_dt, image, description)
 
     return redirect(url_for('index.seller_inventory'))
+
+@bp.route('/support')
+def support():
+    return render_template('support.html')
+
+@bp.route('/submit_support_request', methods=['POST'])
+def submit_support_request():
+    # name = request.form['name']
+    # email = request.form['email']
+    # message = request.form['message']
+
+    # msg = Message("Support Request from " + name,
+    #               sender=email,
+    #               recipients=["damiawofisayo@gmail.com"])
+    # msg.body = f"Name: {name}\nEmail: {email}\nMessage: {message}"
+
+    # with current_app.app_context():
+    #     mail.send(msg)
+
+    return redirect(url_for('index.support'))  # adjust the redirect as needed
+
 
 
 # @bp.route('/changeorderstatus', methods=['POST'])

@@ -18,16 +18,20 @@ def humanize_time(dt):
 from flask import Blueprint
 bp = Blueprint('users', __name__)
 
+#Form where logs in using credentials
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
+    
+#Form for user to deposit / withdraw money
 class BalanceForm(FlaskForm):
     amount = IntegerField('Amount', validators=[DataRequired()])
     deposit = SubmitField('Deposit')
     withdraw = SubmitField('Withdraw')
-
+    
+#Login method
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     print("login called")
@@ -37,15 +41,6 @@ def login():
     if form.validate_on_submit():
         user = User.get_by_auth(form.email.data, form.password.data)
         if user is None:
-
-            # new code
-            #user_from_Users = user
-            ##user = Charities.get_by_auth(form.email.data, form.password.data)
-            #if user is None:
-               # flash('Invalid email or password')
-               # return redirect(url_for('users.login'))
-                
-            # end of new code
             flash('Invalid email or password') # I COMMENTED THIS OUT 
             return redirect(url_for('users.login')) # I COMMENTED THIS OUT
         login_user(user)
@@ -56,7 +51,7 @@ def login():
         return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
 
-
+#Form for registering a new User
 class RegistrationForm(FlaskForm):
     firstname = StringField('First Name', validators=[DataRequired()])
     lastname = StringField('Last Name', validators=[DataRequired()])
@@ -67,6 +62,7 @@ class RegistrationForm(FlaskForm):
                                        EqualTo('password')])
 
     is_charity = BooleanField('Register as Charity?', false_values=()) # if checkbox is unchecked, no data has been sent ==> we want this to evaluate to False!
+    
     #NEW FIELD: IF user wants to be a Charity
     charity_name = StringField('Charity Name')
 
@@ -75,6 +71,8 @@ class RegistrationForm(FlaskForm):
     def validate_email(self, email):
         if User.email_exists(email.data):
             raise ValidationError('Already a user with this email.')
+        
+#Form for updating user info
 class UpdateForm(FlaskForm):
     firstname = StringField('First Name', validators=[DataRequired()])
     lastname = StringField('Last Name', validators=[DataRequired()])
@@ -89,7 +87,7 @@ class UpdateForm(FlaskForm):
         if User.email_exists(email.data):
             raise ValidationError('Already a user with this email.')
 
-#comment
+#Method for registering a new user
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -124,6 +122,7 @@ def register():
     print("not registered successfully :(((")
     return render_template('register.html', title='Register', form=form)
 
+#Method for updating user info
 @bp.route('/Update', methods=['GET', 'POST'])
 def update():
     form = UpdateForm()
@@ -147,26 +146,22 @@ def update():
                            purchase_history=purchases,
                            humanize_time=humanize_time)
 
-# @bp.route('/account', methods=['GET', 'POST'])
-# def account():
-#     form = BalanceForm()
-#     if current_user.is_authenticated: 
-#         return render_template('account.html', form=form)
-    
-@bp.route('/account', methods=['GET', 'POST'])    #DEPOSIT METHOD
+
+ #method for withdrawing / depositing   
+@bp.route('/account', methods=['GET', 'POST'])   
 def updateBalance():
     if not current_user.is_authenticated:
         return redirect(url_for('users.update'))
     id = current_user.id
     form =BalanceForm()
-    if form.validate_on_submit:
+    if form.validate_on_submit: #when the user submits
         amount = form.amount.data
         if amount: 
-            flash("$$$$ Balance Updated $$$$", "info")
+            flash("$$$$ Balance Updated $$$$", "info") #notify the user
             if form.deposit.data:
-                new_balance = User.get_balance(id) + amount
+                new_balance = User.get_balance(id) + amount #increment
             elif form.withdraw.data:
-                new_balance = max(User.get_balance(id) - amount,0)
+                new_balance = max(User.get_balance(id) - amount,0) #decrement
             User.update_balance(id, new_balance)  
             return redirect(url_for('users.updateBalance'))  #refreshes page 
     else:
@@ -183,7 +178,7 @@ def updateBalance():
                            purchase_history=purchases,
                            humanize_time=humanize_time,
                            bid_history = bids)
-
+#logs the user out
 @bp.route('/logout')
 def logout():
     logout_user()

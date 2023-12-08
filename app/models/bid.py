@@ -11,6 +11,7 @@ class Bid:
         self.bidtime= bidtime
 
     @staticmethod
+    #returns bid with matching bidID
     def get(id):
         rows = app.db.execute('''
 SELECT *
@@ -20,6 +21,7 @@ WHERE id = :id
                               id=id)
         return Bid(*(rows[0])) if rows else None
     
+    #retuns a user's list of bids
     @staticmethod
     def get_bids(uid): 
         rows = app.db.execute('''
@@ -30,6 +32,8 @@ ORDER BY bidtime DESC
 ''',
                               uid=uid)
         return [Bid(*row) for row in rows]
+    
+    #returns the single bid with the highest price
     @staticmethod
     def get_max_bid(id):
         rows = app.db.execute('''
@@ -65,7 +69,7 @@ LIMIT 1;
                               id=id)
         return Bid(*(rows[0])) if rows else None
 
-
+    #adds a bid to the bid table
     @staticmethod
     def add_bid(uid, pid, amount, bidtime):
             rows = app.db.execute('''

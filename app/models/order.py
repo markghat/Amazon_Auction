@@ -38,6 +38,7 @@ class Order:
     # total_cost DECIMAL(12,2) NOT NULL,
     # status BOOLEAN DEFAULT FALSE
 
+    #returns order by id
     @staticmethod
     def get(id):
         rows = app.db.execute('''
@@ -47,6 +48,7 @@ class Order:
         ''', id=id)
         return Order(*rows[0]) if rows else None
 
+    #adds order to table
     @staticmethod
     def add_order(purchaseId, productName, buyerId, charityId, date_placed, cost, status): #!!!subtract balance by cost of prduct (come back)
         try:
@@ -72,6 +74,7 @@ RETURNING id
             print(str(e))
             return None
 
+    #toggle's boolean fullfillment status
     @staticmethod
     def change_fulfillment_status(oid, newStatus): #!!!subtract balance by cost of prduct (come back)
         try:

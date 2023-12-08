@@ -2,10 +2,60 @@
 
 {% block content %}
 
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" rel="stylesheet">
+
+<style>
+    body, h1, h2, h3, h4, h5, h6, p, a, th, td, input, button, select, textarea {
+        font-family: Georgia, serif; 
+    }
+
+    body {
+        background-color: #E6E6FA; 
+    }
+    .container {
+        background-color: #B0C4DE; 
+        border-radius: 0; 
+        border: 2px solid #4682B4; 
+        margin-top: 20px;
+        padding: 20px;
+    }
+    h1, h2, h3, p, a, input[type="submit"], button {
+        color: #000; 
+    }
+    .pagination .page-link {
+        color: #4682B4;
+    }
+    .pagination .active .page-link {
+        background-color: #4682B4; 
+        border-color: #4682B4;
+    }
+    .pagination .page-item.disabled .page-link {
+        color: #A9A9A9; 
+    }
+    .pagination .page-link:hover {
+        color: #4169E1; 
+    }
+    .card-img-top {
+        border: 2px solid #4682B4; 
+    }
+    .btn-warning {
+        background-color: #4682B4; 
+        border-color: #4682B4;
+        color: white;
+    }
+    .btn-warning:hover {
+        background-color: #4169E1; 
+        border-color: #4169E1;
+    }
+
+</style>
+
+
 <br><br>
 
 <div class="container">
-  <!-- Search bar form -->
+
   <form action="{{ url_for('index.search')}}" method="GET">
     <label for="search_query">Search:</label>
     <input type="text" name="search_query" id="search_query" required>
@@ -20,30 +70,30 @@
 
 <div class="container">
   <div class="row">
-    <!-- Filter panel -->
+
     <div class="col-md-3">
       <h4>Filter Options</h4>
       <form id="filterForm">
         <label for="category">Select Category:</label>
         <select name="category" id="category">
           <option value="">All Categories</option>
-          <!-- Add options dynamically based on your categories -->
+       
           <option value="electronics">Electronics</option>
           <option value="art&decor">Art and Decor</option>
-          <!-- Add more options as needed -->
+
         </select>
         <label for="priceRange">Select Price Range:</label>
         <select name="priceRange" id="priceRange">
           <option value="">Any Price</option>
           <option value="0-50">$0 - $50</option>
           <option value="50-100">$50 - $100</option>
-          <!-- Add more options as needed -->
+       
         </select>
         <input type="button" id="applyFiltersButton" value="Apply Filters" onclick="applyFilters()">
       </form>
     </div>
 
-    <!-- Product display -->
+
     <div class="col-md-9">
       <h2>Filter Products</h2>
       <form action="{{ url_for('products.products_filter')}}" method="GET">
@@ -53,7 +103,7 @@
           <option value="Least Expensive">Least Expensive</option>
           <option value="Highest rating">Highest rating</option>
           <option value="Closing Soon">Closing Soon</option>
-          <!-- Add other attribute options as needed -->
+
         </select>
         <input type="submit" value="Apply Filter">
       </form>
@@ -153,12 +203,11 @@
   function applyFilters() {
     console.log("applyFilters() called");
 
-    // Retrieve filter values
+
     var category = document.getElementById("category").value;
     var priceRange = document.getElementById("priceRange").value;
 
-    // You can use AJAX to send the filter values to the server and get updated product data
-    // For simplicity, let's just reload the page with the filter values as URL parameters
+
     var queryParams = "category=" + encodeURIComponent(category) + "&priceRange=" + encodeURIComponent(priceRange);
     window.location.href = "{{ url_for('index.index') }}" + "?" + queryParams;
   }
