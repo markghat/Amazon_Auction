@@ -24,10 +24,15 @@
                 <form method="POST" action="{{ url_for('products.product_info', product_id=product.id) }}">
                     <label for="bidAmount">Place Your Bid:</label>
                     <input type="number" id="bidAmount" name="bidAmount" placeholder="Enter your bid" required>
+                    {% if current_user.is_authenticated %}
                     <button type="submit">Submit Bid</button>
-                    <input type="hidden" name="action" value="bid">
+                    {%else%}
+                    <a href="{{ url_for('users.login') }}" class="btn btn-primary">Log in to Submit Bid</a>
+                    {% endif %}
+
                 </form>
-                <form action="{{ url_for('purchased.purchased_add', product_id=product.id, price=product.buynow) }}" method="POST">
+                <form action="{{ url_for('purchased.purchased_add', product_id=product.id, price=product.buynow) }}"
+                    method="POST">
                     <input type="submit" class="btn btn-primary" value="Buy Now" />
                     <p>Current Buy Now Price: ${{ product.buynow }}</p>
                 </form>
@@ -96,8 +101,7 @@
                 {% set end_index = start_index + reviews_per_page %}
 
                 {% for i in range(start_index, end_index) %}
-                {% if i < product_reviews|length %} {% set review=product_reviews[i] %}
-                <tr>
+                {% if i < product_reviews|length %} {% set review=product_reviews[i] %} <tr>
                     <th scope="row">{{review.pid}}</th>
                     <td>{{review.uid}}</td>
                     <td>{% for i in range(review.rating) %}⭐{% endfor %}</td>
@@ -111,7 +115,7 @@
                             <input type="hidden" name="likes" value="{{ review.upvote }}">
                             <input type="hidden" name="review_id" value="{{ review.id }}">
                             <button type="submit" class="btn btn-link">
-                        
+
                                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
                                     class="bi bi-chevron-up {{ 'text-primary' if review.isVoted(current_user.id) == 1 else 'text-muted' }}"
                                     viewBox="0 0 16 16">
@@ -121,20 +125,20 @@
                                 </svg>
                             </button>
                         </form>
-                        
+
                         <form action="/product/{{review.pid}}" id="down_vote_form" method="post">
                             <input type="hidden" name="action" value="downvote">
                             <input type="hidden" name="likes" value="{{ review.upvote }}">
                             <input type="hidden" name="review_id" value="{{ review.id }}">
                             <button type="submit" class="btn btn-link">
-                        
+
                                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
                                     class="bi bi-chevron-down {{ 'text-primary' if review.isVoted(current_user.id) == -1 else 'text-muted' }}"
                                     viewBox="0 0 16 16">
                                     <path
                                         d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
                                 </svg>
-                        
+
                             </button>
                         </form>
                         {# {% if i.buyer_id == current_user.id %}#}
@@ -147,9 +151,9 @@
                         {% endif %}
 
                     </td>
-                </tr>
-                {% endif %}
-                {% endfor %}
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
             </tbody>
         </table>
 
@@ -158,23 +162,23 @@
                 {% set total_pages = (product_reviews|length + reviews_per_page - 1) // reviews_per_page %}
                 {% set max_pages_shown = 5 %} {# Adjust the number of page links to display #}
                 {% set half_max_pages_shown = (max_pages_shown // 2) %}
-        
+
                 {# Previous button #}
                 <li class="page-item {% if page == 1 %}disabled{% endif %}">
                     <a class="page-link" href="?page={{ page - 1 }}" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-        
+
                 {# Page links #}
                 {% for page_num in range(1, total_pages + 1) %}
-                {% if page_num == page or (page_num >= page - half_max_pages_shown and page_num <= page + half_max_pages_shown)
-                    %} <li class="page-item {% if page == page_num %}active{% endif %}">
+                {% if page_num == page or (page_num >= page - half_max_pages_shown and page_num <= page +
+                    half_max_pages_shown) %} <li class="page-item {% if page == page_num %}active{% endif %}">
                     <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
                     </li>
                     {% endif %}
                     {% endfor %}
-        
+
                     {# Next button #}
                     <li class="page-item {% if page == total_pages %}disabled{% endif %}">
                         <a class="page-link" href="?page={{ page + 1 }}" aria-label="Next">

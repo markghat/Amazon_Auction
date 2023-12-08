@@ -49,14 +49,17 @@ def products_filter():
 #returns product metadata to be displayed in product info page
 @bp.route('/product/<int:product_id>', methods=['GET', 'POST'])
 def product_info(product_id):
-    if not current_user.is_authenticated:
-        return redirect(url_for('users.login'))
+    # if not current_user.is_authenticated:
+    #     return redirect(url_for('users.login'))#delete?
     product = Product.get(product_id)
     currentbid = Bid.get_max_bid(product_id).amount if Bid.get_max_bid(product_id) else product.price
     product_reviews = ProductReview.get_by_pid(product_id)
     total_reviews = ProductReview.get_total_number_by_id(product_id)
     avg_rating = ProductReview.get_average_rating(product_id)
-    my_review = ProductReview.get_last_review(product_id, current_user.id)
+    if current_user.is_authenticated:
+        my_review = ProductReview.get_last_review(product_id, current_user.id)
+    else:
+        my_review=None
 
     charity_id = User.getCharityIdWithProductId(product_id)
     print("this is our charity_id:")
@@ -126,9 +129,6 @@ def product_info(product_id):
         else:
             return redirect(url_for('users.login'))
         # STILL DO: update the current id in your database
-
-    print("charity_id being passed from product_info() endpoint")
-    print(charity_id)
 
     return render_template('product_info.html',
                            isNewReview=my_review is None, 
