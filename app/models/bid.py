@@ -88,3 +88,20 @@ WHERE id = :uid
                                   pid=pid,
                                   )
             return uid
+    #removes bid when user is outbd
+    @staticmethod
+    def remove_bid(uid, pid):
+            rows = app.db.execute("""
+UPDATE Users
+SET balance = balance + (SELECT max(amount) FROM Bids WHERE pid = :pid)
+WHERE id = :uid
+""",
+                                  uid=uid,
+                                  pid=pid,
+                                  )
+            rows = app.db.execute('''
+                    DELETE FROM Bids
+                    WHERE uid = :uid AND pid = :pid
+                    ''', uid=uid, pid=pid,
+                                )
+            return uid

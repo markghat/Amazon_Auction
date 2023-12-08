@@ -46,11 +46,8 @@ def purchased_add(product_id, price):
 
         newPurchase = Purchase.add_purchase(current_user.id, product_id, datetime.datetime.now(), price) #how to get the current time
 
-        #TODO: Implement Orders.add_order() method
         charityId = User.getCharityIdWithProductId(product_id)
-        #TODO: make method to get the timePurchased (which will be same as date_placed)
         date_placed = newPurchase.time_purchased
-        #TODO: make method to get the cost of the item
 
         purchaseId = newPurchase.id
 

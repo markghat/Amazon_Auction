@@ -112,17 +112,13 @@ def product_info(product_id):
             print("currentbid: "+str(currentbid))
             print("bid_amount: "+str(bid_amount))
             if bid_amount>currentbid and bid_amount<=current_user.balance: #verifies bid is greater than current max bid and user has enough money
-                Bid.add_bid(user_id, product_id, bid_amount, datetime.datetime.now())
+                if Bid.get_max_bid(product_id):
+                    max_bidder_id = Bid.get_max_bid(product_id).uid #get user id of current max bidder
+                    Bid.remove_bid(max_bidder_id,product_id) #remove bid from table when outbid and refund user
+                Bid.add_bid(user_id, product_id, bid_amount, datetime.datetime.now()) #add current max bid to data table
                 Product.change_price(product.id, bid_amount)
                 flash('Price Changed', "info")
-                product.price = bid_amount
-               
-    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\
-                bids = Bid.get_bids(current_user.id)
-                for bid in bids:
-                    if Bid.get_max_bid(bid.uid).amount > bid.pid: #make sure it is comparing the same product
-                        User.update_balance(bid.id, current_user.balance + float(bid.pid)) #!!!!!
-    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\            
+                product.price = bid_amount  
             elif bid_amount>current_user.balance: #if user doesn't have enough money
                 flash("Insufficient Funds!", "warning")
             elif bid_amount<currentbid: #if bid is less than current bid price
