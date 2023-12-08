@@ -26,6 +26,7 @@
                     <input type="number" id="bidAmount" name="bidAmount" placeholder="Enter your bid" required>
                     {% if current_user.is_authenticated %}
                     <button type="submit">Submit Bid</button>
+                    <input type="hidden" name="action" value="bid">
                     {%else%}
                     <a href="{{ url_for('users.login') }}" class="btn btn-primary">Log in to Submit Bid</a>
                     {% endif %}
