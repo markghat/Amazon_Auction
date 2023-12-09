@@ -106,8 +106,7 @@
               {% set charity = charities[i] %} 
               <div class="col-md-4">
                 <a href="{{ url_for('index.charity_info', charity_id=charity.id) }}">
-                  <div class="card mb-4 shadow-sm">
-                    <img class="card-img-top" src="{{ charity.image }}" alt="{{ charity.name }}">
+                  <div class="card mb-4 shadow-sm" style="background-color: #5e78c4; color: white;">
                     <div class="card-body">
                       <h5 class="card-title">{{ charity.name }}</h5>
                       <p class="card-text">Category: {{ charity.category }}</p>
