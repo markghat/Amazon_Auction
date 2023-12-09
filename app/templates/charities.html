@@ -200,11 +200,10 @@
 
 
     var category = document.getElementById("category").value;
-    var priceRange = document.getElementById("priceRange").value;
 
 
-    var queryParams = "category=" + encodeURIComponent(category) + "&priceRange=" + encodeURIComponent(priceRange);
-    window.location.href = "{{ url_for('index.index') }}" + "?" + queryParams;
+    var queryParams = "category=" + encodeURIComponent(category);
+    window.location.href = "{{ url_for('index.list_charities') }}" + "?" + queryParams;
   }
 </script>
 
