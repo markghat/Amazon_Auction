@@ -129,6 +129,5 @@ WHERE id = :id
 SELECT *
 FROM Charities
 WHERE LOWER(name) LIKE LOWER(:name)
-                             
 ''', name='%'+search_query+'%')
         return [Charity(*row) for row in rows]
