@@ -2,42 +2,53 @@
 
 {% block content %}
 
-This is charity info page!
-<br><br>
+<div class="container">
+ 
+  <h1> {{charityName}} (Charity ID {{charity_id}})</h1>
 
-<h2> {{charityName}} (Charity ID {{charity_id}})</h2>
-<h3> Charity Description:</h3>
-<body>{{charityDescription}}</body>
+  <div class="flex spacebetween">
+    <div>
+      <h3> Charity Description:</h3>
+      <body>{{charityDescription}}</body>
+    </div>
 
+    {% if current_user.is_authenticated and current_user.isCharity(current_user.id) and
+    (current_user.getCharityId(current_user.id) == charity_id) %}
+    <form method="post"
+      action="{{ url_for('index.change_charity_description', charity_id=current_user.getCharityId(current_user.id)) }}">
+      <label for="newDescription">New Description:</label>
+      <input type="text" id="newDescription" name="newDescription" required>
+      <button type="submit">Change Description</button>
+    </form>
+    {% endif %}
+  </div>
 
-{% if current_user.is_authenticated and current_user.isCharity(current_user.id) and (current_user.getCharityId(current_user.id) == charity_id) %}
-<form method="post" action="{{ url_for('index.change_charity_description', charity_id=current_user.getCharityId(current_user.id)) }}">
-  <label for="newDescription">New Description:</label>
-  <input type="text" id="newDescription" name="newDescription" required>
-  <button type="submit">Change Description</button>
-</form>
-{% endif %}
+  {% if avail_products == [] %}
 
+  <h3 style="margin-top: 80px;">This charity has no products for sale yet 🥲</h3>
+ 
+  {% else %}
   
+  <h2>Products for sale:</h2>
+  <table class='table table-hover table-bordered container'>
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Product ID</th>
+        <th scope="col">Product Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product in avail_products%}
+      <tr>
+        <th scope="row">{{product.id}}</th>
+        <td><a href="{{ url_for('products.product_info', product_id=product.id) }}">{{ product.name }}</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
-<h2>Products for sale:</h2>
-<table class='table table-hover table-bordered container'>
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">Product ID</th>
-      <th scope="col">Product Name</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for product in avail_products%}
-    <tr>
-      <th scope="row">{{product.id}}</th>
-      <td><a href="{{ url_for('products.product_info', product_id=product.id) }}">{{ product.name }}</a></td>
-
-
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+  {% endif %}
+ 
+</div>
 
 {% endblock %}

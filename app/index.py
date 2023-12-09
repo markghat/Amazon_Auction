@@ -218,10 +218,8 @@ def seller_inventory():
 def charity_info():
 
     charity_id = request.args.get('charity_id')
-    print(charity_id)
     if charity_id == None:
         charity_id = current_user.getCharityId(current_user.id)
-    print(charity_id)
     # 2 cases: accessing a charity info page through user side, accessing a charity info page through charity side
 
     #case 1: charity side
@@ -241,7 +239,6 @@ def charity_info():
     #case 2: user side:
     #else:
 
-    print("reached after long commend thing in charity_info()")
         
     charityId = charity_id # TO DO: Need to make sure that this can be cast as an int
     charityDescription = User.getCharityDescriptionGivenCharityId(charityId)

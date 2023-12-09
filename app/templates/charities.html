@@ -57,45 +57,53 @@
   <form action="{{ url_for('index.search_charities')}}" method="GET">
     <label for="search_query">Search Charities:</label>
     <input type="text" name="search_query" id="search_query" required>
-    <input type="submit" value="Search">
+    <input type="submit" value="Search" class="btn">
   </form>
 </div>
 
 <div class="container">
-  <div class="row">
+  <div class="row" style="padding: 20px;">
 
-    <div class="col-md-3">
-      <h4>Filter Options</h4>
-      <form id="filterForm">
-        <label for="category">Select Category:</label>
-        <select name="category" id="category">
-          <option value="">All Categories</option>
-          <option value="climate">Climate</option>
-          <option value="economic_opportunity">Economic Opportunity</option>
-          <option value="social_justice">Social Justice</option>
-          <option value="food_security">Food Security</option>
-          <option value="female_empowerment">Female Empowerment</option>
-          <option value="child_services">Child Services</option>
-          <option value="humanitarian_aid">Humanitarian Aid</option>
-          <!-- (Other categories) -->
-        </select>
-        <label for="region">Select Region:</label>
-        <select name="region" id="region">
-          <option value="">Any Region</option>
-          <option value="africa">Africa</option>
-          <option value="europe">Europe</option>
-          <option value="asia">Asia</option>
-          <option value="middle_east">Middle East</option>
-          <option value="north_america">North America</option>
-          <option value="south_america">South America</option>
-          <option value="carribean">Carribean</option>
-          <!-- (Other regions) -->
-        </select>
-        <input type="button" id="applyFiltersButton" value="Apply Filters" onclick="applyFilters()">
-      </form>
+    <div class="flex spacebetween">
+      <div style="margin-right: 50px;">
+        <h2>Available Charities</h2>
+      </div>
+
+      <div>
+        <h4>Filter Options</h4>
+        <form id="filterForm">
+          <label for="category">Select Category:</label>
+          <select name="category" id="category">
+            <option value="">All Categories</option>
+            <option value="climate">Climate</option>
+            <option value="economic_opportunity">Economic Opportunity</option>
+            <option value="social_justice">Social Justice</option>
+            <option value="food_security">Food Security</option>
+            <option value="female_empowerment">Female Empowerment</option>
+            <option value="child_services">Child Services</option>
+            <option value="humanitarian_aid">Humanitarian Aid</option>
+            <!-- (Other categories) -->
+          </select>
+          <label for="region">Select Region:</label>
+          <select name="region" id="region">
+            <option value="">Any Region</option>
+            <option value="africa">Africa</option>
+            <option value="europe">Europe</option>
+            <option value="asia">Asia</option>
+            <option value="middle_east">Middle East</option>
+            <option value="north_america">North America</option>
+            <option value="south_america">South America</option>
+            <option value="carribean">Carribean</option>
+            <!-- (Other regions) -->
+          </select>
+          <input type="button" id="applyFiltersButton" value="Apply Filters" onclick="applyFilters()">
+        </form>
+
+      </div>
+      
     </div>
 
-      <h2>Charities Available:</h2>
+      
       <div class="container">
         <div class="row">
             {% set products_per_page = 20 %}
