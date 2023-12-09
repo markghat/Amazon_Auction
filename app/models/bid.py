@@ -45,7 +45,29 @@ LIMIT 1;
 ''',
                               id=id)
         return Bid(*(rows[0])) if rows else None
-
+    
+    @staticmethod #not working
+    def get_max_bid_amount(id):
+        rows = app.db.execute('''
+SELECT amount
+FROM Bids AS B
+WHERE B.pid = :id
+ORDER BY B.amount DESC
+LIMIT 1;
+''',
+                              id=id)
+        return rows() if rows else None
+    @staticmethod
+    def get_recent_bid(id):
+        rows = app.db.execute('''
+SELECT *
+FROM Bids AS B
+WHERE B.pid = :id
+ORDER BY B.bidtime DESC
+LIMIT 1;
+''',
+                              id=id)
+        return Bid(*(rows[0])) if rows else None
 
     #adds a bid to the bid table
     @staticmethod
@@ -65,4 +87,21 @@ WHERE id = :uid
                                   uid=uid,
                                   pid=pid,
                                   )
+            return uid
+    #removes bid when user is outbd
+    @staticmethod
+    def remove_bid(uid, pid):
+            rows = app.db.execute("""
+UPDATE Users
+SET balance = balance + (SELECT max(amount) FROM Bids WHERE pid = :pid)
+WHERE id = :uid
+""",
+                                  uid=uid,
+                                  pid=pid,
+                                  )
+            rows = app.db.execute('''
+                    DELETE FROM Bids
+                    WHERE uid = :uid AND pid = :pid
+                    ''', uid=uid, pid=pid,
+                                )
             return uid
