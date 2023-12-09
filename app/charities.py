@@ -1,12 +1,55 @@
-from flask import render_template, request, redirect, url_for
+from flask import current_app, Flask, render_template, request, url_for
 from flask_login import login_user, logout_user, current_user
-from .models.product import Product
+import datetime
+from flask import request, jsonify
+from flask_mail import Mail, Message
 from .models.charity import Charity
+
+
+
+from flask import redirect, flash
+
+
+from .models.product import Product
+from .models.purchase import Purchase
+from .models.order import Order
 from .models.sells import SoldItem
+
+
+from .models.sells import SoldItem
+
 from .models.user import User
 
+
 from flask import Blueprint
-bp = Blueprint('charities', __name__)
+bp = Blueprint('index', __name__) #changed to purchased
+from humanize import naturaltime
+from app import mail  # import the mail instance
+
+
+@bp.route('/charities')
+def list_charities():
+    # Logic to retrieve all charities
+    charities = Charity.get_all()
+    return render_template('charities.html', charities=charities)
+
+@bp.route('/charities/search', methods=['GET'])
+def search_charities():
+    search_query = request.args.get('search_query')
+    # Implement search logic (e.g., by name)
+    results = Charity.search_by_name(search_query)
+    return render_template('charities.html', charities=results)
+
+@bp.route('/charities/<int:charity_id>')
+def charity_info(charity_id):
+    # Logic to retrieve charity information by ID
+    charity = Charity.get_by_id(charity_id)
+    if charity:
+        return render_template('charity_info.html', charity=charity)
+    else:
+        flash('Charity not found', 'error')
+        return redirect(url_for('charities.list_charities'))
+
 
 @bp.route('/charity/dashboard')
 def charity_dashboard(charity_id):

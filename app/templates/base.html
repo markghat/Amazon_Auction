@@ -117,6 +117,7 @@
             <a href="{{ url_for('users.updateBalance') }}" class="btn borders" style="color: #304674;">My Account</a>
 
             <a href="{{ url_for('reviews.index')}}" class="btn borders" style="color: #304674;"> View Reviews</a>
+            <a href="{{ url_for('index.list_charities') }}"  class="btn borders" style="color: #304674;"> Find Charities</a>
             {% if not current_user.isCharity(current_user.id) %}
             <a href="{{ url_for('cart.cart') }}" class="btn borders" style="color: #304674;">My Wishlist</a>
             {% endif %}

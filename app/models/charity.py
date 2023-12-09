@@ -6,7 +6,7 @@ from .. import login
 
 
 class Charity(UserMixin):
-    def __init__(self, id, orgId, name, email, password, description, category, moneyraised):
+    def __init__(self, id, orgId, name, email, password, description, category, region, moneyraised):
         self.id = id
         self.orgId = orgId
         self.name = name
@@ -14,6 +14,7 @@ class Charity(UserMixin):
         self.password = password
         self.description = description
         self.category = category
+        self.region = region
         self.moneyraised = moneyraised
 
     @staticmethod
@@ -32,6 +33,15 @@ WHERE email = :email
         else:
             return User(*(rows[0][1:]))
 
+   #gets all available products
+    @staticmethod
+    def get_all():
+        rows = app.db.execute('''
+SELECT *
+FROM Charities
+''')
+        return [Charity(*row) for row in rows]
+    
     @staticmethod
     def email_exists(email):
         rows = app.db.execute("""
@@ -112,3 +122,12 @@ WHERE id = :id
         data = [row[1] for row in rows]  # Sales data
 
         return {"labels": labels, "data": data}
+
+    #returns the product with a matching name
+    def search_by_name(search_query):
+        rows = app.db.execute('''
+SELECT *
+FROM Charities
+WHERE LOWER(name) LIKE LOWER(:name)
+''', name='%'+search_query+'%')
+        return [Charity(*row) for row in rows]
