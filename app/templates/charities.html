@@ -102,8 +102,8 @@
     {% set start_index = (page - 1) * products_per_page %}
     {% set end_index = start_index + products_per_page %}
           {% for i in range(start_index, end_index) %}
-            {% if i < available_charities|length %} 
-              {% set charity = available_charities[i] %} 
+            {% if i < charities|length %} 
+              {% set charity = charities[i] %} 
               <div class="col-md-4">
                 <a href="{{ url_for('index.charity_info', charity_id=charity.id) }}">
                   <div class="card mb-4 shadow-sm">

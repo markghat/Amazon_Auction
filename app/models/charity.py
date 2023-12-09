@@ -129,7 +129,6 @@ WHERE id = :id
 SELECT *
 FROM Charities
 WHERE LOWER(name) LIKE LOWER(:name)
-                              AND available = true
-                              AND expiration >= now()
+                             
 ''', name='%'+search_query+'%')
         return [Charity(*row) for row in rows]
