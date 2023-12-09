@@ -1,44 +1,53 @@
 {% extends "base.html" %}
 
+<style>
+
+</style>
+
 {% block content %}
 {% with messages = get_flashed_messages() %}
 {% if messages %}
 {% for msg in messages %}
-<h1>{{msg}}</h1>
+<h1 style="color: red;">{{msg}}</h1>
 {% endfor %}
 {% endif %}
 {% endwith %}
 <div class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <h1>{{ product.name }}</h1>
-            <img src="{{ product.image }}" alt="{{ product.name }}" width="300">
-            <p>Product Expiry Date: {{ product.expiration }}</p>
-            <p>Charity: <a href="{{ url_for('index.charity_info', charity_id=charity_id) }}">{{ charity_name }}</a></p>
-
+    <div class="row" style="margin-bottom: 40px;">
+        <div class="col-md-6 card borders" style="background-color: #44557b; color: white; border-color: black; border-width: 7px;">
+            <h2 style="margin-top: 20px;">{{ product.name }}</h2>
+            <div class="flex spaceevenly" style="padding: 40px;">
+                <img class="card borders" src="{{ product.image }}" alt="{{ product.name }}" width="300" style="margin-right: 20px; border-color: black; border-width: 4px;">
+                <div>
+                    <p style="color: rgb(205, 42, 42);">Expiring {{ product.expiration }}</p>
+                    <p>Listed by: <a href="{{ url_for('index.charity_info', charity_id=charity_id) }}">{{ charity_name }}</a></p>
+                    <p>Description: {{ product.description }}</p>
+                </div>
+            </div>
+            
         </div>
-        <div class="col-md-6">
-            <div class="current-bid">
-                <p>Current Bid Price: ${{ product.price }}</p>
 
-                <form method="POST" action="{{ url_for('products.product_info', product_id=product.id) }}">
+        <div class="col-md-6 flex">
+            <div class="current-bid flex" style="flex-direction: column;">
+                <h3 style="margin-bottom: 10px;">Current Bid Price: ${{ product.price }}</h3>
+
+                <form style="margin-top: 10px;" method="POST" action="{{ url_for('products.product_info', product_id=product.id) }}">
                     <label for="bidAmount">Place Your Bid:</label>
-                    <input type="number" id="bidAmount" name="bidAmount" placeholder="Enter your bid" required>
+                    <input type="number" id="bidAmount" name="bidAmount" placeholder="Enter your bid" required class="transparent borders" style="border-width: 1px; margin-right: 7px; outline: none;">
                     {% if current_user.is_authenticated %}
-                    <button type="submit">Submit Bid</button>
+                    <button class="btn borders" type="submit">Submit Bid</button>
                     <input type="hidden" name="action" value="bid">
                     {%else%}
                     <a href="{{ url_for('users.login') }}" class="btn btn-primary">Log in to Submit Bid</a>
                     {% endif %}
-
                 </form>
-                <form action="{{ url_for('purchased.purchased_add', product_id=product.id, price=product.buynow) }}"
+
+                <h2 style="margin-top: 20px; color: rgb(205, 42, 42);">OR</h2>
+
+                <form class="flex center" style="margin-top: 20px;" action="{{ url_for('purchased.purchased_add', product_id=product.id, price=product.buynow) }}"
                     method="POST">
-                    <input type="submit" class="btn btn-primary" value="Buy Now" />
-                    <p>Current Buy Now Price: ${{ product.buynow }}</p>
+                    <input type="submit" class="btn" value="Buy Now for {{product.buynow }}" style="background-color: #304674; color: white;" />
                 </form>
-
-                <p>Description: {{ product.description }}</p>
             </div>
         </div>
     </div>
@@ -82,12 +91,15 @@
         {% endif %}
     </div>
     <div>
-        <h2>Product Review Summary:</h2>
+        {% if total==[] %}
+        <h3>Product Review Summary</h3>
+        I'm sorry but we don't have reviews for this product yet 😔
+        {% else %}
+        <h2>Product Review Summary</h2>
         <p>There is/are {{total}} review(s) with an average rating of {{average}} ⭐</p>
         <table class='table table-hover table-bordered container'>
             <thead class="thead-dark">
                 <tr>
-                    <th scope="col">Product ID</th>
                     <th scope="col">User ID</th>
                     <th scope="col">Rating</th>
                     <th scope="col">Review</th>
@@ -100,10 +112,9 @@
                 {% set reviews_per_page = 5 %}
                 {% set start_index = (page - 1) * reviews_per_page %}
                 {% set end_index = start_index + reviews_per_page %}
-
+        
                 {% for i in range(start_index, end_index) %}
                 {% if i < product_reviews|length %} {% set review=product_reviews[i] %} <tr>
-                    <th scope="row">{{review.pid}}</th>
                     <td>{{review.uid}}</td>
                     <td>{% for i in range(review.rating) %}⭐{% endfor %}</td>
                     <td>{{review.feedback}}</td>
@@ -116,7 +127,7 @@
                             <input type="hidden" name="likes" value="{{ review.upvote }}">
                             <input type="hidden" name="review_id" value="{{ review.id }}">
                             <button type="submit" class="btn btn-link">
-
+        
                                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
                                     class="bi bi-chevron-up {{ 'text-primary' if review.isVoted(current_user.id) == 1 else 'text-muted' }}"
                                     viewBox="0 0 16 16">
@@ -126,20 +137,20 @@
                                 </svg>
                             </button>
                         </form>
-
+        
                         <form action="/product/{{review.pid}}" id="down_vote_form" method="post">
                             <input type="hidden" name="action" value="downvote">
                             <input type="hidden" name="likes" value="{{ review.upvote }}">
                             <input type="hidden" name="review_id" value="{{ review.id }}">
                             <button type="submit" class="btn btn-link">
-
+        
                                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
                                     class="bi bi-chevron-down {{ 'text-primary' if review.isVoted(current_user.id) == -1 else 'text-muted' }}"
                                     viewBox="0 0 16 16">
                                     <path
                                         d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
                                 </svg>
-
+        
                             </button>
                         </form>
                         {# {% if i.buyer_id == current_user.id %}#}
@@ -150,36 +161,36 @@
                             {# </form>#}
                         {# {% endif %}#}
                         {% endif %}
-
+        
                     </td>
                     </tr>
                     {% endif %}
                     {% endfor %}
             </tbody>
         </table>
-
+        
         <div class="container">
             <ul class="pagination">
                 {% set total_pages = (product_reviews|length + reviews_per_page - 1) // reviews_per_page %}
                 {% set max_pages_shown = 5 %} {# Adjust the number of page links to display #}
                 {% set half_max_pages_shown = (max_pages_shown // 2) %}
-
+        
                 {# Previous button #}
                 <li class="page-item {% if page == 1 %}disabled{% endif %}">
                     <a class="page-link" href="?page={{ page - 1 }}" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-
+        
                 {# Page links #}
                 {% for page_num in range(1, total_pages + 1) %}
-                {% if page_num == page or (page_num >= page - half_max_pages_shown and page_num <= page +
-                    half_max_pages_shown) %} <li class="page-item {% if page == page_num %}active{% endif %}">
+                {% if page_num == page or (page_num >= page - half_max_pages_shown and page_num <= page + half_max_pages_shown)
+                    %} <li class="page-item {% if page == page_num %}active{% endif %}">
                     <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
                     </li>
                     {% endif %}
                     {% endfor %}
-
+        
                     {# Next button #}
                     <li class="page-item {% if page == total_pages %}disabled{% endif %}">
                         <a class="page-link" href="?page={{ page + 1 }}" aria-label="Next">
@@ -188,6 +199,9 @@
                     </li>
             </ul>
         </div>
+
+        {% endif %}
+        
     </div>
 
 </div>

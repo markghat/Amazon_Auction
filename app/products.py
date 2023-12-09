@@ -62,12 +62,7 @@ def product_info(product_id):
         my_review=None
 
     charity_id = User.getCharityIdWithProductId(product_id)
-    print("this is our charity_id:")
-    print(type(charity_id))
-    print(charity_id)
     charity_name = User.getCharityNameGivenCharityId(charity_id)
-    print("this is our charity_name:")
-    print(charity_name)
 
     page = int(request.args.get('page', default=1))
 
@@ -129,12 +124,12 @@ def product_info(product_id):
         else:
             return redirect(url_for('users.login'))
         # STILL DO: update the current id in your database
-
+    
     return render_template('product_info.html',
                            isNewReview=my_review is None, 
                            my_review=my_review,
                            product=product, 
-                           product_reviews=product_reviews, 
+                           product_reviews=product_reviews,
                            total=total_reviews, 
                            average=avg_rating,
                            page=page,

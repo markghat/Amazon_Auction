@@ -71,13 +71,41 @@
         color: #4169E1; 
     }
 
+     /* Additional styles for the form */
+        .formr {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+            margin: 20px auto; /* Center the form */
+        }
+
+        label {
+            display: block;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        
+
 
 </style>
 
 
 <br><br>
 
-<form action="" method="post" class="center">
+<form action="" method="post" class="center formr">
     {{ form.hidden_tag() }}
     <p>
         {{ form.user_id.label }}<br />
@@ -86,7 +114,6 @@
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
     </p>
-
     <p>{{ form.submit() }}</p>
 </form>
 
@@ -112,7 +139,7 @@
         {% for i in range(start_index, end_index) %}
             {% if i < my_reviews|length %} {% set review=my_reviews[i] %}
             <tr>
-                <th scope="row"><a href="/product/{{review.pid}}">{{ review.pid }}</a></th>
+                <td scope="row"><a href="/product/{{review.pid}}">{{ review.pid }}</a></td>
                 <td>{% for i in range(review.rating) %}⭐{% endfor %}</td>
                 <td>{{review.feedback}}</td>
                 <td>{{review.date_posted}}</td>
