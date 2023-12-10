@@ -2,6 +2,18 @@
 
 {% block content %}
 
+<style>
+  /* Center the dropdowns */
+  .centered-dropdowns {
+    text-align: center;
+  }
+
+  /* Adjust the width of the dropdowns if needed */
+  .form-control {
+    width: 50%;
+  }
+</style>
+
 <h1>Register</h1>
 
 <form action="" method="post" id="registration-form">
@@ -55,6 +67,22 @@
       <span style="color: red;">[{{ error }}]</span>
       {% endfor %}
     </p>
+    <p>
+      {{ form.region.label }}<br/>
+      {{ form.region(class="form-control") }}<br/>
+      {% for error in form.region.errors %}
+      <span style="color: red;">[{{ error }}]</span>
+      {% endfor %}
+    </p>
+
+    <p>
+      {{ form.category.label }}<br/>
+      {{ form.category(class="form-control") }}<br/>
+      {% for error in form.category.errors %}
+      <span style="color: red;">[{{ error }}]</span>
+      {% endfor %}
+    </p>
+    
   </div>
 
   <p>{{ form.submit() }}</p>

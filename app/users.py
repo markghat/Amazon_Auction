@@ -3,7 +3,7 @@ from werkzeug.urls import url_parse
 from flask_login import login_user, logout_user, current_user
 from flask_wtf import FlaskForm
 
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, SelectField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 
 from .models.user import User
@@ -13,6 +13,28 @@ from .models.bid import Bid
 
 from humanize import naturaltime
 import datetime
+
+
+REGION_CHOICES = [
+    ('africa', 'Africa'),
+    ('europe', 'Europe'),
+    ('asia', 'Asia'),
+    ('middle_east', 'Middle East'),
+    ('north_america', 'North America'),
+    ('south_america', 'South America'),
+    ('caribbean', 'Caribbean'),
+]
+
+CATEGORY_CHOICES = [
+    ('climate', 'Climate'),
+    ('economic_opportunity', 'Economic Opportunity'),
+    ('social_justice', 'Social Justice'),
+    ('food_security', 'Food Security'),
+    ('female_empowerment', 'Female Empowerment'),
+    ('child_services', 'Child Services'),
+    ('humanitarian_aid', 'Humanitarian Aid'),
+]
+
 def humanize_time(dt):
     return naturaltime(datetime.datetime.now() - dt)
 from flask import Blueprint
@@ -66,6 +88,10 @@ class RegistrationForm(FlaskForm):
     #NEW FIELD: IF user wants to be a Charity
     charity_name = StringField('Charity Name')
 
+    region = SelectField('Region', choices=REGION_CHOICES)
+    category = SelectField('Category', choices=CATEGORY_CHOICES)
+    
+
     submit = SubmitField('Register')
 
     def validate_email(self, email):
@@ -104,7 +130,9 @@ def register():
                                          form.password.data,
                                          form.firstname.data,
                                          form.lastname.data,
-                                         form.charity_name.data):
+                                         form.charity_name.data,
+                                         form.category.data,
+                                         form.region.data):
                 print("register_as_charity condition passed")
                 flash('Congratulations, you are now a registered charity!')
                 return redirect(url_for('users.login'))

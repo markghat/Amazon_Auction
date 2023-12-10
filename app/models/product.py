@@ -137,6 +137,7 @@ ORDER BY price
         rows = app.db.execute('''
 SELECT * FROM Products
                               WHERE expiration >= now()
+                              AND available = true
 ORDER BY rating DESC
     ''')
         return [Product(*row) for row in rows]
@@ -146,6 +147,7 @@ ORDER BY rating DESC
         rows = app.db.execute('''
 SELECT * FROM Products
     WHERE expiration >= now()
+                              AND available = true
 ORDER BY expiration;
     ''')
         return [Product(*row) for row in rows]

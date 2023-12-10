@@ -50,9 +50,9 @@ def gen_charities(num_users):
             if uid % 10 == 0:
                 n += 1
                 if uid != 0:
-                    id = uid / 10
+                    id = int(uid / 10)
                 else:
-                    id = uid
+                    id = int(uid)
                 
                 print(f'{uid}', end=' ', flush=True)
                 profile = fake.profile()
@@ -60,8 +60,8 @@ def gen_charities(num_users):
                 plain_password = f'pass{uid}'
                 password = generate_password_hash(plain_password)
                 name_components = profile['name'].split(' ')
-                category = fake.random_element(elements=('Climate', 'Economic Opportunity', 'Social Justice', 'Food Security', 'Female Empowerment', 'Child Services', 'Humanitarian Aid'))
-                region = fake.random_element(elements=('Africa', 'Europe', 'Asia', 'Middle East', 'North America ', 'South America', 'Carribean'))
+                category = fake.random_element(elements=('climate', 'economic_opportunity', 'social_justice', 'food_security', 'female_empowerment', 'child_services', 'humanitarian_aid'))
+                region = fake.random_element(elements=('africa', 'europe', 'asia', 'middle_east', 'north_america ', 'south_america', 'carribean'))
                 name = fake.sentence(nb_words=4)[:-1]
                 description = fake.sentence(nb_words=20)
                 balance = f'{str(fake.random_int(max=500))}.{fake.random_int(max=99):02}'
@@ -100,8 +100,8 @@ def gen_sells(num_products, num_charities):
                 print(f'{pid}', end=' ', flush=True)
                 print(f'{n_users}', end=' ', flush=True)
                 n_users += 1
-            cid = f'{str(fake.random_int(max=num_charities))}'
-            writer.writerow([pid, cid])
+            cid = f'{str(fake.random_int(max=num_charities-1 ))}'
+            writer.writerow([cid, pid])
         print(f'{num_products} generated;')
     return available_pids
 
@@ -169,6 +169,6 @@ def gen_purchases(num_purchases, available_pids):
 # available_pids = gen_products(num_products)
 # gen_purchases(num_purchases, available_pids)
 gen_bids(num_products)
-# charities = gen_charities(num_users)
-# gen_sells(num_products, charities)
+charities = gen_charities(num_users)
+gen_sells(num_products, charities)
 

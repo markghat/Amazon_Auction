@@ -45,14 +45,30 @@ def apply_filters(products, category_filter, price_range_filter):
     return filtered_products
 
 
+def charityfilters(charities, category_filter, region_filter):
+    # Implement filter logic
+    filtered_charities = charities
+    # Apply category filter
+    if category_filter and category_filter != 'All Categories':
+        filtered_charities = [charity for charity in filtered_charities if charity.category.strip() == category_filter]
+# Apply region filter
+    if region_filter and region_filter != 'Any region':
+        filtered_charities = [charity for charity in filtered_charities if charity.region.strip() == region_filter]
+    
+    
+
+    return filtered_charities
+
 @bp.route('/charities')
 def list_charities():
     # Logic to retrieve all charities
     page = int(request.args.get('page', default=1))
     charities = Charity.get_all()
-    print(charities[0].name)
-    print('woahhhh')
-    return render_template('charities.html', charities=charities, page=page)
+    category_filter = request.args.get('category', default='', type=str)
+    region_filter = request.args.get('region', default='', type=str)
+
+    filtered = charityfilters(charities, category_filter, region_filter)
+    return render_template('charities.html', charities=filtered, page=page)
 
 @bp.route('/charities/search', methods=['GET'])
 def search_charities():
@@ -218,8 +234,10 @@ def seller_inventory():
 def charity_info():
 
     charity_id = request.args.get('charity_id')
+    print(charity_id)
     if charity_id == None:
         charity_id = current_user.getCharityId(current_user.id)
+    print(charity_id)
     # 2 cases: accessing a charity info page through user side, accessing a charity info page through charity side
 
     #case 1: charity side
@@ -239,6 +257,7 @@ def charity_info():
     #case 2: user side:
     #else:
 
+    print("reached after long commend thing in charity_info()")
         
     charityId = charity_id # TO DO: Need to make sure that this can be cast as an int
     charityDescription = User.getCharityDescriptionGivenCharityId(charityId)

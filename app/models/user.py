@@ -76,7 +76,7 @@ WHERE id = :id
 
     # BELOW IS NEW CODE; If new user wants to register as charity
     @staticmethod
-    def register_as_charity(email, password, firstname, lastname, charity_name):
+    def register_as_charity(email, password, firstname, lastname, charity_name, category, region):
         try:
             rows = app.db.execute("""
                 INSERT INTO Users(email, password, firstname, lastname, balance)
@@ -95,14 +95,16 @@ WHERE id = :id
             print("before charities insert")
             # Insert into Charities table
             app.db.execute("""
-                INSERT INTO Charities (userid, name, email, password, description)
-                VALUES(:user_id, :charity_name, :email, :password, :description)
+                INSERT INTO Charities (userid, name, email, password, description, category, region)
+                VALUES(:user_id, :charity_name, :email, :password, :description, :category, :region)
                 """,
                 user_id=user_id,
                 charity_name=charity_name,
                 email=email,
                 password=generate_password_hash(password),
-                description = "this is a default description of your charity!")
+                description = "this is a default description of your charity!",
+                category = category,
+                region = region)
 
             print("after charity insert")
             print(User.get(user_id))

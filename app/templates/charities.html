@@ -103,7 +103,7 @@
           <label for="category">Select Category:</label>
           <select name="category" id="category">
             <option value="">All Categories</option>
-            <option value="climate">Climate</option>
+            <option value="Climate">Climate</option>
             <option value="economic_opportunity">Economic Opportunity</option>
             <option value="social_justice">Social Justice</option>
             <option value="food_security">Food Security</option>
@@ -200,9 +200,11 @@
 
 
     var category = document.getElementById("category").value;
+    var region = document.getElementById("region").value;
 
 
-    var queryParams = "category=" + encodeURIComponent(category);
+
+    var queryParams = "category=" + encodeURIComponent(category) + "&region=" + encodeURIComponent(region);
     window.location.href = "{{ url_for('index.list_charities') }}" + "?" + queryParams;
   }
 </script>
